@@ -13,7 +13,7 @@
                     <MenuItem Header="Open SpecDB Folder" Click="OpenSpecDB_MenuItem_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_SaveTable" IsEnabled="False" Header="Save Current Table" Click="SaveCurrentTable_Click"/>
-                    <MenuItem Name="mi_SavePartsInfo" IsEnabled="False" Header="Save PartsInfo.tbi/tbd" Click="SavePartsInfo_Click"/>
+                    <MenuItem Name="mi_SavePartsInfo" IsEnabled="False" Header="Save PartsInfo.tbi/tbd (requires all tables)" Click="SavePartsInfo_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_Exit" Header="Exit" Click="mi_Exit_Click"/>
                 </MenuItem>

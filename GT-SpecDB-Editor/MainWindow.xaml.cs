@@ -121,7 +121,7 @@ namespace GT_SpecDB_Editor
             }
         }
 
-        private void SavePartsInfo_Click(object sender, RoutedEventArgs e)
+        private async void SavePartsInfo_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select folder to save PartsInfo.tbd/tbi");
             dlg.EnsurePathExists = true;
@@ -130,7 +130,28 @@ namespace GT_SpecDB_Editor
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                CurrentDatabase.SavePartsInfo(dlg.FileName);
+                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out SpecDBTable genericCar))
+                {
+                    MessageBox.Show($"Can not save PartsInfo as GENERIC_CAR is missing.", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!genericCar.IsLoaded)
+                    genericCar.LoadAllRows(CurrentDatabase);
+
+                var progressWindow = new ProgressWindow();
+                progressWindow.Title = "Saving Parts Info";
+                progressWindow.progressBar.Maximum = genericCar.Rows.Count;
+                var progress = new Progress<(int Index, string CarLabel)>(prog =>
+                {
+                    progressWindow.lbl_progress.Content = $"{prog.Index} of {progressWindow.progressBar.Maximum}";
+                    progressWindow.currentElement.Content = prog.CarLabel;
+                    progressWindow.progressBar.Value = prog.Index;
+                });
+
+                var task = CurrentDatabase.SavePartsInfo(progressWindow, progress, dlg.FileName);
+                progressWindow.ShowDialog();
+                await task;
             }
         }
 
