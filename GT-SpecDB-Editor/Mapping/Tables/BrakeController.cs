@@ -12,6 +12,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class BrakeController : TableMetadata
     {
+        public override string LabelPrefix { get; } = "bc_";
         public BrakeController(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));

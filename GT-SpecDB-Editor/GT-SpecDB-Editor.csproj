@@ -89,12 +89,32 @@
     </ApplicationDefinition>
     <Compile Include="Core\Formats\DBT.cs" />
     <Compile Include="Core\Formats\IDI.cs" />
+    <Compile Include="Core\Formats\TBI.cs" />
     <Compile Include="Core\RowKey.cs" />
     <Compile Include="Core\Formats\SDB.cs" />
     <Compile Include="Core\SpecDB.cs" />
     <Compile Include="Core\SpecDBTable.cs" />
     <Compile Include="Core\StringDatabase.cs" />
     <Compile Include="Mapping\Row.cs" />
+    <Compile Include="Mapping\Tables\NOS.cs" />
+    <Compile Include="Mapping\Tables\Tuner.cs" />
+    <Compile Include="Mapping\Tables\TunedCars.cs" />
+    <Compile Include="Mapping\Tables\IndepThrottle.cs" />
+    <Compile Include="Mapping\Tables\Intercooler.cs" />
+    <Compile Include="Mapping\Tables\Drivetrain.cs" />
+    <Compile Include="Mapping\Tables\GenericCarInfo.cs" />
+    <Compile Include="Mapping\Tables\TireForceVol.cs" />
+    <Compile Include="Mapping\Tables\TCSC.cs" />
+    <Compile Include="Mapping\Tables\Wheel.cs" />
+    <Compile Include="Mapping\Tables\Variation.cs" />
+    <Compile Include="Mapping\Tables\TurbineKit.cs" />
+    <Compile Include="Mapping\Tables\TireCompound.cs" />
+    <Compile Include="Mapping\Tables\Suspension.cs" />
+    <Compile Include="Mapping\Tables\Supercharger.cs" />
+    <Compile Include="Mapping\Tables\Steer.cs" />
+    <Compile Include="Mapping\Tables\PropellerShaft.cs" />
+    <Compile Include="Mapping\Tables\Natune.cs" />
+    <Compile Include="Mapping\Tables\Chassis.cs" />
     <Compile Include="Mapping\Tables\Computer.cs" />
     <Compile Include="Mapping\Tables\Clutch.cs" />
     <Compile Include="Mapping\Tables\Catalyst.cs" />
@@ -103,12 +123,17 @@
     <Compile Include="Mapping\Tables\Brake.cs" />
     <Compile Include="Mapping\Tables\AllowEntry.cs" />
     <Compile Include="Mapping\Tables\DefaultParam.cs" />
+    <Compile Include="Mapping\Tables\DefaultParts.cs" />
     <Compile Include="Mapping\Tables\Displacement.cs" />
     <Compile Include="Mapping\Tables\Engine.cs" />
+    <Compile Include="Mapping\Tables\IntakeManifold.cs" />
     <Compile Include="Mapping\Tables\ExhaustManifold.cs" />
     <Compile Include="Mapping\Tables\Flywheel.cs" />
     <Compile Include="Mapping\Tables\GenericItems.cs" />
+    <Compile Include="Mapping\Tables\Lsd.cs" />
+    <Compile Include="Mapping\Tables\Lightweight.cs" />
     <Compile Include="Mapping\Tables\ModelInfo.cs" />
+    <Compile Include="Mapping\Tables\Muffler.cs" />
     <Compile Include="Mapping\Tables\PaintColorInfo.cs" />
     <Compile Include="Mapping\Tables\Gear.cs" />
     <Compile Include="Mapping\Tables\ASCC.cs" />
@@ -118,8 +143,11 @@
     <Compile Include="Mapping\Tables\CarName.cs" />
     <Compile Include="Mapping\Tables\Maker.cs" />
     <Compile Include="Mapping\Tables\FrontTire.cs" />
+    <Compile Include="Mapping\Tables\Race.cs" />
     <Compile Include="Mapping\Tables\RacingModify.cs" />
     <Compile Include="Mapping\Tables\RearTire.cs" />
+    <Compile Include="Mapping\Types\DBUInt.cs" />
+    <Compile Include="Mapping\Types\DBSByte.cs" />
     <Compile Include="Mapping\Types\DBLong.cs" />
     <Compile Include="Mapping\Types\DBFloat.cs" />
     <Compile Include="Mapping\Types\DBBool.cs" />
@@ -128,6 +156,7 @@
     <Compile Include="Mapping\Types\DBShort.cs" />
     <Compile Include="Mapping\Types\DBString.cs" />
     <Compile Include="Utils\OptimizedStringTable.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
     <Page Include="StringDatabaseManager.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

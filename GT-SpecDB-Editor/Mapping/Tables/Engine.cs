@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Engine : TableMetadata
     {
+        public override string LabelPrefix { get; } = "en_";
+
         public Engine(string specdbName)
         {
             Columns.Add(new ColumnMetadata("soundNum", DBColumnType.Int));

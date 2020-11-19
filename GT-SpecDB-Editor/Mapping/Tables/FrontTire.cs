@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class FrontTire : TableMetadata
     {
+        public override string LabelPrefix { get; } = "ft_";
+
         public FrontTire(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));

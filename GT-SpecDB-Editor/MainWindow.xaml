@@ -13,6 +13,7 @@
                     <MenuItem Header="Open SpecDB Folder" Click="OpenSpecDB_MenuItem_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_SaveTable" IsEnabled="False" Header="Save Current Table" Click="SaveCurrentTable_Click"/>
+                    <MenuItem Name="mi_SavePartsInfo" IsEnabled="False" Header="Save PartsInfo.tbi/tbd" Click="SavePartsInfo_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_Exit" Header="Exit" Click="mi_Exit_Click"/>
                 </MenuItem>
@@ -34,8 +35,9 @@
                     </Button>
                     <Separator/>
                     <Image Source="Resources/appbar.magnify.png" Width="24" Height="24"/>
-                    <Label Height="28">Filter Columns by Label..</Label>
-                    <TextBox Name="tb_ColumnFilter" BorderBrush="Black" TextChanged="tb_ColumnFilter_TextChanged" IsEnabled="False" HorizontalAlignment="Right" Width="300"/>
+                    <Label Height="28">Filter Columns by..</Label>
+                    <ComboBox Name="cb_FilterColumnType" IsEnabled="False" Width="120"/>
+                    <TextBox Name="tb_ColumnFilter" BorderBrush="Black" TextChanged="tb_ColumnFilter_TextChanged" IsEnabled="False" HorizontalAlignment="Right" Width="200"/>
                     <Separator/>
                 </ToolBar>
             </ToolBarTray>
@@ -58,7 +60,7 @@
                 </StatusBarItem>
                 <Separator Grid.Column="1"/>
                 <StatusBarItem Grid.Column="2">
-                    <TextBlock></TextBlock>
+                    <TextBlock Name="statusName"/>
                 </StatusBarItem>
                 <Separator Grid.Column="3"/>
                 <StatusBarItem Grid.Column="4">
@@ -73,8 +75,9 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
-                <DataGrid Name="dg_Rows" AutoGenerateColumns="False" DockPanel.Dock="Right" VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                          CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" CellEditEnding="dg_Rows_CellEditEnding" MouseDoubleClick="dg_Rows_MouseDoubleClick">
+                <DataGrid Name="dg_Rows" AutoGenerateColumns="False" DockPanel.Dock="Right" VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
+                          CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" CellEditEnding="dg_Rows_CellEditEnding" MouseDoubleClick="dg_Rows_MouseDoubleClick"
+                          PreviewKeyDown="dg_Rows_PreviewKeyDown">
                     <DataGrid.Resources>
                         <Style TargetType="{x:Type DataGridCell}">
                             <EventSetter Event="MouseDoubleClick" Handler="dg_Rows_MouseDoubleClick"/>

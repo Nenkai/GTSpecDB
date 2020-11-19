@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class RearTire : TableMetadata
     {
+        public override string LabelPrefix { get; } = "rt_";
+
         public RearTire(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));

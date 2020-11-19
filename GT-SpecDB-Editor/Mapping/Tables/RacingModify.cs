@@ -12,11 +12,13 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class RacingModify : TableMetadata
     {
+        public override string LabelPrefix { get; } = "rm_";
+
         public RacingModify(string specdbName)
         {
             Columns.Add(new ColumnMetadata("HasRM", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("GenericCarID", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
         }
     }
 }

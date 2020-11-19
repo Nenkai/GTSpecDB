@@ -48,5 +48,16 @@ namespace GT_SpecDB_Editor.Core
                 return strDb;
             }
         }
+
+        public int GetOrCreate(string str)
+        {
+            int index = Strings.IndexOf(str);
+            if (index == -1)
+            {
+                Strings.Add(str);
+                index = Strings.Count - 1;
+            }
+            return index;
+        }
     }
 }

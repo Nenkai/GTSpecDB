@@ -12,6 +12,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class ASCC : TableMetadata
     {
+        public override string LabelPrefix { get; } = "";
         public ASCC(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));

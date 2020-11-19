@@ -16,6 +16,7 @@ namespace GT_SpecDB_Editor.Core.Formats
         public Endian Endian { get; }
         public byte[] Buffer { get; }
         public const int HeaderSize = 0x10;
+        public const int EntrySize = 0x08;
 
         public int KeyCount
         {
@@ -59,7 +60,7 @@ namespace GT_SpecDB_Editor.Core.Formats
                         if (mid < 0 || mid > keyCount)
                             return -1;
 
-                        sr.Position = HeaderSize + (mid * 8) + 4;
+                        sr.Position = HeaderSize + (mid * EntrySize) + 4;
                         return sr.ReadInt32();
                     }
 
@@ -85,10 +86,10 @@ namespace GT_SpecDB_Editor.Core.Formats
 
             // *(int *)(buf + 4) * 8 + 0x10)
             int keyCount = KeyCount;
-            int keyMapOffset = HeaderSize + (keyCount * 8);
+            int keyMapOffset = HeaderSize + (keyCount * EntrySize);
 
             // *(int *)(buf + index * 8 + 0x10)
-            sr.Position = HeaderSize + (index * 8);
+            sr.Position = HeaderSize + (index * EntrySize);
             int keyNameOffset = sr.ReadInt32();
 
             sr.Position = keyMapOffset + keyNameOffset;

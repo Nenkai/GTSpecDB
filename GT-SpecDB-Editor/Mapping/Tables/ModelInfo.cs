@@ -14,6 +14,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
     {
         public ModelInfo(string specdbName)
         {
+            Columns.Add(new ColumnMetadata("CarLabel", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("ModelWidth", DBColumnType.Float));
             Columns.Add(new ColumnMetadata("ModelHeight", DBColumnType.Float));
             Columns.Add(new ColumnMetadata("ModelFront", DBColumnType.Float));

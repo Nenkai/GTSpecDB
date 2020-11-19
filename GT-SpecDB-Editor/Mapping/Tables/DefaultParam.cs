@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class DefaultParam : TableMetadata
     {
+        public override string LabelPrefix { get; } = "dp_";
+
         public DefaultParam(string specdbName)
         {
             Columns.Add(new ColumnMetadata("torquevol", DBColumnType.Short));

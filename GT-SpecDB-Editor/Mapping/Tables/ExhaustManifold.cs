@@ -12,11 +12,13 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class ExhaustManifold : TableMetadata
     {
+        public override string LabelPrefix { get; } = "ex_";
+
         public ExhaustManifold(string specdbName)
         {
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
         }
     }

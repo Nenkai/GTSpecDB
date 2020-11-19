@@ -3,17 +3,45 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Diagnostics;
 
 using GT_SpecDB_Editor.Mapping.Types;
 
 namespace GT_SpecDB_Editor.Mapping
 {
-    [DebuggerDisplay("{ColumnData.Count} Column Data")]
-    public class SpecDBRowData
+    [DebuggerDisplay("{ColumnData.Count} columns")]
+    public class SpecDBRowData : INotifyPropertyChanged
     {
-        public int ID { get; set; }
-        public string Label { get; set; }
+        private int _id;
+        public int ID
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                NotifyPropertyChanged("ID");
+            }
+        }
+    
+
+        private string _label;
+        public string Label
+        {
+            get => _label;
+            set
+            {
+                _label = value;
+                NotifyPropertyChanged("Label");
+            }
+        }
+
         public List<IDBType> ColumnData { get; set; } = new List<IDBType>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class CarName : TableMetadata
     {
+        public override string LabelPrefix { get; } = "";
+
         public CarName(string specdbName, string localeName)
         {
             Columns.Add(new ColumnMetadata("Name", DBColumnType.String, $"{localeName}_StrDB.sdb"));

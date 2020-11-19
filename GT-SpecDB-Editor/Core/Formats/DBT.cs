@@ -114,7 +114,7 @@ namespace GT_SpecDB_Editor.Core.Formats
 
             if (type == 0)
             {
-                SpanReader sr = new SpanReader(Buffer, Endian);
+                var sr = new SpanReader(Buffer, Endian);
                 sr.Position = RawDataMapOffset + (dataIndex * dataLength);
                 return sr.ReadBytes(dataLength);
             }
@@ -148,7 +148,7 @@ namespace GT_SpecDB_Editor.Core.Formats
                 return rowData;
             }
 
-            throw new Exception("WTF?");
+            throw new Exception($"GetRowDataFromEntryData Errored: got unsupported type {type}");
         }
 
 
@@ -162,7 +162,7 @@ namespace GT_SpecDB_Editor.Core.Formats
                 int totalCount = 0;
                 for (int i = 0; i < entryDataLength; i++)
                 {
-                    int current = totalCount >> 3;
+                    int current = totalCount / 8; // >> 3
                     if (totalCount < 0 && (totalCount & 7) != 0)
                         current++;
 
@@ -170,14 +170,10 @@ namespace GT_SpecDB_Editor.Core.Formats
 
                     // Bury this and never look at it. Mystic PD shit.
                     uint val = 0;
-                    if (!sr.IsEndOfSpan)
-                        val += sr.ReadByte();
-                    if (!sr.IsEndOfSpan)
-                        val += sr.ReadByte() * 0x100u;
-                    if (!sr.IsEndOfSpan)
-                        val += sr.ReadByte() * 0x10000u;
-                    if (!sr.IsEndOfSpan)
-                        val += sr.ReadByte() * 0x1000000u;
+                    val += !sr.IsEndOfSpan ? sr.ReadByte()              : 0u;
+                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x100u     : 0u;
+                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x10000u   : 0u;
+                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x1000000u : 0u;
                     val >>= totalCount - (current * 8);
 
                     Span<byte> b = outEntryData.Slice(i);
@@ -191,32 +187,27 @@ namespace GT_SpecDB_Editor.Core.Formats
         public uint FindEntryData(uint val, ref Span<byte> outEntryData)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
-            sr.Position = (int)(RawEntryInfoMapOffset + (val & 0xFF) * 2);
+            sr.Position = (int)(RawEntryInfoMapOffset + (byte)val * 2);
 
             // Read the byte after the current pos
             uint next = sr.Span[sr.Position + 1]; // _local_v0_24 = (uint)local_v1_20[1];
             if (next == 0)
             {
                 // Found it?
-                next = FUN_00134294(val, ref outEntryData);
+                next = SearchByKey(val, ref outEntryData);
             }
             else
                 // Not yet
                 outEntryData[0] = sr.Span[sr.Position]; // *param_3 = *local_v1_20;
 
-            // As this gets lower, we get closer to our match
             return next;
         }
 
-        public uint FUN_00134294(uint val, ref Span<byte> buf)
+        public uint SearchByKey(uint key, ref Span<byte> outEntryData)
         {
-            int iVar10 = 0;
-            uint bitNumber = 9;
-
-            uint uVar2;
-            do
+            for (uint bitIndex = 9; bitIndex < 32; bitIndex++) 
             {
-                uint targetIndex = (uint)((1 << ((int)bitNumber & 0x1f)) - 1 & val);
+                uint targetIndex = (uint)((1 << ((int)bitIndex & 0x1f)) - 1 & key);
                 int entryCount = ReadInt32(Buffer.AsSpan(EntryInfoMapOffset + 4), Endian);
 
                 int max = entryCount;
@@ -228,31 +219,25 @@ namespace GT_SpecDB_Editor.Core.Formats
                     Span<byte> searchEntry = Buffer.AsSpan(SearchTableOffset + mid * 8);
                     byte bitLocation = searchEntry[0];
                     int searchIndex = ReadInt32(searchEntry.Slice(4), Endian);
-                    if (searchIndex == targetIndex && bitLocation == bitNumber)
+                    if (searchIndex == targetIndex && bitLocation == bitIndex)
                     {
-                        buf[0] = searchEntry[1]; // Key
-                        return bitNumber;
+                        outEntryData[0] = searchEntry[1]; // Key
+                        return bitIndex;
                     }
 
-                    if (bitNumber > bitLocation)
+                    if (bitIndex > bitLocation)
                         min = mid;
-                    else if (bitNumber < bitLocation)
+                    else if (bitIndex < bitLocation)
                         max = mid;
-                    else if (bitLocation == bitNumber)
+                    else if (bitLocation == bitIndex)
                     {
                         if (targetIndex > searchIndex)
                             min = mid;
                         else
                             max = mid;
                     }
-                    mid = min + 1;
-
-                } while (mid != max);
-
-                uVar2 = bitNumber + 1;
-                iVar10 += (uVar2 < bitNumber ? 1 : 0);
-                bitNumber = uVar2;
-            } while (uVar2 != 0x21 || iVar10 != 0);
+                } while (min + 1 != max);
+            }
 
             return 0;
         }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
+using System.Windows.Threading;
 namespace GT_SpecDB_Editor
 {
     /// <summary>
@@ -13,5 +14,10 @@ namespace GT_SpecDB_Editor
     /// </summary>
     public partial class App : Application
     {
+        void AppDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"An error occured in the editor, please report to the creator:\n {e.Exception?.InnerException ?? e.Exception}");
+            e.Handled = true;
+        }
     }
 }

@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class ArcadeInfoNormal : TableMetadata
     {
+        public override string LabelPrefix { get; } = "";
+
         public ArcadeInfoNormal(string specdbName)
         {
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));

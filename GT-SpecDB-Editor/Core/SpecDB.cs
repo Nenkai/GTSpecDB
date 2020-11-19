@@ -2,10 +2,14 @@
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
+using Syroot.BinaryData;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
+using GT_SpecDB_Editor.Mapping;
+using GT_SpecDB_Editor.Mapping.Types;
 using GT_SpecDB_Editor.Core.Formats;
 
 namespace GT_SpecDB_Editor.Core
@@ -363,6 +367,128 @@ namespace GT_SpecDB_Editor.Core
                 specdbTable.ReadIDIMapOffsets(this);
                 Tables.Add(specdbTable.TableName, specdbTable);
             }
+        }
+
+        public void SavePartsInfo(string folder)
+        {
+            // TBI and TBD are both linked. We need to save them simultaneously
+            var carTable = Tables["GENERIC_CAR"];
+            if (!carTable.IsLoaded)
+                carTable.LoadAllRows(this);
+
+            var defaultParts = Tables["DEFAULT_PARTS"];
+            if (!defaultParts.IsLoaded)
+                defaultParts.LoadAllRows(this);
+
+            using (var tbdWriter = new BinaryStream(new FileStream(Path.Combine(folder, "PartsInfo.tbd"), FileMode.Create)))
+            using (var tbiWriter = new BinaryStream(new FileStream(Path.Combine(folder, "PartsInfo.tbi"), FileMode.Create)))
+            {
+                tbdWriter.ByteConverter = carTable.DBT.Endian == Endian.Big ? ByteConverter.Big : ByteConverter.Little;
+                tbiWriter.ByteConverter = tbdWriter.ByteConverter;
+
+                // We need to iterate through all the cars to save all of their linked parts
+                for (int i = 0; i < carTable.Rows.Count; i++)
+                {
+                    // Begin to write the stride index
+                    int fieldCountOffset = (int)tbdWriter.Position;
+                    int fieldsWritten = 0;
+                    tbdWriter.Position += 4;
+                    tbdWriter.Align(0x08, true);
+
+                    SpecDBRowData car = carTable.Rows[i];
+
+                    int defaultPartsID = (car.ColumnData[1] as DBInt).Value;
+                    SpecDBRowData df = defaultParts.Rows.FirstOrDefault(e => e.ID == defaultPartsID);
+
+                    // Iterate through each part table
+                    int lastTableID = 0;
+                    for (int j = 0; j < df.ColumnData.Count; j += 2)
+                    {
+                        int tableID = (df.ColumnData[j] as DBInt).Value;
+                        if (tableID > 32)
+                            continue;
+
+                        // When the row is -1 for its table id, use a dirty trick and use the last table ID
+                        if (tableID == -1)
+                            tableID = lastTableID + 1;
+                        lastTableID = tableID;
+
+                        if (lastTableID >= 32)
+                            break; // We are done pretty much
+
+                        int partRowID = (df.ColumnData[j + 1] as DBInt).Value;
+
+                        // Get our table by said ID
+                        SpecDBTable partTable = Tables.Values.FirstOrDefault(table => table.TableID == tableID);
+
+                        // Ignored tables, these may contain data but they are not kept in mind
+                        if (partTable.TableName == "NOS")
+                            continue;
+
+                        if (!partTable.IsLoaded)
+                            partTable.LoadAllRows(this);
+
+                        SpecDBRowData mainRow = partTable.Rows.FirstOrDefault(e => e.ID == partRowID);
+                        // Sometimes the main ID points to a generic part. We have to include it if its not a regular car label.
+                        if (partRowID != -1 && (mainRow != null && !mainRow.Label.Contains(car.Label)))
+                        {
+                            var colMeta = partTable.TableMetadata.Columns.Find(e => e.ColumnName.Equals("category", StringComparison.OrdinalIgnoreCase));
+                            int cat = (mainRow.ColumnData[colMeta.ColumnIndex] as DBByte).Value;
+
+                            WriteTBDField(tbdWriter, mainRow, tableID, cat);
+                            fieldsWritten++;
+                        }
+
+                        // Register all alt parts for it.
+                        string rowFilter = $"{partTable.TableMetadata.LabelPrefix}{car.Label}";
+                        foreach (SpecDBRowData partRow in partTable.Rows)
+                        {
+                            if (!partRow.Label.StartsWith(rowFilter))
+                                continue;
+
+                            /*
+                            if ((!car.Label.Contains("_std") && partRow.Label.Contains("_std")) // Filter STD parts if it isn't one
+                                || (!car.Label.Contains("_rm") && partRow.Label.Contains("_rm")) // Filter RM parts if it isn't one
+                                || (!car.Label.Contains("_ac") && partRow.Label.Contains("_ac")) // Filter Academy if it isn't one
+                                || (!car.Label.Contains("_cf") && partRow.Label.Contains("_cf"))) // Filter Stealth (?) if it isn't one
+                                continue;
+                                */
+                            if (partRow.Label.Length - rowFilter.Length > 4)
+                                continue; // Assume its a different car
+
+                            var colMeta = partTable.TableMetadata.Columns.Find(e => e.ColumnName.Equals("category", StringComparison.OrdinalIgnoreCase));
+                            int cat = (partRow.ColumnData[colMeta.ColumnIndex] as DBByte).Value;
+
+                            // Apparently NATUNE Stage 0 is ignored
+                            if (partTable.TableName == "NATUNE" && cat == 0)
+                                continue;
+
+                            WriteTBDField(tbdWriter, partRow, tableID, cat);
+                            fieldsWritten++;
+                        }
+                    }
+
+                    // We are done writing the fields, write the TBI metadata now
+                    tbiWriter.Position = TBI.HeaderSize + (i * 0x10);
+                    tbiWriter.WriteInt32(car.ID);
+                    tbiWriter.WriteInt32(fieldCountOffset); // Data Start
+                    tbiWriter.WriteInt32((int)tbdWriter.Position - fieldCountOffset); // Data Length
+                    tbiWriter.Align(0x08, grow: true);
+
+                    // Write the TBD entry field count
+                    using (Seek seek = tbdWriter.TemporarySeek(fieldCountOffset, SeekOrigin.Begin))
+                        tbdWriter.WriteInt32(fieldsWritten);
+                    
+                }
+            }
+        }
+
+        private void WriteTBDField(BinaryStream tbdWriter, SpecDBRowData partRow, int tableID, int fieldNumber)
+        {
+            tbdWriter.WriteInt32(tableID);
+            tbdWriter.WriteInt32(partRow.ID);
+            tbdWriter.WriteInt32(fieldNumber); // In general it seems like the row "category" is written
+            tbdWriter.Align(0x08, true);
         }
 
         public enum SpecDBTables

@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Gear : TableMetadata
     {
+        public override string LabelPrefix { get; } = "ge_";
+
         public Gear(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Gear1st", DBColumnType.Short));

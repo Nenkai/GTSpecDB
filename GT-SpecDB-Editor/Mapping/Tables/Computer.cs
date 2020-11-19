@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Computer : TableMetadata
     {
+        public override string LabelPrefix { get; } = "co_";
+
         public Computer(string specdbName)
         {
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));

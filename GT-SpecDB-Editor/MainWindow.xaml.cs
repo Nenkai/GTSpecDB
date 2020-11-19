@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.ComponentModel;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
 using GT_SpecDB_Editor.Core;
+using GT_SpecDB_Editor.Utils;
 using GT_SpecDB_Editor.Mapping;
 using GT_SpecDB_Editor.Mapping.Types;
 
@@ -29,11 +28,10 @@ namespace GT_SpecDB_Editor
     {
         public SpecDB CurrentDatabase { get; set; }
         public SpecDBTable CurrentTable { get; set; }
-
         private string _filterString;
         public string FilterString
         {
-            get { return _filterString; }
+            get => _filterString;
             set
             {
                 _filterString = value;
@@ -67,7 +65,8 @@ namespace GT_SpecDB_Editor
                 Binding = new Binding("Label"),
             });
 
-
+            cb_FilterColumnType.Items.Add("ID");
+            cb_FilterColumnType.Items.Add("Label");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -76,18 +75,14 @@ namespace GT_SpecDB_Editor
 
         private void ToolBar_Loaded(object sender, RoutedEventArgs e)
         {
-            ToolBar toolBar = sender as ToolBar;
+            var toolBar = sender as ToolBar;
             var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
             if (overflowGrid != null)
-            {
                 overflowGrid.Visibility = Visibility.Collapsed;
-            }
 
             var mainPanelBorder = toolBar.Template.FindName("MainPanelBorder", toolBar) as FrameworkElement;
             if (mainPanelBorder != null)
-            {
                 mainPanelBorder.Margin = new Thickness(0);
-            }
         }
 
         private void mi_Exit_Click(object sender, RoutedEventArgs e)
@@ -97,19 +92,45 @@ namespace GT_SpecDB_Editor
 
         private void OpenSpecDB_MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Open SpecDB");
+            var dlg = new CommonOpenFileDialog("Open SpecDB");
             dlg.EnsurePathExists = true;
             dlg.EnsureFileExists = true;
             dlg.IsFolderPicker = true;
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, false);
+                try
+                {
+                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, false);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not load SpecDB: {ex.Message}", "Failed to load the SpecDB", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                CurrentTable = null;
+                dg_Rows.ItemsSource = null;
+                tb_ColumnFilter.Text = "";
+                FilterString = "";
+                mi_SavePartsInfo.IsEnabled = true;
+
                 lb_Tables.Items.Clear();
                 foreach (var table in CurrentDatabase.Tables)
-                {
                     lb_Tables.Items.Add(table.Key);
-                }
+            }
+        }
+
+        private void SavePartsInfo_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select folder to save PartsInfo.tbd/tbi");
+            dlg.EnsurePathExists = true;
+            dlg.EnsureFileExists = true;
+            dlg.IsFolderPicker = true;
+
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                CurrentDatabase.SavePartsInfo(dlg.FileName);
             }
         }
 
@@ -128,18 +149,21 @@ namespace GT_SpecDB_Editor
 
         private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
         {
-            CurrentTable = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+            if (lb_Tables.SelectedIndex == -1)
+                return;
 
-            if (!CurrentTable.IsLoaded)
+            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+
+            if (!table.IsLoaded)
             {
-                progressName.Text = $"Loading {CurrentTable.TableName}..";
+                progressName.Text = $"Loading {table.TableName}..";
                 progressBar.IsEnabled = true;
                 progressBar.IsIndeterminate = true;
                 try
                 {
                     var loadTask = Task.Run(() =>
                     {
-                        CurrentTable.LoadAllRows(CurrentDatabase);
+                        table.LoadAllRows(CurrentDatabase);
                     });
                     await loadTask;
                 }
@@ -150,16 +174,23 @@ namespace GT_SpecDB_Editor
                     return;
                 }
             }
-            
-            PopulateTableColumnsAndRows();
 
+            CurrentTable = table;
+
+            for (int i = cb_FilterColumnType.Items.Count - 1; i >= 2; i--)
+                cb_FilterColumnType.Items.RemoveAt(i);
+
+            PopulateTableColumns();
             SetNoProgress();
+
+            dg_Rows.ItemsSource = CurrentTable.Rows;
             SetupFilters();
-            btn_AddRow.IsEnabled = true;
-            btn_DeleteRow.IsEnabled = true;
-            btn_CopyRow.IsEnabled = true;
+            cb_FilterColumnType.SelectedIndex = 1;
             mi_SaveTable.IsEnabled = true;
-            tb_ColumnFilter.IsEnabled = true;
+
+            ToggleToolbarControls(true);
+            
+            statusName.Text = $"Loaded '{table.TableName}' with {CurrentTable.Rows.Count} rows.";
         }
 
         private void btn_AddRow_Click(object sender, RoutedEventArgs e)
@@ -176,10 +207,14 @@ namespace GT_SpecDB_Editor
                         newRow.ColumnData.Add(new DBBool(false)); break;
                     case DBColumnType.Byte:
                         newRow.ColumnData.Add(new DBByte(0)); break;
+                    case DBColumnType.SByte:
+                        newRow.ColumnData.Add(new DBSByte(0)); break;
                     case DBColumnType.Short:
                         newRow.ColumnData.Add(new DBShort(0)); break;
                     case DBColumnType.Int:
                         newRow.ColumnData.Add(new DBInt(0)); break;
+                    case DBColumnType.UInt:
+                        newRow.ColumnData.Add(new DBUInt(0)); break;
                     case DBColumnType.Long:
                         newRow.ColumnData.Add(new DBLong(0)); break;
                     case DBColumnType.Float:
@@ -195,22 +230,24 @@ namespace GT_SpecDB_Editor
 
         private void dg_Rows_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            var currentRow = e.Row.Item as SpecDBRowData;
-
-            if ((e.EditingElement as TextBox) is null)
+            if (!(e.EditingElement is TextBox tb))
                 return;
 
-            var newInput = (e.EditingElement as TextBox).Text;
+            var currentRow = e.Row.Item as SpecDBRowData;
+            string newInput = tb.Text;
             if (e.Column.Header.Equals("ID"))
             {
                 if (int.TryParse(newInput, out int newValue))
                 {
-                    if (CurrentTable.Rows.Any(row => row.ID == newValue && row != currentRow))
+                    if (CurrentTable.Rows.Any(row => row.ID == newValue))
                     {
-                        MessageBox.Show("This ID is already being used by another row.", "Validation Error");
-                        currentRow.ID = CurrentTable.LastID + 1;
-                        e.Cancel = true;
-                        return;
+                        var res = MessageBox.Show("This ID is already being used by another row. Make sure you know what you are doing. Continue?", "ID in use", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (res != MessageBoxResult.Yes)
+                        {
+                            currentRow.ID = CurrentTable.LastID + 1;
+                            e.Cancel = true;
+                            return;
+                        }
                     }
 
                     var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= newValue);
@@ -238,27 +275,42 @@ namespace GT_SpecDB_Editor
             {
                 if (CurrentTable.Rows.Any(row => row.Label != null && row.Label.Equals(newInput) && row != currentRow))
                 {
-                    MessageBox.Show("This Label is already being used by another row.", "Validation Error");
-                    currentRow.Label = string.Empty;
-                    e.Cancel = true;
+                    var res = MessageBox.Show("This Label is already being used by another row. Make sure you know what you are doing. Continue?", "Label in use", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res != MessageBoxResult.Yes)
+                    {
+                        currentRow.Label = string.Empty;
+                        e.Cancel = true;
+                        return;
+                    }
                 }
-                else if (!newInput.All(c => char.IsLetterOrDigit(c) || c.Equals('_')))
+
+                if (!newInput.All(c => char.IsLetterOrDigit(c) || c.Equals('_')))
                 {
                     MessageBox.Show("The label must contain only letters, numbers, or underscores.", "Validation Error");
                     currentRow.Label = string.Empty;
                     e.Cancel = true;
                 }
+
                 currentRow.Label = newInput;
             }
             else
             {
                 // Perform regular validation
-                var dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)e.Column.Header);
+                ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)e.Column.Header);
                 if (dataCol.ColumnType == DBColumnType.Int)
                 {
                     if (!int.TryParse(newInput, out int res))
                     {
                         MessageBox.Show($"Could not parse 'Integer' type. It must be number between {int.MinValue} and {int.MaxValue}.", "Validation Error",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        e.Cancel = true;
+                    }
+                }
+                else if (dataCol.ColumnType == DBColumnType.UInt)
+                {
+                    if (!uint.TryParse(newInput, out uint res))
+                    {
+                        MessageBox.Show($"Could not parse 'Unsigned Integer' type. It must be number between {uint.MinValue} and {uint.MaxValue}.", "Validation Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         e.Cancel = true;
                     }
@@ -276,7 +328,16 @@ namespace GT_SpecDB_Editor
                 {
                     if (!int.TryParse(newInput, out int res))
                     {
-                        MessageBox.Show($"Could not parse 'Byte' type. It must be a number between {byte.MinValue} and {byte.MaxValue}.", "Validation Error",
+                        MessageBox.Show($"Could not parse 'Unsigned Byte' type. It must be a number between {byte.MinValue} and {byte.MaxValue}.", "Validation Error",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        e.Cancel = true;
+                    }
+                }
+                else if (dataCol.ColumnType == DBColumnType.SByte)
+                {
+                    if (!int.TryParse(newInput, out int res))
+                    {
+                        MessageBox.Show($"Could not parse 'Signed Byte' type. It must be a number between {sbyte.MinValue} and {sbyte.MaxValue}.", "Validation Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         e.Cancel = true;
                     }
@@ -307,7 +368,7 @@ namespace GT_SpecDB_Editor
             if (!(sender is DataGridCell cell))
                 return;
 
-            var dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)cell.Column.Header);
+            ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)cell.Column.Header);
             if (dataCol is null)
                 return;
 
@@ -328,7 +389,6 @@ namespace GT_SpecDB_Editor
                 }
             }
         }
-
 
         private void btn_DeleteRow_Click(object sender, RoutedEventArgs e)
         {
@@ -360,10 +420,14 @@ namespace GT_SpecDB_Editor
                         newRow.ColumnData.Add(new DBBool(((DBBool)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Byte:
                         newRow.ColumnData.Add(new DBByte(((DBByte)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.SByte:
+                        newRow.ColumnData.Add(new DBSByte(((DBSByte)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Short:
                         newRow.ColumnData.Add(new DBShort(((DBShort)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Int:
                         newRow.ColumnData.Add(new DBInt(((DBInt)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.UInt:
+                        newRow.ColumnData.Add(new DBUInt(((DBUInt)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Float:
                         newRow.ColumnData.Add(new DBFloat(((DBFloat)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Long:
@@ -384,7 +448,7 @@ namespace GT_SpecDB_Editor
             if (lb_Tables.SelectedIndex == -1)
                 return;
 
-            SaveFileDialog dlg = new SaveFileDialog();
+            var dlg = new SaveFileDialog();
             if (dlg.ShowDialog() == true)
             {
                 var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
@@ -395,17 +459,112 @@ namespace GT_SpecDB_Editor
 
         private void tb_ColumnFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (tb_ColumnFilter.Text.Length != 1)
+            if (tb_ColumnFilter.Text != null && tb_ColumnFilter.Text.Length != 1)
                 FilterString = tb_ColumnFilter.Text;
+        }
+
+        private void dg_Rows_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.V && Keyboard.Modifiers.HasFlag(ModifierKeys.Control) && Clipboard.ContainsText())
+            {
+                string clipText = Clipboard.GetText();
+                string[] textSpl = clipText.Split('\t');
+                if (textSpl.Length != 2 + CurrentTable.TableMetadata.Columns.Count)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                // Verify ID and Label first
+                if (!int.TryParse(textSpl[0], out int id))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                if (CurrentTable.Rows.FirstOrDefault(row => row.ID == id || (row.Label != null && row.Label.Equals(textSpl[1]))) != null)
+                {
+                    var res = MessageBox.Show("The pasted row has an ID or Label that is already being used by another row. Make sure you know what you are doing. Continue?", "ID/Label in use", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    if (res != MessageBoxResult.Yes)
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+                }
+
+                var dbRow = dg_Rows.SelectedItem as SpecDBRowData;
+                dbRow.ID = id;
+
+                // Reorder
+                var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= id);
+                if (nextRow is null) // End of list?
+                    CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), CurrentTable.Rows.Count - 1);
+                else
+                {
+                    var nextRowIndex = CurrentTable.Rows.IndexOf(nextRow);
+                    if (nextRowIndex > CurrentTable.Rows.IndexOf(dbRow)) // If the row is being moved backwards
+                        nextRowIndex--;
+
+                    CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), nextRowIndex);
+                }
+
+                dbRow.Label = textSpl[1];
+
+                textSpl[textSpl.Length - 1].TrimEnd();
+                for (int i = 2; i < textSpl.Length; i++)
+                {
+                    IDBType colData = dbRow.ColumnData[i - 2];
+                    switch (colData)
+                    {
+                        case DBByte @byte:
+                            if (byte.TryParse(textSpl[i], out byte vByte)) @byte.Value = vByte;
+                            break;
+                        case DBSByte @sbyte:
+                            if (sbyte.TryParse(textSpl[i], out sbyte vSbyte)) @sbyte.Value = vSbyte;
+                            break;
+                        case DBFloat @float:
+                            if (float.TryParse(textSpl[i], out float vFloat)) @float.Value = vFloat;
+                            break;
+                        case DBInt @int:
+                            if (int.TryParse(textSpl[i], out int vInt)) @int.Value = vInt;
+                            break;
+                        case DBUInt @uint:
+                            if (uint.TryParse(textSpl[i], out uint vUInt)) @uint.Value = vUInt;
+                            break;
+                        case DBLong @long:
+                            if (long.TryParse(textSpl[i], out long vLong)) @long.Value = vLong;
+                            break;
+                        case DBShort @short:
+                            if (short.TryParse(textSpl[i], out short vShort)) @short.Value = vShort;
+                            break;
+                        case DBBool @bool:
+                            if (bool.TryParse(textSpl[i], out bool vBool)) @bool.Value = vBool;
+                            break;
+                        case DBString @str:
+                            var strDb = CurrentDatabase.StringDatabases[@str.FileName];
+                            @str.StringIndex = strDb.GetOrCreate(textSpl[i]);
+                            @str.Value = textSpl[i];
+                            break;
+
+                    }
+                }
+            }
+            else if (e.Key == Key.Delete)
+            {
+
+            }
+
         }
 
         public void SetupFilters()
         {
+            foreach (var col in CurrentTable.TableMetadata.Columns)
+                cb_FilterColumnType.Items.Add(col.ColumnName);
+
             _dataGridCollection = CollectionViewSource.GetDefaultView(dg_Rows.ItemsSource);
             if (_dataGridCollection != null)
-            {
                 _dataGridCollection.Filter = FilterTask;
-            }
+                
         }
 
         public bool FilterTask(object value)
@@ -414,12 +573,40 @@ namespace GT_SpecDB_Editor
                 return true;
 
             if (value is SpecDBRowData row && row.ColumnData.Count != 0)
-                return row.Label.Contains(FilterString);
+            {
 
+                if (cb_FilterColumnType.SelectedIndex == 0)
+                    return row.ID.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                else if (cb_FilterColumnType.SelectedIndex == 1)
+                    return row.Label.Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                else
+                {
+                    var colData = row.ColumnData[cb_FilterColumnType.SelectedIndex - 2];
+                    switch (colData)
+                    {
+                        case DBByte @byte:
+                            return @byte.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBSByte @sbyte:
+                            return @sbyte.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBFloat @float:
+                            return @float.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBInt @int:
+                            return @int.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBUInt @uint:
+                            return @uint.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBLong @long:
+                            return @long.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBShort @short:
+                            return @short.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBString @str:
+                            return @str.Value.Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                    }
+                }
+            }
             return false;
         }
 
-        private void PopulateTableColumnsAndRows()
+        private void PopulateTableColumns()
         {
             dg_Rows.ItemsSource = null;
             for (int i = dg_Rows.Columns.Count - 1; i >= 2; i--)
@@ -428,10 +615,14 @@ namespace GT_SpecDB_Editor
             for (int i = 0; i < CurrentTable.TableMetadata.Columns.Count; i++)
             {
                 ColumnMetadata column = CurrentTable.TableMetadata.Columns[i];
+                var style = new Style(typeof(DataGridColumnHeader));
+                style.Setters.Add(new Setter(ToolTipService.ToolTipProperty, $"Type: {column.ColumnType}"));
+
                 if (column.ColumnType == DBColumnType.Bool)
                 {
                     dg_Rows.Columns.Add(new DataGridCheckBoxColumn
                     {
+                        HeaderStyle = style,
                         Header = column.ColumnName,
                         Binding = new Binding($"ColumnData[{i}].Value"),
                     });
@@ -440,14 +631,13 @@ namespace GT_SpecDB_Editor
                 {
                     dg_Rows.Columns.Add(new DataGridTextColumn
                     {
+                        HeaderStyle = style,
                         Header = column.ColumnName,
                         Binding = new Binding($"ColumnData[{i}].Value"),
                         IsReadOnly = column.ColumnType == DBColumnType.String,
                     });
                 }
             }
-
-            dg_Rows.ItemsSource = CurrentTable.Rows;
         }
 
         private void SetNoProgress()
@@ -455,6 +645,15 @@ namespace GT_SpecDB_Editor
             progressName.Text = "Ready";
             progressBar.IsEnabled = false;
             progressBar.IsIndeterminate = false;
+        }
+
+        private void ToggleToolbarControls(bool enabled)
+        {
+            cb_FilterColumnType.IsEnabled = enabled;
+            btn_AddRow.IsEnabled = enabled;
+            btn_DeleteRow.IsEnabled = enabled;
+            btn_CopyRow.IsEnabled = enabled;
+            tb_ColumnFilter.IsEnabled = enabled;
         }
     }
 }

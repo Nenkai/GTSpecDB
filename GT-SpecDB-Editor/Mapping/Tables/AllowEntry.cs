@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class AllowEntry : TableMetadata
     {
+        public override string LabelPrefix { get; } = "";
+
         public AllowEntry(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Entry0",  DBColumnType.Long));

@@ -12,6 +12,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Flywheel : TableMetadata
     {
+        public override string LabelPrefix { get; } = "fw_";
+
         public Flywheel(string specdbName)
         {
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));

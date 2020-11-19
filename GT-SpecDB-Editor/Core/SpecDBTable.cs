@@ -29,10 +29,10 @@ namespace GT_SpecDB_Editor.Core
         // Non original properties
         public bool IsLoaded { get; set; }
         public int LastID { get; set; }
-        public SortedDictionary<int, RowData> Keys { get; set; }
+        public List<RowData> Keys { get; set; } // Could be a dictionary, but sometimes tables such as VARIATION or WHEEL have multiple rows for one key
         public TableMetadata TableMetadata { get; set; }
         public ObservableCollection<SpecDBRowData> Rows { get; set; }
-        
+        public int TableID { get; set; }
 
         public SpecDBTable(string tableName)
         {
@@ -54,6 +54,40 @@ namespace GT_SpecDB_Editor.Core
 
             int dataLength = DBT.RowDataLength;
             int entryIndex = DBT.GetIndexOfID(keyCode);
+
+            //if (uVar1 < *(uint *)(file + 8)) {
+            if (entryIndex < DBT.EntryCount)
+            {
+                // ORIGINAL: iVar2 = (int)this->UnkOffset4 + *(int *)(file + uVar1 * 8 + 0x14);
+                SpanReader sr = new SpanReader(DBT.Buffer, DBT.Endian);
+
+                // Short version
+                sr.Position = DBT.HeaderSize + (8 * entryIndex) + 4;
+                int entryOffset = sr.ReadInt32();
+                sr.Position = DBT.UnkOffset4 + entryOffset;
+
+                if ((DBT.VersionHigh & 1) == 0)
+                    rowData = sr.ReadBytes(dataLength); // memcpy(retSdbIndex,offs,dataLength);
+                else
+                    rowData = DBT.GetRowDataFromWhatever(ref sr);
+
+            }
+
+            return dataLength;
+        }
+
+        /// <summary>
+        /// Gets the data for a row index.
+        /// </summary>
+        /// <param name="keyCode"></param>
+        /// <param name="rowData"></param>
+        /// <returns></returns>
+        // NON ORIGINAL IMPL
+        public int GetRowByIndex(int entryIndex, out Span<byte> rowData)
+        {
+            rowData = default;
+
+            int dataLength = DBT.RowDataLength;
 
             //if (uVar1 < *(uint *)(file + 8)) {
             if (entryIndex < DBT.EntryCount)
@@ -190,6 +224,9 @@ namespace GT_SpecDB_Editor.Core
             Endian endian = sr.ReadByte() != 0 ? Endian.Little : Endian.Big;
 
             IDI = new IDI(buffer, endian);
+            sr.Endian = endian;
+            sr.Position = 0x0C;
+            TableID = sr.ReadInt32();
         }
 
         #endregion
@@ -208,9 +245,10 @@ namespace GT_SpecDB_Editor.Core
         private void LoadAllRowKeys()
         {
 
-            // Make a list of all the keys the IDI contains. IDI sometimes have keys without data, so we need it to then filter the dbt keys.
+            // Make a list of all the keys the IDI contains. IDI sometimes have keys without data.
             SpanReader idiReader = new SpanReader(IDI.Buffer, IDI.Endian);
-            Dictionary<int, string> idsToLabels = new Dictionary<int, string>();
+            SortedList<int, string> idsToLabels = new SortedList<int, string>();
+
             int idiKeyCount = IDI.KeyCount;
             for (int i = 0; i < idiKeyCount; i++)
             {
@@ -227,25 +265,24 @@ namespace GT_SpecDB_Editor.Core
 
             // Register all our keys that actually have data now.
             SpanReader dbtReader = new SpanReader(DBT.Buffer, DBT.Endian);
-            Keys = new SortedDictionary<int, RowData>();
+            Keys = new List<RowData>();
 
             int keyCount = DBT.EntryCount;
             for (int i = 0; i < keyCount; i++)
             {
                 dbtReader.Position = DBT.HeaderSize + (i * 0x08);
                 int id = dbtReader.ReadInt32();
-                
-                if (idsToLabels.TryGetValue(id, out string label)) // If it doesn't, its a key that has no data according to IDI
-                    Keys.Add(id, new RowData() { Id = id, Label = label });
+                Keys.Add(new RowData() { Id = id, Label = idsToLabels[id] });
             }
 
-            LastID = Keys.Last().Key;
+            LastID = Keys.Any() ? Keys.Last().Id : 0;
         }
 
         public int DumpTable(string path)
         {
+            // Make a list of all the keys the IDI contains. IDI sometimes have keys without data.
             SpanReader idiReader = new SpanReader(IDI.Buffer, IDI.Endian);
-            Dictionary<int, string> idsToLabels = new Dictionary<int, string>();
+            SortedList<int, string> idsToLabels = new SortedList<int, string>();
             int idiKeyCount = IDI.KeyCount;
             for (int i = 0; i < idiKeyCount; i++)
             {
@@ -262,24 +299,23 @@ namespace GT_SpecDB_Editor.Core
 
             // Register all our keys that actually have data now.
             SpanReader dbtReader = new SpanReader(DBT.Buffer, DBT.Endian);
-            var keys = new SortedDictionary<int, RowData>();
+            var keys = new List<RowData>();
 
             int keyCount = DBT.EntryCount;
             for (int i = 0; i < keyCount; i++)
             {
                 dbtReader.Position = DBT.HeaderSize + (i * 0x08);
                 int id = dbtReader.ReadInt32();
-
-                if (idsToLabels.TryGetValue(id, out string label)) // If it doesn't, its a key that has no data according to IDI
-                    keys.Add(id, new RowData() { Id = id, Label = label });
+                keys.Add(new RowData() { Id = id, Label = idsToLabels[id] });
             }
 
             using (var sw = new StreamWriter(path))
             {
-                foreach (var key in keys)
+                for (int i = 0; i < keys.Count; i++)
                 {
-                    GetRowByCode(key.Key, out Span<byte> rowData);
-                    sw.WriteLine($"{key.Value.Label} ({key.Key}) | {BitConverter.ToString(rowData.ToArray())}");
+                    RowData key = keys[i];
+                    GetRowByIndex(i, out Span<byte> rowData);
+                    sw.WriteLine($"{key.Label} ({key.Id}) | {BitConverter.ToString(rowData.ToArray())}");
                 }
             }
 
@@ -298,8 +334,12 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new AirCleaner(db.SpecDBName); break;
                     case "ARCADEINFO_NORMAL":
                         TableMetadata = new ArcadeInfoNormal(db.SpecDBName); break;
+                    case "ASCC":
+                        TableMetadata = new ASCC(db.SpecDBName); break;
                     case "BRAKE":
                         TableMetadata = new Brake(db.SpecDBName); break;
+                    case "BRAKECONTROLLER":
+                        TableMetadata = new BrakeController(db.SpecDBName); break;
                     case "CATALYST":
                         TableMetadata = new Catalyst(db.SpecDBName); break;
                     case "CLUTCH":
@@ -312,6 +352,12 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new CarCustomInfo(db.SpecDBName); break;
                     case "DEFAULT_PARAM":
                         TableMetadata = new DefaultParam(db.SpecDBName); break;
+                    case "DEFAULT_PARTS":
+                        TableMetadata = new DefaultParts(db.SpecDBName); break;
+                    case "DISPLACEMENT":
+                        TableMetadata = new Displacement(db.SpecDBName); break;
+                    case "DRIVETRAIN":
+                        TableMetadata = new Drivetrain(db.SpecDBName); break;
                     case "ENGINE":
                         TableMetadata = new Engine(db.SpecDBName); break;
                     case "EXHAUST_MANIFOLD":
@@ -334,21 +380,74 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new RearTire(db.SpecDBName); break;
                     case "RACINGMODIFY":
                         TableMetadata = new RacingModify(db.SpecDBName); break;
+                    case "CHASSIS":
+                        TableMetadata = new Chassis(db.SpecDBName); break;
+                    case "INTAKE_MANIFOLD":
+                        TableMetadata = new IntakeManifold(db.SpecDBName); break;
+                    case "LIGHTWEIGHT":
+                        TableMetadata = new Lightweight(db.SpecDBName); break;
+                    case "LSD":
+                        TableMetadata = new Lsd(db.SpecDBName); break;
+                    case "MUFFLER":
+                        TableMetadata = new Muffler(db.SpecDBName); break;
+                    case "NATUNE":
+                        TableMetadata = new Natune(db.SpecDBName); break;
+                    case "NOS":
+                        TableMetadata = new NOS(db.SpecDBName); break;
+                    case "PROPELLERSHAFT":
+                        TableMetadata = new PropellerShaft(db.SpecDBName); break;
+                    case "RACE":
+                        TableMetadata = new Race(db.SpecDBName); break;
+                    case "STEER":
+                        TableMetadata = new Steer(db.SpecDBName); break;
+                    case "SUPERCHARGER":
+                        TableMetadata = new Supercharger(db.SpecDBName); break;
+                    case "SUSPENSION":
+                        TableMetadata = new Suspension(db.SpecDBName); break;
+                    case "TIRECOMPOUND":
+                        TableMetadata = new TireCompound(db.SpecDBName); break;
+                    case "TURBINEKIT":
+                        TableMetadata = new TurbineKit(db.SpecDBName); break;
+                    case "GENERIC_ITEMS":
+                        TableMetadata = new GenericItems(db.SpecDBName); break;
+                    case "TUNED_CARS":
+                        TableMetadata = new TunedCars(db.SpecDBName); break;
+                    case "TUNER":
+                        TableMetadata = new Tuner(db.SpecDBName); break;
+                    case "VARIATION":
+                        TableMetadata = new Variation(db.SpecDBName); break;
+                    case "WHEEL":
+                        TableMetadata = new Wheel(db.SpecDBName); break;
+                    // Unmapped, but havent seen having rows
+                    case "TCSC":
+                        TableMetadata = new TCSC(db.SpecDBName); break;
+                    case "TIREFORCEVOL":
+                        TableMetadata = new TireForceVol(db.SpecDBName); break;
+                    case "GENERIC_CAR_INFO":
+                        TableMetadata = new GenericCarInfo(db.SpecDBName); break;
+                    case "INDEP_THROTTLE":
+                        TableMetadata = new IndepThrottle(db.SpecDBName); break;
+                    case "INTERCOOLER":
+                        TableMetadata = new Intercooler(db.SpecDBName); break;
                     default:
                         throw new NotSupportedException("This table is not yet mapped.");
                 }
+
+                for (int i = 0; i < TableMetadata.Columns.Count; i++)
+                    TableMetadata.Columns[i].ColumnIndex = i;
             }
         }
 
         private void LoadAllRowData()
         {
             Rows = new ObservableCollection<SpecDBRowData>();
-            foreach (var key in Keys)
+            for (int i = 0; i < Keys.Count; i++)
             {
-                GetRowByCode(key.Key, out Span<byte> rowData);
+                RowData key = Keys[i];
+                GetRowByIndex(i, out Span<byte> rowData);
                 SpecDBRowData row = TableMetadata.ReadRow(rowData, DBT.Endian);
-                row.ID = key.Key;
-                row.Label = key.Value.Label;
+                row.ID = key.Id;
+                row.Label = key.Label;
                 Rows.Add(row);
             }
         }
@@ -404,26 +503,28 @@ namespace GT_SpecDB_Editor.Core
             using (var bs = new BinaryStream(fs, IDI.Endian == Endian.Big ? ByteConverter.Big : ByteConverter.Little))
             {
                 bs.WriteString("GTID", StringCoding.Raw);
-                bs.WriteInt32(Rows.Count);
-                bs.WriteInt32(0);
-                bs.WriteInt32(41);
-                var orderedRows = Rows.OrderBy(e => e.Label.Length)
-                    .ThenBy(e => e.Label)
+
+                var orderedRows = Rows
+                    .GroupBy(p => p.Label).Select(g => g.First()) // Distinct() - Some rows have the same ID and Label so we only want those.
+                    .OrderBy(e => e.Label.Length).ThenBy(e => e.Label) // Ordered that way to make sure binary searching is efficient.
                     .ToList();
+
+                bs.WriteInt32(orderedRows.Count);
+                bs.WriteInt32(0);
+                bs.WriteInt32(0); // Table ID - Unused, doesn't matter
 
                 var strTable = GetLabelTable(orderedRows);
 
                 // Write strings
-                bs.Position = 0x10 + (Rows.Count * 8);
+                bs.Position = IDI.HeaderSize + (orderedRows.Count * IDI.EntrySize);
                 strTable.SaveStream(bs);
-                bs.Position = 0x10;
+                bs.Position = IDI.HeaderSize;
 
                 foreach (var row in orderedRows)
                 {
                     bs.WriteInt32(strTable.GetStringOffset(row.Label));
                     bs.WriteInt32(row.ID);
                 }
-
             }
         }
 
