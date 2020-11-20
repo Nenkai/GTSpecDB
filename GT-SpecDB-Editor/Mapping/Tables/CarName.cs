@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class CarName : TableMetadata
     {
         public override string LabelPrefix { get; } = "";
 
-        public CarName(string specdbName, string localeName)
+        public CarName(SpecDBFolder folderType, string localeName)
         {
             Columns.Add(new ColumnMetadata("Name", DBColumnType.String, $"{localeName}_StrDB.sdb"));
             Columns.Add(new ColumnMetadata("Grade", DBColumnType.String, $"{localeName}_StrDB.sdb"));

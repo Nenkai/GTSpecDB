@@ -21,6 +21,7 @@ namespace GT_SpecDB_Editor.Core
     public class SpecDB
     {
         public string FolderName { get; set; }
+        public SpecDBFolder SpecDBFolderType { get; set; }
         public string SpecDBName { get; set; }
         public int Version { get; set; }
 
@@ -46,26 +47,6 @@ namespace GT_SpecDB_Editor.Core
         public Dictionary<string, StringDatabase> StringDatabases = new Dictionary<string, StringDatabase>();
 
         /// <summary>
-        /// Used to keep track of how different specdbs are read
-        /// </summary>
-        private HashSet<string> SpecDBs = new HashSet<string>()
-        {
-            "GT4_PROLOGUE_EU1110",  // GT4P
-            "GT4_CN2560",           // GT4 China
-            "GT4_US2560",           // GT4
-            "GT4_PREMIUM_US2560",   // GT4O
-            "TT_EU2630",            // Tourist Trophy
-            "GT5_TRIAL_EU2704",     // GTHD
-            "GT5_PROLOGUE2813",     // GT5P
-            "GT_PSP_JP2817",        // GTPSP
-            "GT5_ACADEMY_09_2900",  // Gran Turismo 5 Time Trial Challenge
-            "GT5_JP2904",           // GT5 Kiosk
-            "GT5_PREVIEWJP2904",    // GT5 Kiosk
-            "GT5_JP3009",           // GT5 Retail
-            "GT5_JP3010",           // GT5 - 1.05+
-        };
-
-        /// <summary>
         /// List of all tables used by the game
         /// </summary>
         private readonly string[] TABLE_NAMES = Enum.GetNames(typeof(SpecDBTables));
@@ -85,6 +66,9 @@ namespace GT_SpecDB_Editor.Core
             {
                 throw new InvalidOperationException("Could not parse SpecDB version from folder, not a valid SpecDB.");
             }
+
+            if (Enum.TryParse(Path.GetFileName(FolderName), out SpecDBFolder folderType))
+                SpecDBFolderType = folderType;
 
             SpecDBName = Path.GetFileNameWithoutExtension(folderName);
             LoadingAsOriginalImplementation = loadAsOriginalImplementation;
@@ -440,7 +424,11 @@ namespace GT_SpecDB_Editor.Core
 
                                 // Get our table by said ID
                                 SpecDBTable partTable = Tables.Values.FirstOrDefault(table => table.TableID == tableID);
+                                if (partTable is null)
+                                    throw new Exception($"Table ID {tableID} is missing from the SpecDB. Ensure that your SpecDB is complete.");
 
+                                if (!partTable.IsLoaded)
+                                    partTable.LoadAllRows(this);
                                 // Ignored tables, these may contain data but they are not kept in mind
                                 if (partTable.TableName == "NOS")
                                     continue;
@@ -535,6 +523,7 @@ namespace GT_SpecDB_Editor.Core
             tbdWriter.Align(0x08, true);
         }
 
+
         public enum SpecDBTables
         {
             GENERIC_CAR,
@@ -582,5 +571,23 @@ namespace GT_SpecDB_Editor.Core
             MAKER,
             TUNER,
         }
+    }
+
+    public enum SpecDBFolder
+    {
+        NONE,
+        GT4_PROLOGUE_EU1110,  // GT4P
+        GT4_CN2560,           // GT4 China
+        GT4_US2560,           // GT4
+        GT4_PREMIUM_US2560,   // GT4O
+        TT_EU2630,            // Tourist Trophy
+        GT5_TRIAL_EU2704,     // GTHD
+        GT5_PROLOGUE2813,     // GT5P
+        GT_PSP_JP2817,        // GTPSP
+        GT5_ACADEMY_09_2900,  // Gran Turismo 5 Time Trial Challenge
+        GT5_JP2904,           // GT5 Kiosk
+        GT5_PREVIEWJP2904,    // GT5 Kiosk
+        GT5_JP3009,           // GT5 Retail
+        GT5_JP3010,           // GT5 - 1.05+
     }
 }

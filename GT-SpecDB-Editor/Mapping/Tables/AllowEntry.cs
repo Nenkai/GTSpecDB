@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class AllowEntry : TableMetadata
     {
         public override string LabelPrefix { get; } = "";
 
-        public AllowEntry(string specdbName)
+        public AllowEntry(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("Entry0",  DBColumnType.Long));
             Columns.Add(new ColumnMetadata("Entry1",  DBColumnType.Long));

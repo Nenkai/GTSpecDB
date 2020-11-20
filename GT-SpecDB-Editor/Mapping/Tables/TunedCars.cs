@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class TunedCars : TableMetadata
     {
-        public TunedCars(string specdbName)
+        public TunedCars(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("Unk", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("CarCode", DBColumnType.Int));

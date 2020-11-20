@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class PaintColorInfo : TableMetadata
     {
-        public PaintColorInfo(string specdbName)
+        public PaintColorInfo(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("LabelEng", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("LabelJpn", DBColumnType.String, "UnistrDB.sdb"));

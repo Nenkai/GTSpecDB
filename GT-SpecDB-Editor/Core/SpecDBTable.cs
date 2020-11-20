@@ -325,110 +325,110 @@ namespace GT_SpecDB_Editor.Core
         private void LoadMetadata(SpecDB db)
         {
             if (TableName.StartsWith("CAR_NAME_"))
-                TableMetadata = new CarName(db.SpecDBName, TableName.Split('_')[2]);
+                TableMetadata = new CarName(db.SpecDBFolderType, TableName.Split('_')[2]);
             else
             {
                 switch (TableName)
                 {
                     case "AIR_CLEANER":
-                        TableMetadata = new AirCleaner(db.SpecDBName); break;
+                        TableMetadata = new AirCleaner(db.SpecDBFolderType); break;
                     case "ARCADEINFO_NORMAL":
-                        TableMetadata = new ArcadeInfoNormal(db.SpecDBName); break;
+                        TableMetadata = new ArcadeInfoNormal(db.SpecDBFolderType); break;
                     case "ASCC":
-                        TableMetadata = new ASCC(db.SpecDBName); break;
+                        TableMetadata = new ASCC(db.SpecDBFolderType); break;
                     case "BRAKE":
-                        TableMetadata = new Brake(db.SpecDBName); break;
+                        TableMetadata = new Brake(db.SpecDBFolderType); break;
                     case "BRAKECONTROLLER":
-                        TableMetadata = new BrakeController(db.SpecDBName); break;
+                        TableMetadata = new BrakeController(db.SpecDBFolderType); break;
                     case "CATALYST":
-                        TableMetadata = new Catalyst(db.SpecDBName); break;
+                        TableMetadata = new Catalyst(db.SpecDBFolderType); break;
                     case "CLUTCH":
-                        TableMetadata = new Clutch(db.SpecDBName); break;
+                        TableMetadata = new Clutch(db.SpecDBFolderType); break;
                     case "COMPUTER":
-                        TableMetadata = new Computer(db.SpecDBName); break;
+                        TableMetadata = new Computer(db.SpecDBFolderType); break;
                     case "COURSE":
-                        TableMetadata = new Course(db.SpecDBName); break;
+                        TableMetadata = new Course(db.SpecDBFolderType); break;
                     case "CAR_CUSTOM_INFO":
-                        TableMetadata = new CarCustomInfo(db.SpecDBName); break;
+                        TableMetadata = new CarCustomInfo(db.SpecDBFolderType); break;
                     case "DEFAULT_PARAM":
-                        TableMetadata = new DefaultParam(db.SpecDBName); break;
+                        TableMetadata = new DefaultParam(db.SpecDBFolderType); break;
                     case "DEFAULT_PARTS":
-                        TableMetadata = new DefaultParts(db.SpecDBName); break;
+                        TableMetadata = new DefaultParts(db.SpecDBFolderType); break;
                     case "DISPLACEMENT":
-                        TableMetadata = new Displacement(db.SpecDBName); break;
+                        TableMetadata = new Displacement(db.SpecDBFolderType); break;
                     case "DRIVETRAIN":
-                        TableMetadata = new Drivetrain(db.SpecDBName); break;
+                        TableMetadata = new Drivetrain(db.SpecDBFolderType); break;
                     case "ENGINE":
-                        TableMetadata = new Engine(db.SpecDBName); break;
+                        TableMetadata = new Engine(db.SpecDBFolderType); break;
                     case "EXHAUST_MANIFOLD":
-                        TableMetadata = new ExhaustManifold(db.SpecDBName); break;
+                        TableMetadata = new ExhaustManifold(db.SpecDBFolderType); break;
                     case "FLYWHEEL":
-                        TableMetadata = new Flywheel(db.SpecDBName); break;
+                        TableMetadata = new Flywheel(db.SpecDBFolderType); break;
                     case "GEAR":
-                        TableMetadata = new Gear(db.SpecDBName); break;
+                        TableMetadata = new Gear(db.SpecDBFolderType); break;
                     case "MAKER":
-                        TableMetadata = new Maker(db.SpecDBName); break;
+                        TableMetadata = new Maker(db.SpecDBFolderType); break;
                     case "MODEL_INFO":
-                        TableMetadata = new ModelInfo(db.SpecDBName); break;
+                        TableMetadata = new ModelInfo(db.SpecDBFolderType); break;
                     case "PAINT_COLOR_INFO":
-                        TableMetadata = new PaintColorInfo(db.SpecDBName); break;
+                        TableMetadata = new PaintColorInfo(db.SpecDBFolderType); break;
                     case "GENERIC_CAR":
-                        TableMetadata = new GenericCar(db.SpecDBName); break;
+                        TableMetadata = new GenericCar(db.SpecDBFolderType); break;
                     case "FRONTTIRE":
-                        TableMetadata = new FrontTire(db.SpecDBName); break;
+                        TableMetadata = new FrontTire(db.SpecDBFolderType); break;
                     case "REARTIRE":
-                        TableMetadata = new RearTire(db.SpecDBName); break;
+                        TableMetadata = new RearTire(db.SpecDBFolderType); break;
                     case "RACINGMODIFY":
-                        TableMetadata = new RacingModify(db.SpecDBName); break;
+                        TableMetadata = new RacingModify(db.SpecDBFolderType); break;
                     case "CHASSIS":
-                        TableMetadata = new Chassis(db.SpecDBName); break;
+                        TableMetadata = new Chassis(db.SpecDBFolderType); break;
                     case "INTAKE_MANIFOLD":
-                        TableMetadata = new IntakeManifold(db.SpecDBName); break;
+                        TableMetadata = new IntakeManifold(db.SpecDBFolderType); break;
                     case "LIGHTWEIGHT":
-                        TableMetadata = new Lightweight(db.SpecDBName); break;
+                        TableMetadata = new Lightweight(db.SpecDBFolderType); break;
                     case "LSD":
-                        TableMetadata = new Lsd(db.SpecDBName); break;
+                        TableMetadata = new Lsd(db.SpecDBFolderType); break;
                     case "MUFFLER":
-                        TableMetadata = new Muffler(db.SpecDBName); break;
+                        TableMetadata = new Muffler(db.SpecDBFolderType); break;
                     case "NATUNE":
-                        TableMetadata = new Natune(db.SpecDBName); break;
+                        TableMetadata = new Natune(db.SpecDBFolderType); break;
                     case "NOS":
-                        TableMetadata = new NOS(db.SpecDBName); break;
+                        TableMetadata = new NOS(db.SpecDBFolderType); break;
                     case "PROPELLERSHAFT":
-                        TableMetadata = new PropellerShaft(db.SpecDBName); break;
+                        TableMetadata = new PropellerShaft(db.SpecDBFolderType); break;
                     case "RACE":
-                        TableMetadata = new Race(db.SpecDBName); break;
+                        TableMetadata = new Race(db.SpecDBFolderType); break;
                     case "STEER":
-                        TableMetadata = new Steer(db.SpecDBName); break;
+                        TableMetadata = new Steer(db.SpecDBFolderType); break;
                     case "SUPERCHARGER":
-                        TableMetadata = new Supercharger(db.SpecDBName); break;
+                        TableMetadata = new Supercharger(db.SpecDBFolderType); break;
                     case "SUSPENSION":
-                        TableMetadata = new Suspension(db.SpecDBName); break;
+                        TableMetadata = new Suspension(db.SpecDBFolderType); break;
                     case "TIRECOMPOUND":
-                        TableMetadata = new TireCompound(db.SpecDBName); break;
+                        TableMetadata = new TireCompound(db.SpecDBFolderType); break;
                     case "TURBINEKIT":
-                        TableMetadata = new TurbineKit(db.SpecDBName); break;
+                        TableMetadata = new TurbineKit(db.SpecDBFolderType); break;
                     case "GENERIC_ITEMS":
-                        TableMetadata = new GenericItems(db.SpecDBName); break;
+                        TableMetadata = new GenericItems(db.SpecDBFolderType); break;
                     case "TUNED_CARS":
-                        TableMetadata = new TunedCars(db.SpecDBName); break;
+                        TableMetadata = new TunedCars(db.SpecDBFolderType); break;
                     case "TUNER":
-                        TableMetadata = new Tuner(db.SpecDBName); break;
+                        TableMetadata = new Tuner(db.SpecDBFolderType); break;
                     case "VARIATION":
-                        TableMetadata = new Variation(db.SpecDBName); break;
+                        TableMetadata = new Variation(db.SpecDBFolderType); break;
                     case "WHEEL":
-                        TableMetadata = new Wheel(db.SpecDBName); break;
+                        TableMetadata = new Wheel(db.SpecDBFolderType); break;
                     // Unmapped, but havent seen having rows
                     case "TCSC":
-                        TableMetadata = new TCSC(db.SpecDBName); break;
+                        TableMetadata = new TCSC(db.SpecDBFolderType); break;
                     case "TIREFORCEVOL":
-                        TableMetadata = new TireForceVol(db.SpecDBName); break;
+                        TableMetadata = new TireForceVol(db.SpecDBFolderType); break;
                     case "GENERIC_CAR_INFO":
-                        TableMetadata = new GenericCarInfo(db.SpecDBName); break;
+                        TableMetadata = new GenericCarInfo(db.SpecDBFolderType); break;
                     case "INDEP_THROTTLE":
-                        TableMetadata = new IndepThrottle(db.SpecDBName); break;
+                        TableMetadata = new IndepThrottle(db.SpecDBFolderType); break;
                     case "INTERCOOLER":
-                        TableMetadata = new Intercooler(db.SpecDBName); break;
+                        TableMetadata = new Intercooler(db.SpecDBFolderType); break;
                     default:
                         throw new NotSupportedException("This table is not yet mapped.");
                 }

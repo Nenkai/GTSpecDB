@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Race : TableMetadata
     {
-        public Race(string specdbName)
+        public Race(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("CourseLabel", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("AllowEntry", DBColumnType.String, "UnistrDB.sdb"));

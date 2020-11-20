@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Engine : TableMetadata
     {
         public override string LabelPrefix { get; } = "en_";
 
-        public Engine(string specdbName)
+        public Engine(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("soundNum", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("discplacement", DBColumnType.String, "UnistrDB.sdb"));
@@ -23,10 +23,16 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("aspiration", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("psrpm", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("torquerpm", DBColumnType.String, "UnistrDB.sdb"));
-            Columns.Add(new ColumnMetadata("psvalue", DBColumnType.Short));
+
+            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813)
+                Columns.Add(new ColumnMetadata("psvalue", DBColumnType.Short));
+
             Columns.Add(new ColumnMetadata("torquevalue", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("idlerpm", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("torqueA", DBColumnType.Short));
+
+            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813)
+                Columns.Add(new ColumnMetadata("torqueA", DBColumnType.Short));
+
             Columns.Add(new ColumnMetadata("torqueB", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueC", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueD", DBColumnType.Short));
@@ -50,10 +56,18 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("torqueV", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueW", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueX", DBColumnType.Short));
+
+            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813 && folderType < SpecDBFolder.GT5_JP3009)
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("dpsflag", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("shiftlimit", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("revlimit", DBColumnType.Byte));
+
+            if (folderType < SpecDBFolder.GT5_PROLOGUE2813)
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+
             Columns.Add(new ColumnMetadata("clutchmeetrpm", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("torquepoint", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("rpmA", DBColumnType.Byte));

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Chassis : TableMetadata
     {
         public override string LabelPrefix { get; } = "ch_";
 
-        public Chassis(string specdbName)
+        public Chassis(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("length", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("height", DBColumnType.Short));
@@ -25,15 +25,19 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("dmass", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("performanceF", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("performanceR", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("treadF", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("treadR", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("width", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("dwidth", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("original_rideHeight_F", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("original_rideHeight_R", DBColumnType.Short));
+
+            if (folderType > SpecDBFolder.GT4_PREMIUM_US2560)
+            {
+                Columns.Add(new ColumnMetadata("treadF", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("treadR", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("width", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("dwidth", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("original_rideHeight_F", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("original_rideHeight_R", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("electricMotor", DBColumnType.Byte));
+            }
 
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("cartype", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("percentageF", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("yaw", DBColumnType.Byte));
@@ -45,31 +49,35 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("FrontStiffness", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("RearStiffness", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("GasCapacity", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("EngineMount", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cd", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clMINF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clMAXF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clDFF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clMINR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clMAXR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("clDFR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("wheeloffsetF", DBColumnType.SByte));
-            Columns.Add(new ColumnMetadata("wheeloffsetR", DBColumnType.SByte));
-            Columns.Add(new ColumnMetadata("susarmF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("susarmR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("ActiveWingType", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("ActiveWingVelocity1", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("ActiveWingVelocity2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("ActiveWingMovingSpeed", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("ActiveWingDownForce", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("rollCenterPolicy", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("downForcePointOfLoadF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("downForcePointOfLoadR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("activeWingVelocity3", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("activeWingDownForce2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("originalClF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("originalClR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("batteryCapacity", DBColumnType.Byte));
+
+            if (folderType > SpecDBFolder.GT4_PREMIUM_US2560)
+            {
+                Columns.Add(new ColumnMetadata("EngineMount", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("cd", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clMINF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clMAXF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clDFF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clMINR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clMAXR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("clDFR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("wheeloffsetF", DBColumnType.SByte));
+                Columns.Add(new ColumnMetadata("wheeloffsetR", DBColumnType.SByte));
+                Columns.Add(new ColumnMetadata("susarmF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("susarmR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("ActiveWingType", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("ActiveWingVelocity1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("ActiveWingVelocity2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("ActiveWingMovingSpeed", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("ActiveWingDownForce", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("rollCenterPolicy", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("downForcePointOfLoadF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("downForcePointOfLoadR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("activeWingVelocity3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("activeWingDownForce2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("originalClF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("originalClR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("batteryCapacity", DBColumnType.Byte));
+            }
         }
     }
 }

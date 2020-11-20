@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class DefaultParam : TableMetadata
     {
         public override string LabelPrefix { get; } = "dp_";
 
-        public DefaultParam(string specdbName)
+        public DefaultParam(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("torquevol", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("finalgearDF", DBColumnType.Short));

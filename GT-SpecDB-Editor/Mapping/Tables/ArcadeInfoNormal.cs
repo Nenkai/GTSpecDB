@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class ArcadeInfoNormal : TableMetadata
     {
         public override string LabelPrefix { get; } = "";
 
-        public ArcadeInfoNormal(string specdbName)
+        public ArcadeInfoNormal(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));

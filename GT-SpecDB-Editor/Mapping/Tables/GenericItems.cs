@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class GenericItems : TableMetadata
     {
-        public GenericItems(string specdbName)
+        public GenericItems(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("FrontTireLabel", DBColumnType.Int));

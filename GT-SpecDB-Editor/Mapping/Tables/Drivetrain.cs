@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Drivetrain : TableMetadata
     {
         public override string LabelPrefix { get; } = "dt_";
 
-        public Drivetrain(string specdbName)
+        public Drivetrain(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("iflywheel", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("enginebrake", DBColumnType.Short));

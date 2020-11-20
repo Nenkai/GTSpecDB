@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using Syroot.BinaryData.Core;
 using Syroot.BinaryData.Memory;
 
-using GT_SpecDB_Editor.Mapping.Types;
+using GT_SpecDB_Editor.Core;
 namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Suspension : TableMetadata
     {
         public override string LabelPrefix { get; } = "su_";
 
-        public Suspension(string specdbName)
+        public Suspension(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("rideheightMINF", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("rideheightMAXF", DBColumnType.Short));
