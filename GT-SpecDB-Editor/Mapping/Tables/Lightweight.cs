@@ -17,7 +17,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         public Lightweight(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("weighteffect", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk (UseCar?)", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("yaweffect", DBColumnType.Byte));
         }

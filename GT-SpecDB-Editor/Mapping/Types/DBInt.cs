@@ -34,5 +34,8 @@ namespace GT_SpecDB_Editor.Mapping.Types
         public event PropertyChangedEventHandler PropertyChanged;
         public DBInt(int value)
             => Value = value;
+
+        public override string ToString()
+            => _value.ToString();
     }
 }

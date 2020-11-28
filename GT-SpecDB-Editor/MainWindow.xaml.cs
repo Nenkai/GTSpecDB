@@ -12,8 +12,12 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.IO;
 using System.ComponentModel;
+
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
+
+using Humanizer;
+
 using GT_SpecDB_Editor.Core;
 using GT_SpecDB_Editor.Utils;
 using GT_SpecDB_Editor.Mapping;
@@ -26,6 +30,8 @@ namespace GT_SpecDB_Editor
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        public const string WindowTitle = "Gran Turismo Spec Database Editor";
+
         public SpecDB CurrentDatabase { get; set; }
         public SpecDBTable CurrentTable { get; set; }
         private string _filterString;
@@ -114,10 +120,11 @@ namespace GT_SpecDB_Editor
                 tb_ColumnFilter.Text = "";
                 FilterString = "";
                 mi_SavePartsInfo.IsEnabled = true;
-
                 lb_Tables.Items.Clear();
                 foreach (var table in CurrentDatabase.Tables)
                     lb_Tables.Items.Add(table.Key);
+
+                this.Title = $"{WindowTitle} - {CurrentDatabase.SpecDBFolderType} [{CurrentDatabase.SpecDBFolderType.Humanize()}]";
             }
         }
 
@@ -168,6 +175,31 @@ namespace GT_SpecDB_Editor
             }
         }
 
+        private void ExportCurrentTable_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select file to export the table as TXT");
+            dlg.EnsurePathExists = true;
+            dlg.EnsureFileExists = true;
+            dlg.DefaultFileName = $"{CurrentTable.TableName}.txt";
+
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                CurrentTable.ExportTableText(dlg.FileName);
+            }
+        }
+
+        private void ExportCurrentTableCSV_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select file to export the table as CSV");
+            dlg.EnsurePathExists = true;
+            dlg.EnsureFileExists = true;
+            dlg.DefaultFileName = $"{CurrentTable.TableName}.csv";
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                CurrentTable.ExportTableCSV(dlg.FileName);
+            }
+        }
+
         private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
         {
             if (lb_Tables.SelectedIndex == -1)
@@ -208,7 +240,8 @@ namespace GT_SpecDB_Editor
             SetupFilters();
             cb_FilterColumnType.SelectedIndex = 1;
             mi_SaveTable.IsEnabled = true;
-
+            mi_ExportTable.IsEnabled = true;
+            mi_ExportTableCSV.IsEnabled = true;
             ToggleToolbarControls(true);
             
             statusName.Text = $"Loaded '{table.TableName}' with {CurrentTable.Rows.Count} rows.";
@@ -273,6 +306,10 @@ namespace GT_SpecDB_Editor
 
                     var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= newValue);
                     currentRow.ID = newValue;
+
+                    // Put it to the last of said id if it conflicts
+                    if (nextRow.ID == newValue)
+                        nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID > newValue);
 
                     if (nextRow is null) // End of list?
                     {
@@ -518,6 +555,11 @@ namespace GT_SpecDB_Editor
 
                 // Reorder
                 var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= id);
+
+                // Put it to the last of said id if it conflicts
+                if (nextRow.ID == id)
+                    nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID > id);
+
                 if (nextRow is null) // End of list?
                     CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), CurrentTable.Rows.Count - 1);
                 else

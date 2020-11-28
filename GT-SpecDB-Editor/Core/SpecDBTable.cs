@@ -322,10 +322,96 @@ namespace GT_SpecDB_Editor.Core
             return keys.Count;
         }
 
+        public void ExportTableText(string path)
+        {
+            int[] maxColumnLengths = new int[2 + TableMetadata.Columns.Count];
+
+            int maxIDLen = 0;
+            int maxLabelLen = 0;
+            foreach (var row in Rows)
+            {
+                int idlen = row.ID.ToString().Length;
+                if (idlen > maxIDLen)
+                    maxIDLen = idlen;
+
+                int labelLen = row.Label.ToString().Length;
+                if (labelLen > maxLabelLen)
+                    maxLabelLen = labelLen;
+
+                for (int i = 0; i < row.ColumnData.Count; i++)
+                {
+                    string val = row.ColumnData[i].ToString();
+                    if (val.Length > maxColumnLengths[i])
+                        maxColumnLengths[i] = val.Length;
+                }
+            }
+            maxColumnLengths[0] = maxIDLen;
+            maxColumnLengths[1] = maxLabelLen;
+
+            using (var sw = new StreamWriter(path))
+            {
+                sw.Write($"{"ID".PadRight(maxIDLen)} | {"Label".PadRight(maxLabelLen)} |");
+                for (int i = 0; i < maxColumnLengths.Length - 2; i++)
+                {
+                    int len = Math.Max((int)maxColumnLengths[i+2], TableMetadata.Columns[i].ColumnName.Length);
+                    sw.Write($"{TableMetadata.Columns[i].ColumnName.PadRight(len)} |");
+                }
+                sw.WriteLine();
+
+                foreach (var row in Rows)
+                {
+                    sw.Write($"{row.ID.ToString().PadRight(maxIDLen)} | {row.Label.PadRight(maxLabelLen)} |");
+                    for (int i = 0; i < maxColumnLengths.Length - 2; i++)
+                    {
+                        var val = row.ColumnData[i].ToString();
+                        int len = Math.Max((int)maxColumnLengths[i+2], TableMetadata.Columns[i].ColumnName.Length);
+                        sw.Write($"{val.PadRight(len)} |");
+                    }
+                    sw.WriteLine();
+                }
+            }
+        }
+
+        public void ExportTableCSV(string path)
+        {
+            using (var sw = new StreamWriter(path))
+            {
+                sw.Write("ID,Label,");
+                for (int i = 0; i < TableMetadata.Columns.Count; i++)
+                {
+                    sw.Write($"{TableMetadata.Columns[i].ColumnName}");
+                    if (i != TableMetadata.Columns.Count - 1)
+                        sw.Write(",");
+                }
+                sw.WriteLine();
+
+                foreach (var row in Rows)
+                {
+                    sw.Write($"{row.ID},{row.Label},");
+                    for (int i = 0; i < row.ColumnData.Count; i++)
+                    {
+                        sw.Write($"{row.ColumnData[i].ToString()}");
+                        if (i != TableMetadata.Columns.Count - 1)
+                            sw.Write(",");
+                    }
+                    sw.WriteLine();
+                }
+            }
+                
+        }
+
         private void LoadMetadata(SpecDB db)
         {
             if (TableName.StartsWith("CAR_NAME_"))
-                TableMetadata = new CarName(db.SpecDBFolderType, TableName.Split('_')[2]);
+            {
+                string locale = TableName.Split('_')[2];
+                if (locale.Equals("ALPHABET") || locale.Equals("JAPAN"))
+                    locale = "UnistrDB.sdb";
+                else
+                    locale += "_StrDB.sdb";
+
+                TableMetadata = new CarName(db.SpecDBFolderType, locale);
+            }
             else
             {
                 switch (TableName)
@@ -511,7 +597,7 @@ namespace GT_SpecDB_Editor.Core
 
                 bs.WriteInt32(orderedRows.Count);
                 bs.WriteInt32(0);
-                bs.WriteInt32(0); // Table ID - Unused, doesn't matter
+                bs.WriteInt32(TableID);
 
                 var strTable = GetLabelTable(orderedRows);
 

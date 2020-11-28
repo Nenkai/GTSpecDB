@@ -19,7 +19,10 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("Unk", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
+
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+                Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
+
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("wastegate", DBColumnType.Byte));
 
@@ -33,7 +36,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
             Columns.Add(new ColumnMetadata("shiftlimit", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("revlimit", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("rpmeffect", DBColumnType.Byte));
+
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+                Columns.Add(new ColumnMetadata("rpmeffect", DBColumnType.Byte));
         }
     }
 }

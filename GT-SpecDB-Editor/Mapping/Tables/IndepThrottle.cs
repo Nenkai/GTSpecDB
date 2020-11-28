@@ -14,7 +14,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
     {
         public IndepThrottle(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Placeholder Table", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
         }
     }
 }

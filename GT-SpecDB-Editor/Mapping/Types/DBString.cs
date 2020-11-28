@@ -43,5 +43,8 @@ namespace GT_SpecDB_Editor.Mapping.Types
             FileName = fileName;
         }
 
+        public override string ToString()
+            => _value.ToString();
+
     }
 }

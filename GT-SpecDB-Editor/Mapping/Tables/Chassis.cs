@@ -26,7 +26,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("performanceF", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("performanceR", DBColumnType.Short));
 
-            if (folderType > SpecDBFolder.GT4_PREMIUM_US2560)
+            if (folderType >= SpecDBFolder.GT5_JP3009)
             {
                 Columns.Add(new ColumnMetadata("treadF", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("treadR", DBColumnType.Short));
@@ -35,10 +35,11 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("original_rideHeight_F", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("original_rideHeight_R", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("electricMotor", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
             }
 
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cartype", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("cartype", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("percentageF", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("yaw", DBColumnType.Byte));
 
@@ -50,7 +51,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("RearStiffness", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("GasCapacity", DBColumnType.Byte));
 
-            if (folderType > SpecDBFolder.GT4_PREMIUM_US2560)
+            if (folderType >= SpecDBFolder.GT5_JP3009)
             {
                 Columns.Add(new ColumnMetadata("EngineMount", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("cd", DBColumnType.Byte));

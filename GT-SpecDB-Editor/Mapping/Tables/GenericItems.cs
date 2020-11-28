@@ -14,12 +14,12 @@ namespace GT_SpecDB_Editor.Mapping.Tables
     {
         public GenericItems(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("FT.TableIndex", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("FrontTireLabel", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("RT.TableIndex", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("RearTireLabel", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("CarCode", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("CarCodeTblIndex(?)", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("UnkTableID", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("ItemCategory", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("ItemType", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("EngineRpmOffset", DBColumnType.Int));

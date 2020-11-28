@@ -16,7 +16,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public PropellerShaft(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("enginebrake", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("iwheelF", DBColumnType.Byte));

@@ -14,7 +14,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
     {
         public Variation(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.UInt));
+            Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.UInt));
             Columns.Add(new ColumnMetadata("NameJpn", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("NameEng", DBColumnType.String, "UnistrDB.sdb"));
@@ -23,8 +23,12 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("ColorChip1", DBColumnType.UInt));
             Columns.Add(new ColumnMetadata("ColorChip2", DBColumnType.UInt));
             Columns.Add(new ColumnMetadata("ColorChip3", DBColumnType.UInt));
-            Columns.Add(new ColumnMetadata("CarColorID", DBColumnType.UInt));
-            Columns.Add(new ColumnMetadata("AllPaintID", DBColumnType.UInt));
+
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("CarColorID", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("AllPaintID", DBColumnType.UInt));
+            }
         }
     }
 }

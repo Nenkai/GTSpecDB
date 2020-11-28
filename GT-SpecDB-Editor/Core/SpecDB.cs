@@ -3,7 +3,7 @@ using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.ComponentModel;
 using System.Windows;
 
 using Syroot.BinaryData;
@@ -385,7 +385,7 @@ namespace GT_SpecDB_Editor.Core
                     using (var tbdWriter = new BinaryStream(new FileStream(Path.Combine(folder, "PartsInfo.tbd"), FileMode.Create)))
                     using (var tbiWriter = new BinaryStream(new FileStream(Path.Combine(folder, "PartsInfo.tbi"), FileMode.Create)))
                     {
-                        tbdWriter.ByteConverter = carTable.DBT.Endian == Endian.Big ? ByteConverter.Big : ByteConverter.Little;
+                        tbdWriter.ByteConverter = carTable.DBT.Endian == Endian.Big ? Syroot.BinaryData.ByteConverter.Big : Syroot.BinaryData.ByteConverter.Little;
                         tbiWriter.ByteConverter = tbdWriter.ByteConverter;
 
                         int totalEntriesWriten = 0;
@@ -575,19 +575,70 @@ namespace GT_SpecDB_Editor.Core
 
     public enum SpecDBFolder
     {
+        [Description("Unknown")]
         NONE,
-        GT4_PROLOGUE_EU1110,  // GT4P
-        GT4_CN2560,           // GT4 China
-        GT4_US2560,           // GT4
-        GT4_PREMIUM_US2560,   // GT4O
-        TT_EU2630,            // Tourist Trophy
-        GT5_TRIAL_EU2704,     // GTHD
-        GT5_PROLOGUE2813,     // GT5P
-        GT_PSP_JP2817,        // GTPSP
-        GT5_ACADEMY_09_2900,  // Gran Turismo 5 Time Trial Challenge
-        GT5_JP2904,           // GT5 Kiosk
-        GT5_PREVIEWJP2904,    // GT5 Kiosk
+
+        [Description("Gran Turismo 4 Special Ediiton 2004 Geneva Version (PAL, AMLUX)")]
+        GT4_AMLUX1000, 
+
+        [Description("Gran Turismo 4 Special Ediiton 2004 Geneva Version (PAL, AUTOSALON)")]
+        GT4_AUTOSALON1000, 
+
+        [Description("Gran Turismo 4 Special Ediiton 2004 Geneva Version/Toyota Demo (PAL, MTR_PRIUS)")]
+        GT4_MTR_PRIUS1000,        
+
+        [Description("Gran Turismo 4 Prologue (Pre-Release)")]
+        GT4_PROLOGUE_1000,
+
+        [Description("Gran Turismo 4 Prologue (Korean)")]
+        GT4_PROLOGUE_KR1000,
+
+        [Description("Gran Turismo 4 Prologue (Taiwan)")]
+        GT4_PROLOGUE_TW1000,
+
+        [Description("Gran Turismo 4 Prologue (EU)")]
+        GT4_PROLOGUE_EU1110,
+
+        [Description("Gran Turismo 4 (China)")]
+        GT4_CN2560,
+
+        [Description("Gran Turismo 4 (US)")]
+        GT4_US2560,
+
+        [Description("Gran Turismo 4 (EU)")]
+        GT4_EU2560,
+
+        [Description("Gran Turismo 4 Online Test Version (US)")]
+        GT4_PREMIUM_US2560,
+
+        [Description("Gran Turismo 4 Japan Online Test")]
+        GT4_PREMIUM_JP2560,
+
+        [Description("Tourist Trophy (US)")]
+        TT_EU2630,
+
+        [Description("Gran Turismo HD Concept (EU)")]
+        GT5_TRIAL_EU2704,
+
+        [Description("Gran Turismo 5 Prologue")]
+        GT5_PROLOGUE2813,
+
+        [Description("Gran Turismo PSP")]
+        GT_PSP_JP2817,
+
+        [Description("Gran Turismo 5 Time Trial Challenge")]
+        GT5_ACADEMY_09_2900,
+
+        [Description("Gran Turismo 5 Kiosk Demo (Default DB)")]
+        GT5_JP2904,
+
+        [Description("Gran Turismo 5 Kiosk Demo (Preview DB)")]
+        GT5_PREVIEWJP2904,
+
+        [Description("Gran Turismo 5 (1.00-1.04)")]
         GT5_JP3009,           // GT5 Retail
+
+        [Description("Gran Turismo 5 (1.05+)")]
         GT5_JP3010,           // GT5 - 1.05+
     }
 }

@@ -18,7 +18,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         {
             if (folderType < SpecDBFolder.GT5_JP3009)
             {
-                Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("UnkID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Category", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BraketorqueF", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BraketorqueR", DBColumnType.Byte));

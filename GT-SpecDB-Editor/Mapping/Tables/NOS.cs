@@ -18,7 +18,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         {
             Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("Capacity", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("TorqueVolume", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("TorqueVolumeMin", DBColumnType.Byte));

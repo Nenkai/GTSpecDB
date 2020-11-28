@@ -21,7 +21,8 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("BraketorqueR", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("Sidebraketorque", DBColumnType.Byte));
 
-            if (folderType >= SpecDBFolder.GT5_ACADEMY_09_2900)
+            if (folderType >= SpecDBFolder.GT5_ACADEMY_09_2900 && 
+                folderType != SpecDBFolder.GT5_JP2904 && folderType != SpecDBFolder.GT5_PREVIEWJP2904) // Kiosk exception; doesn't have it
                 Columns.Add(new ColumnMetadata("tireMuForBrake", DBColumnType.Byte));
         }
     }

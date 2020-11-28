@@ -16,20 +16,20 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public FrontTire(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("TS.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tiresize", DBColumnType.Int));
 
-            Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Cmp.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tirecompound0", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Cmp.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tirecompound1", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk4", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Cmp.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tirecompound2", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk5", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("TF.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tireforcevol0", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk6", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("TF.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tireforcevol1", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Unk7", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("TF.Tbl.Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("tireforcevol2", DBColumnType.Int));
 
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));

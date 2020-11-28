@@ -34,5 +34,8 @@ namespace GT_SpecDB_Editor.Mapping.Types
         public event PropertyChangedEventHandler PropertyChanged;
         public DBShort(short value)
             => Value = value;
+
+        public override string ToString()
+            => _value.ToString();
     }
 }

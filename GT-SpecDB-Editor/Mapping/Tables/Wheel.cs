@@ -15,23 +15,33 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         public Wheel(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.UInt));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.UInt));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("ThumbnailID", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.Short));
+            }
+            else
+            {
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            }
 
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("FrontTireOffset", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("FrontDiameter", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("FrontAspect", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("FrontWidth", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("FrontTireID", DBColumnType.Short));
 
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("RearTireOffset", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("RearDiameter", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("RearAspect", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("RearWidth", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("RearTireID", DBColumnType.Short));
 
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("WheelType", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("WheelNumColor", DBColumnType.Byte));
+            }
         }
     }
 }

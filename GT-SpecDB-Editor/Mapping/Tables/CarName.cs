@@ -16,9 +16,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public CarName(SpecDBFolder folderType, string localeName)
         {
-            Columns.Add(new ColumnMetadata("Name", DBColumnType.String, $"{localeName}_StrDB.sdb"));
-            Columns.Add(new ColumnMetadata("Grade", DBColumnType.String, $"{localeName}_StrDB.sdb"));
-            Columns.Add(new ColumnMetadata("ShortName", DBColumnType.String, $"{localeName}_StrDB.sdb"));
+            Columns.Add(new ColumnMetadata("Name", DBColumnType.String, localeName));
+            Columns.Add(new ColumnMetadata("Grade", DBColumnType.String, localeName));
+            Columns.Add(new ColumnMetadata("ShortName", DBColumnType.String, localeName));
         }
     }
 }
