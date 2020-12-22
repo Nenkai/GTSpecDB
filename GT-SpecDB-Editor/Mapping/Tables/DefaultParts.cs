@@ -16,6 +16,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public DefaultParts(SpecDBFolder folderType)
         {
+            /*
             if (folderType < SpecDBFolder.GT5_JP3009)
             {
                 Columns.Add(new ColumnMetadata("UnkID", DBColumnType.Int));
@@ -25,7 +26,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("Sidebraketorque", DBColumnType.Byte));
             }
             else
-            {
+            {*/
                 Columns.Add(new ColumnMetadata("Brake", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("BrakeCtrl", DBColumnType.Int));
@@ -62,6 +63,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Muffler", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+            
                 Columns.Add(new ColumnMetadata("Clutch", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Flywheel", DBColumnType.Int));
@@ -70,6 +72,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("LSD", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+            
                 Columns.Add(new ColumnMetadata("F. Tire", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("R. Tire", DBColumnType.Int));
@@ -78,36 +81,41 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("R.Tire_G", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("NOS", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Wing", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Aero", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("FlatFloor", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Freedom", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("L.Weight Window", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Bonnet", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("IntakeManifold", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ExhaustManifold", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Catalyst", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("AirCleaner", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("BoostControl", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("IndepThrottle", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Supercharger", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
 
-                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+                if (folderType >= SpecDBFolder.GT5_JP3009)
+                {
+                    Columns.Add(new ColumnMetadata("NOS", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+
+                    Columns.Add(new ColumnMetadata("Wing", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("Aero", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("FlatFloor", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("Freedom", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("L.Weight Window", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("Bonnet", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("IntakeManifold", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ExhaustManifold", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("Catalyst", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("AirCleaner", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("BoostControl", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("IndepThrottle", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("Supercharger", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
+
+                    Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
+
             }
         }
     }

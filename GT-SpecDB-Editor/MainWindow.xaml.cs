@@ -279,7 +279,8 @@ namespace GT_SpecDB_Editor
                         break;
                 }
             }
-            
+
+            dg_Rows.ScrollIntoView(newRow);
         }
 
         private void dg_Rows_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -289,7 +290,7 @@ namespace GT_SpecDB_Editor
 
             var currentRow = e.Row.Item as SpecDBRowData;
             string newInput = tb.Text;
-            if (e.Column.Header.Equals("ID"))
+            if (dg_Rows.Columns[0] == e.Column) // Editing ID column
             {
                 if (int.TryParse(newInput, out int newValue))
                 {
@@ -322,6 +323,7 @@ namespace GT_SpecDB_Editor
                         nextRowIndex--;
 
                     CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(currentRow), nextRowIndex);
+                    dg_Rows.ScrollIntoView(currentRow);
                 }
                 else
                 {
@@ -329,7 +331,7 @@ namespace GT_SpecDB_Editor
                     e.Cancel = true;
                 }
             }
-            else if (e.Column.Header.Equals("Label"))
+            else if (dg_Rows.Columns[1] == e.Column) // Editing Label Column
             {
                 if (CurrentTable.Rows.Any(row => row.Label != null && row.Label.Equals(newInput) && row != currentRow))
                 {
@@ -354,7 +356,7 @@ namespace GT_SpecDB_Editor
             else
             {
                 // Perform regular validation
-                ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)e.Column.Header);
+                ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns[dg_Rows.Columns.IndexOf(e.Column) - 2];
                 if (dataCol.ColumnType == DBColumnType.Int)
                 {
                     if (!int.TryParse(newInput, out int res))
@@ -499,6 +501,8 @@ namespace GT_SpecDB_Editor
                         break;
                 }
             }
+
+            dg_Rows.ScrollIntoView(newRow);
         }
 
         private void cm_DumpTable_Click(object sender, RoutedEventArgs e)

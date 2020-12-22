@@ -24,9 +24,13 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("psrpm", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("torquerpm", DBColumnType.String, "UnistrDB.sdb"));
 
-            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813)
-                Columns.Add(new ColumnMetadata("psvalue", DBColumnType.Short));
+            if (folderType < SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+            }
 
+            Columns.Add(new ColumnMetadata("psvalue", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquevalue", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("idlerpm", DBColumnType.Short));
 
@@ -56,9 +60,6 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("torqueV", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueW", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueX", DBColumnType.Short));
-
-            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813 && folderType < SpecDBFolder.GT5_JP3009)
-                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
 
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("dpsflag", DBColumnType.Byte));

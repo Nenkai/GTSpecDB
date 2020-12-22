@@ -34,19 +34,19 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("Maker", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("Tuner", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("Category", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("GenericFlags", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags", DBColumnType.Byte));
 
             if (folderType == SpecDBFolder.GT5_TRIAL_EU2704 || folderType >= SpecDBFolder.GT5_JP3009)
             {
-                Columns.Add(new ColumnMetadata("GenericFlags2", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("GenericFlags3", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("GenericFlags4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("GeneralFlags2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("GeneralFlags3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("GeneralFlags4", DBColumnType.Byte));
             }
 
             Columns.Add(new ColumnMetadata("ConceptCarType", DBColumnType.Byte));
 
             if (folderType >= SpecDBFolder.GT5_PROLOGUE2813 && folderType < SpecDBFolder.GT5_JP3009)
-                Columns.Add(new ColumnMetadata("TestCar", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("OpenModel", DBColumnType.Byte));
         }
     }
 }
