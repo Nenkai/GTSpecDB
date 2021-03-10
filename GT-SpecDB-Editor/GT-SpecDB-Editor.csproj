@@ -101,6 +101,7 @@
     <Compile Include="Core\StringDatabase.cs" />
     <Compile Include="Mapping\Row.cs" />
     <Compile Include="Mapping\Tables\NOS.cs" />
+    <Compile Include="Mapping\Tables\PortPolish.cs" />
     <Compile Include="Mapping\Tables\Tuner.cs" />
     <Compile Include="Mapping\Tables\TunedCars.cs" />
     <Compile Include="Mapping\Tables\IndepThrottle.cs" />

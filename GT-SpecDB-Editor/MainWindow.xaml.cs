@@ -79,6 +79,31 @@ namespace GT_SpecDB_Editor
         private void NotifyPropertyChanged(string property)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
 
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                    if (files.Length > 1)
+                        return;
+
+                    if (!Directory.Exists(files[0]))
+                        return;
+
+                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(files[0], false);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not load SpecDB: {ex.Message}", "Failed to load the SpecDB", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            ProcessNewlyLoadedSpecDB();
+        }
+
         private void ToolBar_Loaded(object sender, RoutedEventArgs e)
         {
             var toolBar = sender as ToolBar;
@@ -115,16 +140,7 @@ namespace GT_SpecDB_Editor
                     return;
                 }
 
-                CurrentTable = null;
-                dg_Rows.ItemsSource = null;
-                tb_ColumnFilter.Text = "";
-                FilterString = "";
-                mi_SavePartsInfo.IsEnabled = true;
-                lb_Tables.Items.Clear();
-                foreach (var table in CurrentDatabase.Tables)
-                    lb_Tables.Items.Add(table.Key);
-
-                this.Title = $"{WindowTitle} - {CurrentDatabase.SpecDBFolderType} [{CurrentDatabase.SpecDBFolderType.Humanize()}]";
+                ProcessNewlyLoadedSpecDB();
             }
         }
 
@@ -170,9 +186,7 @@ namespace GT_SpecDB_Editor
             dlg.IsFolderPicker = true;
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 CurrentTable.SaveTable(CurrentDatabase, dlg.FileName);
-            }
         }
 
         private void ExportCurrentTable_Click(object sender, RoutedEventArgs e)
@@ -183,9 +197,7 @@ namespace GT_SpecDB_Editor
             dlg.DefaultFileName = $"{CurrentTable.TableName}.txt";
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 CurrentTable.ExportTableText(dlg.FileName);
-            }
         }
 
         private void ExportCurrentTableCSV_Click(object sender, RoutedEventArgs e)
@@ -195,9 +207,7 @@ namespace GT_SpecDB_Editor
             dlg.EnsureFileExists = true;
             dlg.DefaultFileName = $"{CurrentTable.TableName}.csv";
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
                 CurrentTable.ExportTableCSV(dlg.FileName);
-            }
         }
 
         private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
@@ -214,11 +224,11 @@ namespace GT_SpecDB_Editor
                 progressBar.IsIndeterminate = true;
                 try
                 {
-                    var loadTask = Task.Run(() =>
-                    {
-                        table.LoadAllRows(CurrentDatabase);
-                    });
+                    var loadTask = Task.Run(() => table.LoadAllRows(CurrentDatabase));
                     await loadTask;
+
+                    if (!table.IsTableProperlyMapped)
+                        MessageBox.Show($"This table is not entirely mapped - display errors & missing data may be present.", "Table not mapped correctly", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch (Exception ex)
                 {
@@ -721,6 +731,20 @@ namespace GT_SpecDB_Editor
             btn_DeleteRow.IsEnabled = enabled;
             btn_CopyRow.IsEnabled = enabled;
             tb_ColumnFilter.IsEnabled = enabled;
+        }
+
+        private void ProcessNewlyLoadedSpecDB()
+        {
+            CurrentTable = null;
+            dg_Rows.ItemsSource = null;
+            tb_ColumnFilter.Text = "";
+            FilterString = "";
+            mi_SavePartsInfo.IsEnabled = true;
+            lb_Tables.Items.Clear();
+            foreach (var table in CurrentDatabase.Tables)
+                lb_Tables.Items.Add(table.Key);
+
+            this.Title = $"{WindowTitle} - {CurrentDatabase.SpecDBFolderType} [{CurrentDatabase.SpecDBFolderType.Humanize()}]";
         }
     }
 }

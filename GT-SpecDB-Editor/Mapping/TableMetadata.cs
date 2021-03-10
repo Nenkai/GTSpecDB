@@ -19,7 +19,7 @@ namespace GT_SpecDB_Editor.Mapping
 
         public List<ColumnMetadata> Columns { get; set; } = new List<ColumnMetadata>();
 
-        public SpecDBRowData ReadRow(Span<byte> rowData, Endian endian)
+        public (SpecDBRowData Row, bool ReadAll) ReadRow(Span<byte> rowData, Endian endian)
         {
             var sr = new SpanReader(rowData, endian);
             var row = new SpecDBRowData();
@@ -50,7 +50,7 @@ namespace GT_SpecDB_Editor.Mapping
                 }
             }
 
-            return row;
+            return (row, sr.IsEndOfSpan);
         }
 
         public int GetColumnSize()

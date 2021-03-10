@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT_SpecDB_Editor"
         mc:Ignorable="d"
-        Title="Gran Turismo Spec Database Editor" Height="640" Width="960">
+        Title="Gran Turismo Spec Database Editor" Height="640" Width="960" Drop="Window_Drop">
     <Grid>
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" >

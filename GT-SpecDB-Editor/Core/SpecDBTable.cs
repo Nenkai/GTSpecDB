@@ -34,6 +34,7 @@ namespace GT_SpecDB_Editor.Core
         public ObservableCollection<SpecDBRowData> Rows { get; set; }
         public int TableID { get; set; }
 
+        public bool IsTableProperlyMapped { get; private set; } = true;
         public SpecDBTable(string tableName)
         {
             TableName = tableName;
@@ -515,6 +516,8 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new IndepThrottle(db.SpecDBFolderType); break;
                     case "INTERCOOLER":
                         TableMetadata = new Intercooler(db.SpecDBFolderType); break;
+                    case "PORTPOLISH":
+                        PortPolish = new PortPolish(db.SpecDBFolderType); break;
                     default:
                         throw new NotSupportedException("This table is not yet mapped.");
                 }
@@ -531,10 +534,12 @@ namespace GT_SpecDB_Editor.Core
             {
                 RowData key = Keys[i];
                 GetRowByIndex(i, out Span<byte> rowData);
-                SpecDBRowData row = TableMetadata.ReadRow(rowData, DBT.Endian);
-                row.ID = key.Id;
-                row.Label = key.Label;
-                Rows.Add(row);
+                var result = TableMetadata.ReadRow(rowData, DBT.Endian);
+                result.Row.ID = key.Id;
+                result.Row.Label = key.Label;
+                Rows.Add(result.Row);
+
+                IsTableProperlyMapped = result.ReadAll;
             }
         }
 
