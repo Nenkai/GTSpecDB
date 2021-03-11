@@ -16,9 +16,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public PortPolish(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
         }
     }

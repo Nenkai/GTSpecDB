@@ -16,7 +16,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public Natune(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Unk", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
             if (folderType >= SpecDBFolder.GT5_JP3009)

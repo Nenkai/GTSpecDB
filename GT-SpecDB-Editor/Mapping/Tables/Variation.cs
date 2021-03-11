@@ -12,8 +12,27 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class Variation : TableMetadata
     {
-        public Variation(SpecDBFolder folderType)
+        public Variation(SpecDBFolder folderType, string locale)
         {
+            if (folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
+            {
+                Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.String, locale));
+                Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.String, locale));
+                Columns.Add(new ColumnMetadata("Name", DBColumnType.String, locale));
+
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Float));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Float));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Float));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Float));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Float));
+                Columns.Add(new ColumnMetadata("RGB", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("RGB2", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("RGB3", DBColumnType.UInt));
+                Columns.Add(new ColumnMetadata("RGB4", DBColumnType.UInt));
+                return;
+            }
+
             Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.UInt));
             Columns.Add(new ColumnMetadata("NameJpn", DBColumnType.String, "UnistrDB.sdb"));

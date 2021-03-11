@@ -100,8 +100,12 @@
     <Compile Include="Core\SpecDBTable.cs" />
     <Compile Include="Core\StringDatabase.cs" />
     <Compile Include="Mapping\Row.cs" />
+    <Compile Include="Mapping\Tables\CarVariation.cs" />
+    <Compile Include="Mapping\Tables\CourseName.cs" />
     <Compile Include="Mapping\Tables\NOS.cs" />
     <Compile Include="Mapping\Tables\PortPolish.cs" />
+    <Compile Include="Mapping\Tables\TireSize.cs" />
+    <Compile Include="Mapping\Tables\TunerList.cs" />
     <Compile Include="Mapping\Tables\Tuner.cs" />
     <Compile Include="Mapping\Tables\TunedCars.cs" />
     <Compile Include="Mapping\Tables\IndepThrottle.cs" />
@@ -110,6 +114,9 @@
     <Compile Include="Mapping\Tables\GenericCarInfo.cs" />
     <Compile Include="Mapping\Tables\TireForceVol.cs" />
     <Compile Include="Mapping\Tables\TCSC.cs" />
+    <Compile Include="Mapping\Tables\EnemyCars.cs" />
+    <Compile Include="Mapping\Tables\EngineBalance.cs" />
+    <Compile Include="Mapping\Tables\Wing.cs" />
     <Compile Include="Mapping\Tables\Wheel.cs" />
     <Compile Include="Mapping\Tables\Variation.cs" />
     <Compile Include="Mapping\Tables\TurbineKit.cs" />
@@ -151,6 +158,8 @@
     <Compile Include="Mapping\Tables\Race.cs" />
     <Compile Include="Mapping\Tables\RacingModify.cs" />
     <Compile Include="Mapping\Tables\RearTire.cs" />
+    <Compile Include="Mapping\Types\DBKey.cs" />
+    <Compile Include="Mapping\Types\DBUShort.cs" />
     <Compile Include="Mapping\Types\DBUInt.cs" />
     <Compile Include="Mapping\Types\DBSByte.cs" />
     <Compile Include="Mapping\Types\DBLong.cs" />

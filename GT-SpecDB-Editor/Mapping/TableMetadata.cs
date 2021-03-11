@@ -35,6 +35,8 @@ namespace GT_SpecDB_Editor.Mapping
                         row.ColumnData.Add(new DBSByte(sr.ReadSByte())); break;
                     case DBColumnType.Short:
                         row.ColumnData.Add(new DBShort(sr.ReadInt16())); break;
+                    case DBColumnType.UShort:
+                        row.ColumnData.Add(new DBUShort(sr.ReadUInt16())); break;
                     case DBColumnType.Int:
                         row.ColumnData.Add(new DBInt(sr.ReadInt32())); break;
                     case DBColumnType.UInt:
@@ -65,14 +67,15 @@ namespace GT_SpecDB_Editor.Mapping
                     case DBColumnType.SByte:
                         length++; break;
                     case DBColumnType.Short:
+                    case DBColumnType.UShort:
                         length += 2; break;
                     case DBColumnType.Int:
                     case DBColumnType.UInt:
                     case DBColumnType.Float:
-                        length += 4; break;
                     case DBColumnType.String:
                         length += 4; break;
                     case DBColumnType.Long:
+                    case DBColumnType.Key:
                         length += 8; break;
                 }
             }
@@ -108,10 +111,13 @@ namespace GT_SpecDB_Editor.Mapping
         Byte,
         SByte,
         Short,
+        UShort,
         Int,
         UInt,
         String,
         Long,
         Float,
+
+        Key,
     }
 }

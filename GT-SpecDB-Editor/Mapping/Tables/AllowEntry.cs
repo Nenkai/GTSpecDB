@@ -12,10 +12,11 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 {
     public class AllowEntry : TableMetadata
     {
-        public override string LabelPrefix { get; } = "";
+        public override string LabelPrefix { get; } = "reg_";
 
         public AllowEntry(SpecDBFolder folderType)
         {
+            // is actually uint + table index, but to make it simpler we make it a long instead
             Columns.Add(new ColumnMetadata("Entry0",  DBColumnType.Long));
             Columns.Add(new ColumnMetadata("Entry1",  DBColumnType.Long));
             Columns.Add(new ColumnMetadata("Entry2",  DBColumnType.Long));

@@ -100,7 +100,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("slipmuBy4", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("slipmuBy5", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("slipmuBy6", DBColumnType.Byte));
-                                                  
+                                                
             Columns.Add(new ColumnMetadata("sidemuBx1", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("sidemuBx2", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("sidemuBx3", DBColumnType.Byte));
@@ -115,46 +115,53 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("sidemuBy5", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("sidemuBy6", DBColumnType.Byte));
 
+            
             Columns.Add(new ColumnMetadata("lslide", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("cslide", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("sideforce", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sidedir", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("sslideAx1", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx3", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx4", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx5", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx6", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx7", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAx8", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("sslideAy1", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy3", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy4", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy5", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy6", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy7", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideAy8", DBColumnType.Byte));
+            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813)
+            {
+                Columns.Add(new ColumnMetadata("sidedir", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("sslideBx1", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx3", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx4", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx5", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx6", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx7", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBx8", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAx8", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("sslideBy1", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy2", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy3", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy4", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy5", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy6", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy7", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("sslideBy8", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideAy8", DBColumnType.Byte));
+
+                Columns.Add(new ColumnMetadata("sslideBx1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBx8", DBColumnType.Byte));
+
+
+                Columns.Add(new ColumnMetadata("sslideBy1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("sslideBy8", DBColumnType.Byte));
+            }
 
             if (folderType >= SpecDBFolder.GT5_JP3009)
             {

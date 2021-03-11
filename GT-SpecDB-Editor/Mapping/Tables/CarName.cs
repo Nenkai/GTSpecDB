@@ -19,6 +19,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("Name", DBColumnType.String, localeName));
             Columns.Add(new ColumnMetadata("Grade", DBColumnType.String, localeName));
             Columns.Add(new ColumnMetadata("ShortName", DBColumnType.String, localeName));
+
+            if (folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
+                Columns.Add(new ColumnMetadata("NarrationID", DBColumnType.Int));
         }
     }
 }

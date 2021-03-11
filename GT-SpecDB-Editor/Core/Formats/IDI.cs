@@ -29,6 +29,17 @@ namespace GT_SpecDB_Editor.Core.Formats
             }
         }
 
+        public int TableIndex
+        {
+            get
+            {
+                if (Endian == Endian.Little)
+                    return BinaryPrimitives.ReadInt32LittleEndian(Buffer.AsSpan(0x0C));
+                else
+                    return BinaryPrimitives.ReadInt32BigEndian(Buffer.AsSpan(0x0C));
+            }
+        }
+
         public IDI(byte[] buffer, Endian endian)
         { 
             Buffer = buffer;

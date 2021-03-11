@@ -23,16 +23,18 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("rideheightMAXR", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("rideheightMDFR", DBColumnType.Short));
 
-            Columns.Add(new ColumnMetadata("targetFrequencyFMin", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("targetFrequencyFMax", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("targetFrequencyFDF", DBColumnType.Short));
+            if (folderType > SpecDBFolder.GT5_TRIAL_JP2704)
+            {
+                Columns.Add(new ColumnMetadata("targetFrequencyFMin", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("targetFrequencyFMax", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("targetFrequencyFDF", DBColumnType.Short));
 
-            Columns.Add(new ColumnMetadata("targetFrequencyRMin", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("targetFrequencyRMax", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("targetFrequencyRDF", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("targetFrequencyRMin", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("targetFrequencyRMax", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("targetFrequencyRDF", DBColumnType.Short));
+            }
 
-            Columns.Add(new ColumnMetadata("UseCar (?)", DBColumnType.Short));
-
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
 
             Columns.Add(new ColumnMetadata("camberMINF", DBColumnType.Byte));
@@ -143,6 +145,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("damplevelF2BMAXR", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("damplevelF2BDFR", DBColumnType.Byte));
 
+
             Columns.Add(new ColumnMetadata("damplevelRR", DBColumnType.Byte));
 
             Columns.Add(new ColumnMetadata("damplevelF1RMINR", DBColumnType.Byte));
@@ -151,7 +154,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
             Columns.Add(new ColumnMetadata("damplevelF2RMINR", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("damplevelF2RMAXR", DBColumnType.Byte));
+
             Columns.Add(new ColumnMetadata("damplevelF2BRFR", DBColumnType.Byte));
+
 
             Columns.Add(new ColumnMetadata("unsprungmassF", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("unsprungmassR", DBColumnType.Byte));
@@ -168,37 +173,40 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
             Columns.Add(new ColumnMetadata("ActiveSuspensionType", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("springratelevelF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("springratelevelR", DBColumnType.Byte));
+            if (folderType > SpecDBFolder.GT5_TRIAL_JP2704)
+            {
+                Columns.Add(new ColumnMetadata("springratelevelF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("springratelevelR", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("rideheightlevelF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("rideheightlevelR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("rideheightlevelF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("rideheightlevelR", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("AutoDampingForce", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("AutoDampingForce", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("DampingRatioFBLevel", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFBDF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFBMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFBMax", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFBLevel", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFBDF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFBMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFBMax", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("DampingRatioFRLevel", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFRDF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFRMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioFRMax", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFRLevel", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFRDF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFRMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioFRMax", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("DampingRatioRBLevel", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRBDF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRBMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRRMax", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRBLevel", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRBDF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRBMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRRMax", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("DampingRatioRRLevel", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRRDF", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRRMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("DampingRatioRRMax", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRRLevel", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRRDF", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRRMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DampingRatioRRMax", DBColumnType.Byte));
 
-            Columns.Add(new ColumnMetadata("caster", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("targetFrequencyFLv", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("targetFrequencyRLv", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("caster", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("targetFrequencyFLv", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("targetFrequencyRLv", DBColumnType.Byte));
+            }
         }
     }
 }

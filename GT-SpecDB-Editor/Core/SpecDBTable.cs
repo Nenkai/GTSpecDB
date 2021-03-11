@@ -413,12 +413,43 @@ namespace GT_SpecDB_Editor.Core
 
                 TableMetadata = new CarName(db.SpecDBFolderType, locale);
             }
+            else if (TableName.StartsWith("CAR_VARIATION_"))
+            {
+                string locale = TableName.Split('_')[2];
+                if (locale.Equals("ALPHABET") || locale.Equals("JAPAN"))
+                    locale = "UnistrDB.sdb";
+                else
+                    locale += "_StrDB.sdb";
+                TableMetadata = new CarVariation(db.SpecDBFolderType, locale);
+            }
+            else if (TableName.StartsWith("COURSE_NAME_"))
+            {
+                string locale = TableName.Split('_')[2];
+                if (locale.Equals("ALPHABET") || locale.Equals("JAPAN"))
+                    locale = "UnistrDB.sdb";
+                else
+                    locale += "_StrDB.sdb";
+                TableMetadata = new CourseName(db.SpecDBFolderType, locale);
+            }
+            else if (TableName.StartsWith("VARIATION"))
+            {
+                string locale = "UnistrDB.sdb";
+                if (TableName.Length > 9)
+                {
+                    locale = TableName.Substring(9);
+                    if (!locale.Equals("ALPHABET") && !locale.Equals("JAPAN"))
+                        locale += "_StrDB.sdb";
+                }
+                TableMetadata = new Variation(db.SpecDBFolderType, locale);
+            }
             else
             {
                 switch (TableName)
                 {
                     case "AIR_CLEANER":
                         TableMetadata = new AirCleaner(db.SpecDBFolderType); break;
+                    case "ALLOW_ENTRY":
+                        TableMetadata = new AllowEntry(db.SpecDBFolderType); break;
                     case "ARCADEINFO_NORMAL":
                         TableMetadata = new ArcadeInfoNormal(db.SpecDBFolderType); break;
                     case "ASCC":
@@ -501,8 +532,6 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new TunedCars(db.SpecDBFolderType); break;
                     case "TUNER":
                         TableMetadata = new Tuner(db.SpecDBFolderType); break;
-                    case "VARIATION":
-                        TableMetadata = new Variation(db.SpecDBFolderType); break;
                     case "WHEEL":
                         TableMetadata = new Wheel(db.SpecDBFolderType); break;
                     // Unmapped, but havent seen having rows
@@ -517,7 +546,17 @@ namespace GT_SpecDB_Editor.Core
                     case "INTERCOOLER":
                         TableMetadata = new Intercooler(db.SpecDBFolderType); break;
                     case "PORTPOLISH":
-                        PortPolish = new PortPolish(db.SpecDBFolderType); break;
+                        TableMetadata = new PortPolish(db.SpecDBFolderType); break;
+                    case "WING":
+                        TableMetadata = new Wing(db.SpecDBFolderType); break;
+                    case "TUNER_LIST":
+                        TableMetadata = new TunerList(db.SpecDBFolderType); break;
+                    case "TIRESIZE":
+                        TableMetadata = new TireSize(db.SpecDBFolderType); break;
+                    case "ENEMY_CARS":
+                        TableMetadata = new EnemyCars(db.SpecDBFolderType); break;
+                    case "ENGINEBALANCE":
+                        TableMetadata = new EngineBalance(db.SpecDBFolderType); break;
                     default:
                         throw new NotSupportedException("This table is not yet mapped.");
                 }

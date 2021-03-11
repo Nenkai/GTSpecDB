@@ -26,16 +26,20 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("performanceF", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("performanceR", DBColumnType.Short));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3009 || folderType <= SpecDBFolder.GT4_PREMIUM_JP2560)
             {
                 Columns.Add(new ColumnMetadata("treadF", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("treadR", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("width", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("dwidth", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("original_rideHeight_F", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("original_rideHeight_R", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("electricMotor", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+                if (folderType >= SpecDBFolder.GT5_JP3009)
+                {
+                    Columns.Add(new ColumnMetadata("original_rideHeight_F", DBColumnType.Short));
+                    Columns.Add(new ColumnMetadata("original_rideHeight_R", DBColumnType.Short));
+                
+                    Columns.Add(new ColumnMetadata("electricMotor", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+                }
             }
 
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
@@ -79,6 +83,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("originalClR", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("batteryCapacity", DBColumnType.Byte));
             }
+
         }
     }
 }

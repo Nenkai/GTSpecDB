@@ -14,6 +14,14 @@ namespace GT_SpecDB_Editor.Mapping.Tables
     {
         public Wheel(SpecDBFolder folderType)
         {
+            if (folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
+            {
+                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Byte));
+                return;
+            }
+
             Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.UInt));
             if (folderType >= SpecDBFolder.GT5_JP3009)
             {

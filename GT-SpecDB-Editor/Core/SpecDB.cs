@@ -620,6 +620,12 @@ namespace GT_SpecDB_Editor.Core
         [Description("Gran Turismo HD Concept (EU)")]
         GT5_TRIAL_EU2704,
 
+        [Description("Gran Turismo HD Concept (US)")]
+        GT5_TRIAL_US2704,
+
+        [Description("Gran Turismo HD Concept (JP)")]
+        GT5_TRIAL_JP2704,
+
         [Description("Gran Turismo 5 Prologue")]
         GT5_PROLOGUE2813,
 

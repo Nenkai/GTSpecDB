@@ -275,6 +275,8 @@ namespace GT_SpecDB_Editor
                         newRow.ColumnData.Add(new DBSByte(0)); break;
                     case DBColumnType.Short:
                         newRow.ColumnData.Add(new DBShort(0)); break;
+                    case DBColumnType.UShort:
+                        newRow.ColumnData.Add(new DBUShort(0)); break;
                     case DBColumnType.Int:
                         newRow.ColumnData.Add(new DBInt(0)); break;
                     case DBColumnType.UInt:
@@ -387,16 +389,25 @@ namespace GT_SpecDB_Editor
                 }
                 else if (dataCol.ColumnType == DBColumnType.Short)
                 {
-                    if (!int.TryParse(newInput, out int res))
+                    if (!short.TryParse(newInput, out short res))
                     {
                         MessageBox.Show($"Could not parse 'Short' type. It must be number between {short.MinValue} and {short.MaxValue}.", "Validation Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                         e.Cancel = true;
                     }
                 }
+                else if (dataCol.ColumnType == DBColumnType.Short)
+                {
+                    if (!ushort.TryParse(newInput, out ushort res))
+                    {
+                        MessageBox.Show($"Could not parse 'UShort' type. It must be number between {ushort.MinValue} and {ushort.MaxValue}.", "Validation Error",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                        e.Cancel = true;
+                    }
+                }
                 else if (dataCol.ColumnType == DBColumnType.Byte)
                 {
-                    if (!int.TryParse(newInput, out int res))
+                    if (!byte.TryParse(newInput, out byte res))
                     {
                         MessageBox.Show($"Could not parse 'Unsigned Byte' type. It must be a number between {byte.MinValue} and {byte.MaxValue}.", "Validation Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -405,7 +416,7 @@ namespace GT_SpecDB_Editor
                 }
                 else if (dataCol.ColumnType == DBColumnType.SByte)
                 {
-                    if (!int.TryParse(newInput, out int res))
+                    if (!sbyte.TryParse(newInput, out sbyte res))
                     {
                         MessageBox.Show($"Could not parse 'Signed Byte' type. It must be a number between {sbyte.MinValue} and {sbyte.MaxValue}.", "Validation Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -494,6 +505,8 @@ namespace GT_SpecDB_Editor
                         newRow.ColumnData.Add(new DBSByte(((DBSByte)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Short:
                         newRow.ColumnData.Add(new DBShort(((DBShort)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.UShort:
+                        newRow.ColumnData.Add(new DBUShort(((DBUShort)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Int:
                         newRow.ColumnData.Add(new DBInt(((DBInt)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.UInt:
@@ -741,10 +754,20 @@ namespace GT_SpecDB_Editor
             FilterString = "";
             mi_SavePartsInfo.IsEnabled = true;
             lb_Tables.Items.Clear();
+
             foreach (var table in CurrentDatabase.Tables)
-                lb_Tables.Items.Add(table.Key);
+                lb_Tables.Items.Add($"{table.Key}");
 
             this.Title = $"{WindowTitle} - {CurrentDatabase.SpecDBFolderType} [{CurrentDatabase.SpecDBFolderType.Humanize()}]";
+        }
+
+        private void lb_Tables_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (lb_Tables.SelectedIndex == -1)
+                return;
+
+            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+            cm_TableIndex.Header = $"Table Index: {table.IDI.TableIndex}";
         }
     }
 }

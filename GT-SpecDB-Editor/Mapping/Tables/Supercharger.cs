@@ -20,7 +20,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
             if (folderType >= SpecDBFolder.GT5_JP3009)
                 Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk (UseCar?)", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("category", DBColumnType.Byte));
         }
     }

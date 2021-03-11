@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT_SpecDB_Editor"
         mc:Ignorable="d"
-        Title="Gran Turismo Spec Database Editor" Height="640" Width="960" Drop="Window_Drop">
+        Title="Gran Turismo Spec Database Editor" Height="640" Width="960" AllowDrop="True" Drop="Window_Drop">
     <Grid>
         <DockPanel LastChildFill="True">
             <Menu DockPanel.Dock="Top" >
@@ -71,10 +71,11 @@
                 </StatusBarItem>
             </StatusBar>
             <DockPanel DockPanel.Dock="Bottom" LastChildFill="True">
-                <ListBox Name="lb_Tables" DockPanel.Dock="Left" Width="160" SelectionChanged="lb_Tables_Selected">
+                <ListBox Name="lb_Tables" DockPanel.Dock="Left" Width="160" SelectionChanged="lb_Tables_Selected" ContextMenuOpening="lb_Tables_ContextMenuOpening">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Name="cm_DumpTable" Header="Dump Table Data" Click="cm_DumpTable_Click"/>
+                            <MenuItem Name="cm_TableIndex" Header="N/A" IsEnabled="false"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

@@ -23,7 +23,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             else
             {
                 Columns.Add(new ColumnMetadata("UnkStr1", DBColumnType.String, "UnistrDB.sdb"));
-                if (folderType == SpecDBFolder.GT5_TRIAL_EU2704)
+                if (folderType >= SpecDBFolder.GT5_TRIAL_EU2704 && folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
                 {
                     Columns.Add(new ColumnMetadata("UnkStr2", DBColumnType.String, "UnistrDB.sdb"));
                     Columns.Add(new ColumnMetadata("UnkStr3", DBColumnType.String, "UnistrDB.sdb"));

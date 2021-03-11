@@ -16,7 +16,10 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public Engine(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("soundNum", DBColumnType.Int));
+            // soundnum for newer games goes here since they ran out of space on the short one (see below)
+            if (folderType >= SpecDBFolder.GT5_TRIAL_EU2704)
+                Columns.Add(new ColumnMetadata("soundNum", DBColumnType.Int));
+
             Columns.Add(new ColumnMetadata("discplacement", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("enginetype", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("cam", DBColumnType.String, "UnistrDB.sdb"));
@@ -24,19 +27,17 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("psrpm", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("torquerpm", DBColumnType.String, "UnistrDB.sdb"));
 
-            if (folderType < SpecDBFolder.GT5_JP3009)
-            {
-                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Unk", DBColumnType.Byte));
-            }
+            if (folderType < SpecDBFolder.GT5_JP3009 // Kiosk demo, 5 prologue has it twice..
+                && (folderType < SpecDBFolder.GT5_TRIAL_EU2704 || folderType > SpecDBFolder.GT5_TRIAL_JP2704)) // Except gthd which already had the int but not the short what the fuck PD?
+                Columns.Add(new ColumnMetadata("soundNum", DBColumnType.UShort)); // GT4 and older has it as short
 
             Columns.Add(new ColumnMetadata("psvalue", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquevalue", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("idlerpm", DBColumnType.Short));
 
             if (folderType >= SpecDBFolder.GT5_PROLOGUE2813)
-                Columns.Add(new ColumnMetadata("torqueA", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("idlerpm", DBColumnType.Short));
 
+            Columns.Add(new ColumnMetadata("torqueA", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueB", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueC", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torqueD", DBColumnType.Short));

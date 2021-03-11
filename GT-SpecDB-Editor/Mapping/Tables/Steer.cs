@@ -57,8 +57,13 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("dirtgraphy6", DBColumnType.Byte));
 
             Columns.Add(new ColumnMetadata("steerlimit", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("steerlimitMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("steerlimitMax", DBColumnType.Byte));
+
+            if (folderType > SpecDBFolder.GT5_TRIAL_JP2704)
+            {
+                Columns.Add(new ColumnMetadata("steerlimitMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("steerlimitMax", DBColumnType.Byte));
+            }
+
             if (folderType >= SpecDBFolder.GT5_JP3009)
                 Columns.Add(new ColumnMetadata("steerMaxVisual", DBColumnType.Byte));
         }
