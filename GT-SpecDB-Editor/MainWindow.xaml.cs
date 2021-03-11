@@ -215,6 +215,10 @@ namespace GT_SpecDB_Editor
             if (lb_Tables.SelectedIndex == -1)
                 return;
 
+            // Ensure to cancel the edit to properly allow filtering reset
+            dg_Rows.CancelEdit();
+            dg_Rows.CancelEdit();
+
             var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
 
             if (!table.IsLoaded)
@@ -545,7 +549,12 @@ namespace GT_SpecDB_Editor
         private void tb_ColumnFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (tb_ColumnFilter.Text != null && tb_ColumnFilter.Text.Length != 1)
+            {
+                // Apparently only twice works, so lol
+                dg_Rows.CancelEdit();
+                dg_Rows.CancelEdit();
                 FilterString = tb_ColumnFilter.Text;
+            }
         }
 
         private void dg_Rows_PreviewKeyDown(object sender, KeyEventArgs e)
