@@ -49,7 +49,7 @@ namespace GT_SpecDB_Editor.Core
         /// <param name="keyCode"></param>
         /// <param name="rowData"></param>
         /// <returns></returns>
-        public int GetRowByCode(int keyCode, out Span<byte> rowData)
+        public int GetRowN(int keyCode, out Span<byte> rowData)
         {
             rowData = default;
 
@@ -70,7 +70,7 @@ namespace GT_SpecDB_Editor.Core
                 if ((DBT.VersionHigh & 1) == 0)
                     rowData = sr.ReadBytes(dataLength); // memcpy(retSdbIndex,offs,dataLength);
                 else
-                    rowData = DBT.GetRowDataFromWhatever(ref sr);
+                    rowData = DBT.ExtractRow(ref sr);
 
             }
 
@@ -104,7 +104,7 @@ namespace GT_SpecDB_Editor.Core
                 if ((DBT.VersionHigh & 1) == 0)
                     rowData = sr.ReadBytes(dataLength); // memcpy(retSdbIndex,offs,dataLength);
                 else
-                    rowData = DBT.GetRowDataFromWhatever(ref sr);
+                    rowData = DBT.ExtractRow(ref sr);
 
             }
 
@@ -152,11 +152,11 @@ namespace GT_SpecDB_Editor.Core
         /// <param name="label">Label name.</param>
         /// <returns></returns>
         public int GetIDOfLabel(string label)
-            => IDI.GetIDOfLabel(label);
+            => IDI.SearchLabelID(label);
 
         #region Initializers
 
-        public void ReadDBTMapOffsets(SpecDB specDb)
+        public void AddressInitialize(SpecDB specDb)
         {
             //if (TableName.Equals("CAR_NAME_"))
             //    TableName += specDb.LocaleName;

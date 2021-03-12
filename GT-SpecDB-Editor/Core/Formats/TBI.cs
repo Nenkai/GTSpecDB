@@ -11,6 +11,9 @@ using Syroot.BinaryData.Memory;
 
 namespace GT_SpecDB_Editor.Core.Formats
 {
+    /// <summary>
+    /// Parts/Table Information.
+    /// </summary>
     public class TBI
     {
         public Endian Endian { get; }

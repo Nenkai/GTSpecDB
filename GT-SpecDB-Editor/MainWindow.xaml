@@ -13,7 +13,8 @@
                     <MenuItem Header="Open SpecDB Folder" Click="OpenSpecDB_MenuItem_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_SaveTable" IsEnabled="False" Header="Rebuild Current Table" Click="SaveCurrentTable_Click"/>
-                    <MenuItem Name="mi_SavePartsInfo" IsEnabled="False" Header="Save PartsInfo.tbi/tbd (requires all tables)" Click="SavePartsInfo_Click"/>
+                    <MenuItem Name="mi_SavePartsInfo" IsEnabled="False" Header="Save PartsInfo.tbi/tbd (GT5, requires all tables)" Click="SavePartsInfo_Click"/>
+                    <MenuItem Name="mi_SaveCarsParts" IsEnabled="False" Header="Save Parts Information (CARS folder for GT4, requires all tables)" Click="SaveCarsParts_Click"/>
                     <Separator/>
                     <MenuItem Name="mi_ExportTable" IsEnabled="False" Header="Export Current Table (.txt)" Click="ExportCurrentTable_Click"/>
                     <MenuItem Name="mi_ExportTableCSV" IsEnabled="False" Header="Export Current Table (.csv)" Click="ExportCurrentTableCSV_Click"/>

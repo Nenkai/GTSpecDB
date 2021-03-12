@@ -11,6 +11,9 @@ using Syroot.BinaryData.Memory;
 
 namespace GT_SpecDB_Editor.Core.Formats
 {
+    /// <summary>
+    /// Label/ID Information.
+    /// </summary>
     public class IDI
     {
         public Endian Endian { get; }
@@ -46,7 +49,7 @@ namespace GT_SpecDB_Editor.Core.Formats
             Endian = endian;
         }
 
-        public int GetIDOfLabel(string label)
+        public int SearchLabelID(string label)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
             sr.Position = 4;
@@ -65,7 +68,7 @@ namespace GT_SpecDB_Editor.Core.Formats
                     mid = max / 2; // Start at the middle
 
                     // Depending of the result of the string comparison, we travel forwards or backwards as fast lookup
-                    int compResult = GetLabelByIndexAndCompare(label, mid, label.Length);
+                    int compResult = CompareIDString(label, mid, label.Length);
                     if (compResult == 0) // Found match
                     {
                         if (mid < 0 || mid > keyCount)
@@ -89,7 +92,7 @@ namespace GT_SpecDB_Editor.Core.Formats
             return -1;
         }
 
-        public int GetLabelByIndexAndCompare(string label, int index, int labelLength)
+        public int CompareIDString(string label, int index, int labelLength)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
 

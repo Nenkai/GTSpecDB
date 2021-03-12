@@ -9,6 +9,9 @@ using Syroot.BinaryData.Memory;
 
 namespace GT_SpecDB_Editor.Core.Formats
 {
+    /// <summary>
+    /// String Database.
+    /// </summary>
     public class SDB
     {
         private Endian _endian;

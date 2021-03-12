@@ -19,6 +19,9 @@ namespace GT_SpecDB_Editor.Mapping
 
         public List<ColumnMetadata> Columns { get; set; } = new List<ColumnMetadata>();
 
+        private ColumnMetadata _categoryColumn;
+        public ColumnMetadata CategoryColumn { get; private set; }
+
         public (SpecDBRowData Row, bool ReadAll) ReadRow(Span<byte> rowData, Endian endian)
         {
             var sr = new SpanReader(rowData, endian);
@@ -53,6 +56,13 @@ namespace GT_SpecDB_Editor.Mapping
             }
 
             return (row, sr.IsEndOfSpan);
+        }
+
+        public ColumnMetadata GetCategoryColumn()
+        {
+            if (_categoryColumn is null)
+                _categoryColumn = Columns.Find(c => c.ColumnName.Equals("category", StringComparison.OrdinalIgnoreCase));
+            return _categoryColumn;
         }
 
         public int GetColumnSize()

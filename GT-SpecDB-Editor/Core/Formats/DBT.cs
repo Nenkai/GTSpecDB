@@ -6,6 +6,9 @@ using Syroot.BinaryData.Memory;
 
 namespace GT_SpecDB_Editor.Core.Formats
 {
+    /// <summary>
+    /// Database Table.
+    /// </summary>
     public class DBT
     {
         public const int HeaderSize = 0x10;
@@ -98,14 +101,14 @@ namespace GT_SpecDB_Editor.Core.Formats
             return -1;
         }
 
-        public Span<byte> GetRowDataFromWhatever(ref SpanReader sr)
+        public Span<byte> ExtractRow(ref SpanReader sr)
         {
-            GetEntryData(ref sr, out Span<byte> entryDataBuffer);
-            return GetRowDataFromEntryData(entryDataBuffer);
+            ExtractHuffmanPart(ref sr, out Span<byte> entryDataBuffer);
+            return ExtractDiffDictPart(entryDataBuffer);
         }
 
 
-        Span<byte> GetRowDataFromEntryData(Span<byte> entryData)
+        Span<byte> ExtractDiffDictPart(Span<byte> entryData)
         {
             Span<byte> rawEntryData = entryData.Slice(1);
             byte type = (byte)(entryData[0] >> 6);
@@ -148,11 +151,11 @@ namespace GT_SpecDB_Editor.Core.Formats
                 return rowData;
             }
 
-            throw new Exception($"GetRowDataFromEntryData Errored: got unsupported type {type}");
+            throw new Exception($"ExtractDiffDictPart Errored: got unsupported type {type}");
         }
 
 
-        public int GetEntryData(ref SpanReader sr, out Span<byte> outEntryData)
+        public int ExtractHuffmanPart(ref SpanReader sr, out Span<byte> outEntryData)
         {
             byte entryDataLength = sr.Span[sr.Position];
             outEntryData = new byte[entryDataLength];
@@ -177,14 +180,14 @@ namespace GT_SpecDB_Editor.Core.Formats
                     val >>= totalCount - (current * 8);
 
                     Span<byte> b = outEntryData.Slice(i);
-                    totalCount += (int)FindEntryData(val, ref b);
+                    totalCount += (int)ProcessHuffmanCode(val, ref b);
                 }
             }
             sr.Position = basePos;
             return entryDataLength;
         }
 
-        public uint FindEntryData(uint val, ref Span<byte> outEntryData)
+        public uint ProcessHuffmanCode(uint val, ref Span<byte> outEntryData)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
             sr.Position = (int)(RawEntryInfoMapOffset + (byte)val * 2);
@@ -194,7 +197,7 @@ namespace GT_SpecDB_Editor.Core.Formats
             if (next == 0)
             {
                 // Found it?
-                next = SearchByKey(val, ref outEntryData);
+                next = SearchHuffmanCode(val, ref outEntryData);
             }
             else
                 // Not yet
@@ -203,7 +206,7 @@ namespace GT_SpecDB_Editor.Core.Formats
             return next;
         }
 
-        public uint SearchByKey(uint key, ref Span<byte> outEntryData)
+        public uint SearchHuffmanCode(uint key, ref Span<byte> outEntryData)
         {
             for (uint bitIndex = 9; bitIndex < 32; bitIndex++) 
             {

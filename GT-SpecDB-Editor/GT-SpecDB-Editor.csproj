@@ -94,6 +94,7 @@
     <Compile Include="Core\Formats\DBT.cs" />
     <Compile Include="Core\Formats\IDI.cs" />
     <Compile Include="Core\Formats\TBI.cs" />
+    <Compile Include="Core\PartsInfoBuilder.cs" />
     <Compile Include="Core\RowKey.cs" />
     <Compile Include="Core\Formats\SDB.cs" />
     <Compile Include="Core\SpecDB.cs" />

@@ -172,7 +172,41 @@ namespace GT_SpecDB_Editor
                     progressWindow.progressBar.Value = prog.Index;
                 });
 
-                var task = CurrentDatabase.SavePartsInfo(progressWindow, progress, dlg.FileName);
+                var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, true, dlg.FileName);
+                progressWindow.ShowDialog();
+                await task;
+            }
+        }
+
+        private async void SaveCarsParts_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select folder to save the CARS folder");
+            dlg.EnsurePathExists = true;
+            dlg.EnsureFileExists = true;
+            dlg.IsFolderPicker = true;
+
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out SpecDBTable genericCar))
+                {
+                    MessageBox.Show($"Can not save the CARS folder as GENERIC_CAR is missing.", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (!genericCar.IsLoaded)
+                    genericCar.LoadAllRows(CurrentDatabase);
+
+                var progressWindow = new ProgressWindow();
+                progressWindow.Title = "Saving Parts Info";
+                progressWindow.progressBar.Maximum = genericCar.Rows.Count;
+                var progress = new Progress<(int Index, string CarLabel)>(prog =>
+                {
+                    progressWindow.lbl_progress.Content = $"{prog.Index} of {progressWindow.progressBar.Maximum}";
+                    progressWindow.currentElement.Content = prog.CarLabel;
+                    progressWindow.progressBar.Value = prog.Index;
+                });
+
+                var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, false, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
             }
@@ -761,7 +795,8 @@ namespace GT_SpecDB_Editor
             dg_Rows.ItemsSource = null;
             tb_ColumnFilter.Text = "";
             FilterString = "";
-            mi_SavePartsInfo.IsEnabled = true;
+            mi_SavePartsInfo.IsEnabled = CurrentDatabase.SpecDBFolderType >= SpecDBFolder.GT5_JP3009;
+            mi_SaveCarsParts.IsEnabled = CurrentDatabase.SpecDBFolderType <= SpecDBFolder.GT5_TRIAL_JP2704;
             lb_Tables.Items.Clear();
 
             foreach (var table in CurrentDatabase.Tables)
