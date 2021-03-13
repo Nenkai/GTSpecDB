@@ -27,7 +27,8 @@ namespace GT_SpecDB_Editor.Core
 
                 var strDb = new StringDatabase();
                 bs.Position = 0x08;
-                strDb.Endian = bs.ReadInt16() == 1 ? Endian.Little : Endian.Big;
+                strDb.Version = bs.ReadInt32();
+                strDb.Endian = strDb.Version == 1 ? Endian.Little : Endian.Big;
                 if (strDb.Endian == Endian.Big)
                     bs.ByteConverter = ByteConverter.Big;
 

@@ -592,7 +592,7 @@ namespace GT_SpecDB_Editor.Core
                     if (dataType is DBString str)
                     {
                         // Lazy load
-                        if (!db.StringDatabases.TryGetValue(str.FileName, out StringDatabase strDb))
+                     if (!db.StringDatabases.TryGetValue(str.FileName, out StringDatabase strDb))
                         {
                             var newStrDb = StringDatabase.LoadFromFile(Path.Combine(db.FolderName, str.FileName));
                             db.StringDatabases.Add(str.FileName, newStrDb);
@@ -696,7 +696,6 @@ namespace GT_SpecDB_Editor.Core
                 bs.WriteString("GTST", StringCoding.Raw);
                 bs.WriteInt32(strDb.Strings.Count);
                 bs.WriteInt32(strDb.Version);
-                bs.Position += 0x4;
 
                 long lastDataPos = SDB.HeaderSize + (strDb.Strings.Count * sizeof(uint));
                 var strTable = GetStringDbTable(strDb.Strings);
