@@ -17,7 +17,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         public CarVariation(SpecDBFolder folderType, string localeName)
         {
             Columns.Add(new ColumnMetadata("VariationID", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Var.Tbl.Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Var_Tbl_Index", DBColumnType.Int));
         }
     }
 }

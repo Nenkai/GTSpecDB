@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.IO;
 using System.ComponentModel;
 
+using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
 
@@ -225,23 +226,50 @@ namespace GT_SpecDB_Editor
 
         private void ExportCurrentTable_Click(object sender, RoutedEventArgs e)
         {
-            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select file to export the table as TXT");
+            CommonSaveFileDialog dlg = new CommonSaveFileDialog("Select file to export the table as TXT");
             dlg.EnsurePathExists = true;
             dlg.EnsureFileExists = true;
             dlg.DefaultFileName = $"{CurrentTable.TableName}.txt";
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-                CurrentTable.ExportTableText(dlg.FileName);
+                CurrentTable.ExportTableText(((ShellFile)dlg.FileAsShellObject).Path);
         }
 
         private void ExportCurrentTableCSV_Click(object sender, RoutedEventArgs e)
         {
-            CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select file to export the table as CSV");
+            CommonSaveFileDialog dlg = new CommonSaveFileDialog("Select file to export the table as CSV");
             dlg.EnsurePathExists = true;
             dlg.EnsureFileExists = true;
             dlg.DefaultFileName = $"{CurrentTable.TableName}.csv";
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-                CurrentTable.ExportTableCSV(dlg.FileName);
+                CurrentTable.ExportTableCSV(((ShellFile)dlg.FileAsShellObject).Path);
+        }
+
+        private async void ExportCurrentTableSQLite_Click(object sender, RoutedEventArgs e)
+        {
+            CommonSaveFileDialog dlg = new CommonSaveFileDialog("File to export the table as SQLite");
+            dlg.EnsurePathExists = true;
+            dlg.EnsureFileExists = true;
+            dlg.DefaultFileName = $"{CurrentDatabase.SpecDBName}.sqlite";
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                var progressWindow = new ProgressWindow();
+                progressWindow.Title = "Exporting SpecDB to SQLite";
+                progressWindow.progressBar.Maximum = CurrentDatabase.Tables.Count;
+
+                var progress = new Progress<(int Index, string progressName)>(prog =>
+                {
+                    progressWindow.lbl_progress.Content = $"{prog.Index} of {CurrentDatabase.Tables.Count} tables";
+                    progressWindow.currentElement.Content = prog.progressName;
+                    progressWindow.progressBar.Value = (double)prog.Index;
+                });
+
+                var exporter = new SQLiteExporter(CurrentDatabase, CurrentDatabase.SpecDBName, progress);
+                var task = exporter.ExportToSQLiteAsync(progressWindow, ((ShellFile)dlg.FileAsShellObject).Path);
+                progressWindow.ShowDialog();
+                if (await task)
+                    progressName.Text = "Successfully exported to SQLite!";
+            }
         }
 
         private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
@@ -290,6 +318,7 @@ namespace GT_SpecDB_Editor
             mi_SaveTable.IsEnabled = true;
             mi_ExportTable.IsEnabled = true;
             mi_ExportTableCSV.IsEnabled = true;
+            
             ToggleToolbarControls(true);
             
             statusName.Text = $"Loaded '{table.TableName}' with {CurrentTable.Rows.Count} rows.";
@@ -702,7 +731,7 @@ namespace GT_SpecDB_Editor
 
         public bool FilterTask(object value)
         {
-            if (string.IsNullOrEmpty(FilterString) || FilterString.Length < 2)
+            if (string.IsNullOrEmpty(FilterString) || FilterString.Length < 3)
                 return true;
 
             if (value is SpecDBRowData row && row.ColumnData.Count != 0)
@@ -797,6 +826,7 @@ namespace GT_SpecDB_Editor
             FilterString = "";
             mi_SavePartsInfo.IsEnabled = CurrentDatabase.SpecDBFolderType >= SpecDBFolder.GT5_JP3009;
             mi_SaveCarsParts.IsEnabled = CurrentDatabase.SpecDBFolderType <= SpecDBFolder.GT5_TRIAL_JP2704;
+            mi_ExportTableSQLite.IsEnabled = true;
             lb_Tables.Items.Clear();
 
             foreach (var table in CurrentDatabase.Tables)

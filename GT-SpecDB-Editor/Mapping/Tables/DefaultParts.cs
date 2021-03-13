@@ -31,7 +31,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("BrakeCtrl", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Susp.", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Susp", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ASCC", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
@@ -39,9 +39,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Chassis", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("R.Modify", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("R_Modify", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("L.weight", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("LWeight", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Steer", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
@@ -55,7 +55,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Turbo", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Displ.", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Displ", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Computer", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
@@ -68,18 +68,18 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("Flywheel", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Propel.", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Propel", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("LSD", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
             
-                Columns.Add(new ColumnMetadata("F. Tire", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("F_Tire", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("R. Tire", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("R_Tire", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("F.Tire_G", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("F_Tire_G", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("R.Tire_G", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("R_Tire_G", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
 
                 if (folderType >= SpecDBFolder.GT5_JP3009)
@@ -95,7 +95,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("Freedom", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                    Columns.Add(new ColumnMetadata("L.Weight Window", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("LWeight Window", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("Bonnet", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));

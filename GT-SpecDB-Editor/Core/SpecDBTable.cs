@@ -451,6 +451,7 @@ namespace GT_SpecDB_Editor.Core
                     case "ALLOW_ENTRY":
                         TableMetadata = new AllowEntry(db.SpecDBFolderType); break;
                     case "ARCADEINFO_NORMAL":
+                    case "ARCADEINFO_TUNED":
                         TableMetadata = new ArcadeInfoNormal(db.SpecDBFolderType); break;
                     case "ASCC":
                         TableMetadata = new ASCC(db.SpecDBFolderType); break;
@@ -558,7 +559,7 @@ namespace GT_SpecDB_Editor.Core
                     case "ENGINEBALANCE":
                         TableMetadata = new EngineBalance(db.SpecDBFolderType); break;
                     default:
-                        throw new NotSupportedException("This table is not yet mapped.");
+                        throw new NotSupportedException($"This table ({TableName}) is not yet mapped.");
                 }
 
                 for (int i = 0; i < TableMetadata.Columns.Count; i++)

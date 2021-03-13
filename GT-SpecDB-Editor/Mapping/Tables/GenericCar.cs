@@ -27,7 +27,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         // 26 = category
         public GenericCar(SpecDBFolder folderType)
         {
-            Columns.Add(new ColumnMetadata("Df.Tbl Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Df_Tbl_Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("DefaultParts", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Int));
 

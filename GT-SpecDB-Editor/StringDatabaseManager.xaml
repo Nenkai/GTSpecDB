@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT_SpecDB_Editor"
         mc:Ignorable="d"
-        Title="Select String.." Height="580.206" Width="378" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Select String.." Height="580.206" Width="378" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid>
 
         <TextBox Height="20" Margin="10,10,94,0" Name="tb_NewString" VerticalAlignment="Top"/>

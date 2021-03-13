@@ -17,32 +17,32 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             if (folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
             {
                 Columns.Add(new ColumnMetadata("CourseID", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Crs.Tbl.Index", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Crs_Tbl_Index", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("AllowEntry", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("AlEnt.Tbl.Index", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("AlEnt_Tbl_Index", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Mins.", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Gold.MS", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Silv.MS", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Bron.MS", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Minutes", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Gold_MS", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Silv_MS", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Bron_MS", DBColumnType.Short));
 
                 // 20 to 2a shorts -> prize
                 Columns.Add(new ColumnMetadata("Prize1st", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("2nd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("3rd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("4th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("5th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("6th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("P2nd", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("P3rd", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("P4th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("P5th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("P6th", DBColumnType.Short));
 
                 Columns.Add(new ColumnMetadata("ChampPrize", DBColumnType.Short));
 
                 // 2e to 36 shorts -> launch pos
                 Columns.Add(new ColumnMetadata("StartPos1st", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("2nd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("3rd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("4th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("5th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("S2nd", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("S3rd", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("S4th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("S5th", DBColumnType.Short));
 
                 Columns.Add(new ColumnMetadata("YearMin", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("YearMax", DBColumnType.Short));
@@ -79,23 +79,23 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("Skill1", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill2", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill3", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill4", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill5", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill6", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill7", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill8", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill9", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill10", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill11", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill12", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Skill13", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk8", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk9", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk10", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk11", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk12", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Sk13", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Boost?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Boost?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Boost?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
@@ -137,11 +137,11 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("Delay1st", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("2nd", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("3rd", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("4th", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("5th", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("6th", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("D2nd", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("D3rd", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("D4th", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("D5th", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("D6th", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("PowerMax", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("WeightMax", DBColumnType.Byte));

@@ -16,9 +16,9 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         {
             Columns.Add(new ColumnMetadata("Unk", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("CarCode", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Def. Parts Table Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("DefParts_Tbl_Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Def. Param Table Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("DefParam_Tbl_Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
 
         }

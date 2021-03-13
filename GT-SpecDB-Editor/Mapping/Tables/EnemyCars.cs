@@ -15,11 +15,11 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         public EnemyCars(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("GenericCar", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Gen.Tbl.Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Gen_Tbl_Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("DefaultParts", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("DefPrs.Tbl.Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("DefPrs_Tbl_Index", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("DefaultParam", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("DefPrm.Tbl.Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("DefPrm_Tbl_Index", DBColumnType.Int));
         }
     }
 }
