@@ -55,20 +55,21 @@ namespace GT_SpecDB_Editor.Core
          * Label: name of the row i.e: _117_coupe_68. 
          */
 
-        public SpecDB(string folderName, bool loadAsOriginalImplementation)
+
+        public SpecDB(string folderName, SpecDBFolder type, bool loadAsOriginalImplementation)
         {
             FolderName = folderName;
-            try
+
+            if (folderName.Length > 4 && int.TryParse(folderName.Substring(folderName.Length - 4, 4), out int vers))
+                Version = vers;
+            else
             {
-                Version = int.Parse(folderName.Substring(folderName.Length - 4, 4));
-            }
-            catch (Exception)
-            {
-                throw new InvalidOperationException("Could not parse SpecDB version from folder, not a valid SpecDB.");
+                string typeName = type.ToString();
+                Version = int.Parse(typeName.Substring(typeName.Length - 4, 4));
             }
 
-            if (Enum.TryParse(Path.GetFileName(FolderName), out SpecDBFolder folderType))
-                SpecDBFolderType = folderType;
+
+            SpecDBFolderType = type;
 
             SpecDBName = Path.GetFileNameWithoutExtension(folderName);
             LoadingAsOriginalImplementation = loadAsOriginalImplementation;
@@ -85,12 +86,20 @@ namespace GT_SpecDB_Editor.Core
             }
         }
 
-        public static SpecDB LoadFromSpecDBFolder(string folderName, bool loadAsOriginalImplementation)
+        public static SpecDBFolder? DetectSpecDBType(string folderName)
+        {
+            if (Enum.TryParse(folderName, out SpecDBFolder folderType))
+                return folderType;
+
+            return null;
+        }
+
+        public static SpecDB LoadFromSpecDBFolder(string folderName, SpecDBFolder specDbType, bool loadAsOriginalImplementation)
         {
             if (!Directory.Exists(folderName))
                 throw new DirectoryNotFoundException("SpecDB directory is not found.");
 
-            SpecDB db = new SpecDB(folderName, loadAsOriginalImplementation);
+            SpecDB db = new SpecDB(folderName, specDbType, loadAsOriginalImplementation);
             if (db.LoadingAsOriginalImplementation)
             {
                 db.ReadAllTables();

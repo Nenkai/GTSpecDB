@@ -442,6 +442,17 @@ namespace GT_SpecDB_Editor.Core
                 }
                 TableMetadata = new Variation(db.SpecDBFolderType, locale);
             }
+            else if (TableName.StartsWith("RIDER_EQUIPMENT"))
+            {
+                string locale = "UnistrDB.sdb";
+                if (TableName.Length > 15)
+                {
+                    locale = TableName.Substring(15);
+                    if (!locale.Equals("ALPHABET") && !locale.Equals("JAPAN"))
+                        locale += "_StrDB.sdb";
+                }
+                TableMetadata = new RiderEquipment(db.SpecDBFolderType, locale);
+            }
             else
             {
                 switch (TableName)
@@ -558,6 +569,10 @@ namespace GT_SpecDB_Editor.Core
                         TableMetadata = new EnemyCars(db.SpecDBFolderType); break;
                     case "ENGINEBALANCE":
                         TableMetadata = new EngineBalance(db.SpecDBFolderType); break;
+                    case "RIDER_SET_ASSIGN":
+                        TableMetadata = new RiderSetAssign(db.SpecDBFolderType); break;
+                    case "RIDER_SET":
+                        TableMetadata = new RiderSet(db.SpecDBFolderType); break;
                     default:
                         throw new NotSupportedException($"This table ({TableName}) is not yet mapped.");
                 }

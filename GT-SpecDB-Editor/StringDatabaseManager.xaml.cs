@@ -63,9 +63,21 @@ namespace GT_SpecDB_Editor
             CollectionViewSource.GetDefaultView(lb_StringList.ItemsSource).Refresh();
         }
 
+        private void tb_EditString_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (lb_StringList.SelectedIndex == -1)
+                return;
+
+            var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
+            Database.Strings[selectedIndex] = tb_EditString.Text;
+            lb_StringList.SelectedIndex = selectedIndex;
+        }
 
         private void lb_StringList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (lb_StringList.SelectedIndex == -1)
+                return;
+
             var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
             var selectedString = (string)lb_StringList.SelectedItem;
             SelectedString = (selectedIndex, selectedString);
@@ -91,6 +103,33 @@ namespace GT_SpecDB_Editor
             HasSelected = true;
             SelectedString = (index, res);
             Close();
+        }
+
+        private void lb_StringList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            tb_EditString.IsEnabled = lb_StringList.SelectedIndex != -1;
+            if (lb_StringList.SelectedIndex != -1)
+            {
+                var selectedString = (string)lb_StringList.SelectedItem;
+                tb_EditString.Text = selectedString;
+            }
+            tb_EditString.IsEnabled = lb_StringList.SelectedIndex != -1;
+            btn_DeleteString.IsEnabled = lb_StringList.SelectedIndex != -1;
+        }
+
+        private void btn_DeleteString_Click(object sender, RoutedEventArgs e)
+        {
+            if (lb_StringList.SelectedIndex == -1)
+                return;
+
+            var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
+            var selectedString = Database.Strings[selectedIndex];
+
+            if (MessageBox.Show($"Are you sure that you want to delete '{selectedString}'? This *will* break the database by changing the other of all strings that comes after, make sure that you know what you are doing!",
+                "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                Database.Strings.Remove(selectedString);
+            }
         }
     }
 }

@@ -93,7 +93,18 @@ namespace GT_SpecDB_Editor
                     if (!Directory.Exists(files[0]))
                         return;
 
-                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(files[0], false);
+                    var specType = SpecDB.DetectSpecDBType(Path.GetFileName(files[0]));
+                    if (specType is null)
+                    {
+                        var window = new SpecDBKindSelector();
+                        window.ShowDialog();
+                        if (!window.HasSelected || window.SelectedType == SpecDBFolder.NONE)
+                            return;
+
+                        specType = window.SelectedType;
+                    }
+
+                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(files[0], specType.Value, false);
                 }
             }
             catch (Exception ex)
@@ -133,7 +144,17 @@ namespace GT_SpecDB_Editor
             {
                 try
                 {
-                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, false);
+                    var specType = SpecDB.DetectSpecDBType(Path.GetFileName(dlg.FileName));
+                    if (specType is null)
+                    {
+                        var window = new SpecDBKindSelector();
+                        window.ShowDialog();
+                        if (!window.HasSelected || window.SelectedType == SpecDBFolder.NONE)
+                            return;
+                        specType = window.SelectedType;
+                    }
+
+                    CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, specType.Value, false);
                 }
                 catch (Exception ex)
                 {
@@ -516,7 +537,8 @@ namespace GT_SpecDB_Editor
             if (!(sender is DataGridCell cell))
                 return;
 
-            ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns.Find(col => col.ColumnName == (string)cell.Column.Header);
+            var colIndex = dg_Rows.Columns.IndexOf(cell.Column);
+            ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns[colIndex - 2];
             if (dataCol is null)
                 return;
 
@@ -611,7 +633,7 @@ namespace GT_SpecDB_Editor
 
         private void tb_ColumnFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (tb_ColumnFilter.Text != null && tb_ColumnFilter.Text.Length != 1)
+            if (tb_ColumnFilter.Text != null && (tb_ColumnFilter.Text.Length > 3 || tb_ColumnFilter.Text.Length == 0))
             {
                 // Apparently only twice works, so lol
                 dg_Rows.CancelEdit();
@@ -699,6 +721,9 @@ namespace GT_SpecDB_Editor
                         case DBShort @short:
                             if (short.TryParse(textSpl[i], out short vShort)) @short.Value = vShort;
                             break;
+                        case DBUShort @ushort:
+                            if (ushort.TryParse(textSpl[i], out ushort vUShort)) @ushort.Value = vUShort;
+                            break;
                         case DBBool @bool:
                             if (bool.TryParse(textSpl[i], out bool vBool)) @bool.Value = vBool;
                             break;
@@ -760,6 +785,8 @@ namespace GT_SpecDB_Editor
                             return @long.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
                         case DBShort @short:
                             return @short.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBUShort @ushort:
+                            return @ushort.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
                         case DBString @str:
                             return @str.Value.Contains(FilterString, StringComparison.OrdinalIgnoreCase);
                     }

@@ -5,18 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT_SpecDB_Editor"
         mc:Ignorable="d"
-        Title="Select String.." Height="580.206" Width="378" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="String Database Selector" Height="400.206" Width="725" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid>
 
-        <TextBox Height="20" Margin="10,10,94,0" Name="tb_NewString" VerticalAlignment="Top"/>
-        <Button Name="btn_AddString" Content="Add String" Margin="0,10,10,0" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Width="79" Click="btn_AddString_Click"/>
+        <TextBox Height="20" Margin="337,0,94,10" Name="tb_NewString" VerticalAlignment="Bottom"/>
+        <Button Name="btn_AddString" Content="Add String" Margin="0,0,10,10" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="79" Click="btn_AddString_Click"/>
 
-        <Label Content="Double-click any string below to select it." Margin="10,64,10,0" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
-        <ListBox Name="lb_StringList" Margin="10,86,10,36" ItemsSource="{Binding Strings}" MouseDoubleClick="lb_StringList_MouseDoubleClick"/>
+        <Label Content="Double-click any string on the list below to select it." Margin="337,4,10,0" Height="26" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+        <ListBox Name="lb_StringList" Margin="337,35,10,35" ItemsSource="{Binding Strings}" MouseDoubleClick="lb_StringList_MouseDoubleClick" SelectionChanged="lb_StringList_SelectionChanged" />
 
-        <Label Content="Filter by String.." Margin="10,35,264,0" Height="26" VerticalAlignment="Top"/>
-        <TextBox Height="20" Margin="112,39,10,0" Name="tb_FilterString" VerticalAlignment="Top" TextChanged="tb_FilterString_TextChanged"/>
-        <Button Name="btn_SelectEmptyString" Content="Select Empty String" Margin="10,0,10,8" Height="23" VerticalAlignment="Bottom" Click="btn_SelectEmptyString_Click"/>
+        <Label Content="Filter by String.." Margin="10,29,613,0" Height="26" VerticalAlignment="Top"/>
+        <TextBox Height="20" Margin="111,35,387,0" Name="tb_FilterString" VerticalAlignment="Top" TextChanged="tb_FilterString_TextChanged"/>
+        <Button Name="btn_SelectEmptyString" Content="Select Empty/Blank String" Margin="10,0,387,10" Height="46" VerticalAlignment="Bottom" Click="btn_SelectEmptyString_Click"/>
 
+        <Label Content="Edit String" IsEnabled="False" Margin="10,62,613,0" Height="26" VerticalAlignment="Top"/>
+        <TextBox Height="20" Margin="111,66,387,0" IsEnabled="False" Name="tb_EditString" VerticalAlignment="Top" TextChanged="tb_EditString_TextChanged"/>
+
+        <Button Name="btn_DeleteString" IsEnabled="False" Content="Delete String (use with caution!)" Margin="111,96,387,0" Height="26" VerticalAlignment="Top" Click="btn_DeleteString_Click"/>
     </Grid>
 </Window>
