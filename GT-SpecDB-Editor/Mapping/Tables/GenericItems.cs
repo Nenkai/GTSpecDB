@@ -18,29 +18,51 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("FrontTireLabel", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("RT_TableIndex", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("RearTireLabel", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("CarCodeTblIndex", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("UnkTableID", DBColumnType.Int));
+
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("CarCodeTblIndex", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("UnkTableID", DBColumnType.Int));
+            }
+
             Columns.Add(new ColumnMetadata("ItemCategory", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("ItemType", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("EngineRpmOffset", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("EffectiveTime", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("ID_Number", DBColumnType.Int));
-            Columns.Add(new ColumnMetadata("Strings", DBColumnType.String, "UnistrDB.sdb"));
+
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("ID_Number", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Strings", DBColumnType.String, "UnistrDB.sdb"));
+            }
+
             Columns.Add(new ColumnMetadata("WeightPercentage", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("TorquePercentage", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("CompRatioPercentage", DBColumnType.Short));
+
             Columns.Add(new ColumnMetadata("torquemodifier", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("torquemodifier2", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Capacity", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("TorqueVolume", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("TorqueVolumeMin", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("TorqueVolumeMax", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("WeightChange", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cIMINR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cIMAXR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cIDFR", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("cgheightchange", DBColumnType.Byte));
+            if (folderType >= SpecDBFolder.GT5_JP3009)
+                Columns.Add(new ColumnMetadata("torquemodifier3", DBColumnType.Short));
+
+            if (folderType == SpecDBFolder.GT5_JP3003)
+            {
+                Columns.Add(new ColumnMetadata("Unk1", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Int));
+            }
+            else if (folderType >= SpecDBFolder.GT5_JP3009)
+            {
+                Columns.Add(new ColumnMetadata("Capacity", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("TorqueVolume", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TorqueVolumeMin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TorqueVolumeMax", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("WeightChange", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("cIMINR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("cIMAXR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("cIDFR", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("cgheightchange", DBColumnType.Byte));
+            }
         }
     }
 }

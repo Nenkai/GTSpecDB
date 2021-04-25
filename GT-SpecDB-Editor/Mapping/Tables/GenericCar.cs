@@ -31,11 +31,16 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("DefaultParts", DBColumnType.Int));
             Columns.Add(new ColumnMetadata("Price", DBColumnType.Int));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            Columns.Add(new ColumnMetadata("SpecifyFlags1", DBColumnType.Int));
+
+            if (folderType >= SpecDBFolder.GT5_JP3003)
             {
-                Columns.Add(new ColumnMetadata("SpecifyFlags1", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("PurchaseLevel", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("HornID", DBColumnType.Int));
+                if (folderType >= SpecDBFolder.GT5_JP3009) // Level & Horn only introduced in retail GT5
+                {
+                    Columns.Add(new ColumnMetadata("PurchaseLevel", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("HornID", DBColumnType.Int));
+                }
+
                 Columns.Add(new ColumnMetadata("NumColor", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("MainColor", DBColumnType.Int));
             }
@@ -57,9 +62,10 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             if (folderType > SpecDBFolder.GT5_TRIAL_JP2704)
                 Columns.Add(new ColumnMetadata("Tuner", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("Category", DBColumnType.Byte));
-            Columns.Add(new ColumnMetadata("GeneralFlags", DBColumnType.Byte));
 
-            if ((folderType >= SpecDBFolder.GT5_TRIAL_EU2704 && folderType <= SpecDBFolder.GT5_TRIAL_JP2704) || folderType >= SpecDBFolder.GT5_JP3009)
+
+            Columns.Add(new ColumnMetadata("GeneralFlags", DBColumnType.Byte));
+            if ((folderType >= SpecDBFolder.GT5_TRIAL_EU2704 && folderType <= SpecDBFolder.GT5_TRIAL_JP2704) || folderType >= SpecDBFolder.GT5_JP3003)
             {
                 Columns.Add(new ColumnMetadata("GeneralFlags2", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("GeneralFlags3", DBColumnType.Byte));
@@ -68,7 +74,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
             Columns.Add(new ColumnMetadata("ConceptCarType", DBColumnType.Byte));
 
-            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813 && folderType < SpecDBFolder.GT5_JP3009
+            if (folderType >= SpecDBFolder.GT5_PROLOGUE2813 && folderType < SpecDBFolder.GT5_JP3003
                 || folderType <= SpecDBFolder.GT5_TRIAL_JP2704)
                 Columns.Add(new ColumnMetadata("OpenModel", DBColumnType.Byte));
 
@@ -78,6 +84,34 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("NoChangeWing", DBColumnType.Bool));
                 Columns.Add(new ColumnMetadata("SuperchargerOriginally", DBColumnType.Bool));
             }
+        }
+
+        public void GT5QA()
+        {
+            Columns.Add(new ColumnMetadata("Df_Tbl_Index", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("DefaultParts", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Price", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("SpecifyFlags1", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("NumColor", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("MainColor", DBColumnType.Int));
+            Columns.Add(new ColumnMetadata("Year", DBColumnType.Short));
+
+            Columns.Add(new ColumnMetadata("GeneralFlags", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags2", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags3", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags4", DBColumnType.Byte));
+
+            Columns.Add(new ColumnMetadata("Country", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("Maker", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("Tuner", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("Category", DBColumnType.Byte));
+
+            Columns.Add(new ColumnMetadata("GeneralFlags", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags2", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags3", DBColumnType.Byte));
+            Columns.Add(new ColumnMetadata("GeneralFlags4", DBColumnType.Byte));
+
+            Columns.Add(new ColumnMetadata("ConceptCarType", DBColumnType.Byte));
         }
     }
 }

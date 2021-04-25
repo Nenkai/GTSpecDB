@@ -27,7 +27,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("psrpm", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("torquerpm", DBColumnType.String, "UnistrDB.sdb"));
 
-            if (folderType < SpecDBFolder.GT5_JP3009 // Kiosk demo, 5 prologue has it twice..
+            if (folderType < SpecDBFolder.GT5_JP3003 // Kiosk demo, 5 prologue has it twice..
                 && (folderType < SpecDBFolder.GT5_TRIAL_EU2704 || folderType > SpecDBFolder.GT5_TRIAL_JP2704)) // Except gthd which already had the int but not the short what the fuck PD?
                 Columns.Add(new ColumnMetadata("soundNum", DBColumnType.UShort)); // GT4 and older has it as short
 

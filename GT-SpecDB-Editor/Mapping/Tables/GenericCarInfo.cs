@@ -15,6 +15,13 @@ namespace GT_SpecDB_Editor.Mapping.Tables
         public GenericCarInfo(SpecDBFolder folderType)
         {
             Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+
+            if (folderType == SpecDBFolder.GT5_JP3003)
+            {
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+            }
         }
     }
 }

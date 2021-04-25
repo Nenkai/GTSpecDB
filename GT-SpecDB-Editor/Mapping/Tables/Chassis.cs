@@ -26,7 +26,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("performanceF", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("performanceR", DBColumnType.Short));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009 || folderType <= SpecDBFolder.GT4_PREMIUM_JP2560)
+            if (folderType >= SpecDBFolder.GT5_JP3003 || folderType <= SpecDBFolder.GT4_PREMIUM_JP2560)
             {
                 Columns.Add(new ColumnMetadata("treadF", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("treadR", DBColumnType.Short));
@@ -55,7 +55,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("RearStiffness", DBColumnType.Byte));
             Columns.Add(new ColumnMetadata("GasCapacity", DBColumnType.Byte));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3003)
             {
                 Columns.Add(new ColumnMetadata("EngineMount", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("cd", DBColumnType.Byte));
@@ -74,16 +74,22 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                 Columns.Add(new ColumnMetadata("ActiveWingVelocity2", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("ActiveWingMovingSpeed", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("ActiveWingDownForce", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("rollCenterPolicy", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("downForcePointOfLoadF", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("downForcePointOfLoadR", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("activeWingVelocity3", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("activeWingDownForce2", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("originalClF", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("originalClR", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("batteryCapacity", DBColumnType.Byte));
-            }
 
+                if (folderType >= SpecDBFolder.GT5_JP3009)
+                {
+                    Columns.Add(new ColumnMetadata("rollCenterPolicy", DBColumnType.Byte));
+
+                    Columns.Add(new ColumnMetadata("downForcePointOfLoadF", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("downForcePointOfLoadR", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("activeWingVelocity3", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("activeWingDownForce2", DBColumnType.Byte));
+
+
+                    Columns.Add(new ColumnMetadata("originalClF", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("originalClR", DBColumnType.Byte));
+                    Columns.Add(new ColumnMetadata("batteryCapacity", DBColumnType.Byte));
+                }
+            }
         }
     }
 }

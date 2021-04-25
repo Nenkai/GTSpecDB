@@ -16,7 +16,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
 
         public RacingModify(SpecDBFolder folderType)
         {
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3003)
             {
                 Columns.Add(new ColumnMetadata("HasRM", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("NewCarCode", DBColumnType.Int));
@@ -24,7 +24,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             }
             else
             {
-                // Chassis data, GT5 retail moved them to CHASSIS
+                // Chassis data, Late GT5 moved them to CHASSIS
                 Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("chassisTreadF", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("chassisThreadR", DBColumnType.Short));

@@ -18,7 +18,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("NameJpn", DBColumnType.String, "UnistrDB.sdb"));
             Columns.Add(new ColumnMetadata("NameEng", DBColumnType.String, "UnistrDB.sdb"));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3003)
                 Columns.Add(new ColumnMetadata("PitCrew", DBColumnType.Int));
             else
             {

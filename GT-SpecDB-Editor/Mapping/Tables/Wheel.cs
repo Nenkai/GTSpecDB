@@ -23,7 +23,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             }
 
             Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.UInt));
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3003)
             {
                 Columns.Add(new ColumnMetadata("ThumbnailID", DBColumnType.UInt));
                 Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.Short));
@@ -45,7 +45,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
             Columns.Add(new ColumnMetadata("RearWidth", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("RearTireID", DBColumnType.Short));
 
-            if (folderType >= SpecDBFolder.GT5_JP3009)
+            if (folderType >= SpecDBFolder.GT5_JP3003)
             {
                 Columns.Add(new ColumnMetadata("WheelType", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("WheelNumColor", DBColumnType.Byte));
