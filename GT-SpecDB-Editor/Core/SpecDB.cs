@@ -511,7 +511,7 @@ namespace GT_SpecDB_Editor.Core
         GT5_JP2904,
 
         [Description("Gran Turismo 5 Kiosk Demo (Preview DB)")]
-        GT5_PREVIEWJP2904,
+        GT5_PREVIEW2904,
 
         [Description("Gran Turismo 5 QA (16/09/2010)")]
         GT5_JP3003,
