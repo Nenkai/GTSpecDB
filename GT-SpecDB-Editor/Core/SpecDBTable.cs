@@ -652,7 +652,7 @@ namespace GT_SpecDB_Editor.Core
 
                 var orderedRows = Rows
                     .GroupBy(p => p.Label).Select(g => g.First()) // Distinct() - Some rows have the same ID and Label so we only want those.
-                    .OrderBy(e => e.Label.Length).ThenBy(e => e.Label) // Ordered that way to make sure binary searching is efficient.
+                    .OrderBy(o => o.Label, new AlphanumericComparer()) // Sort optimally for bsearch
                     .ToList();
 
                 bs.WriteInt32(orderedRows.Count);

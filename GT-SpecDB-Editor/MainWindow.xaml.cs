@@ -394,7 +394,7 @@ namespace GT_SpecDB_Editor
             {
                 if (int.TryParse(newInput, out int newValue))
                 {
-                    if (CurrentTable.Rows.Any(row => row.ID == newValue))
+                    if (CurrentTable.Rows.Any(row => row.ID == newValue && row != currentRow))
                     {
                         var res = MessageBox.Show("This ID is already being used by another row. Make sure you know what you are doing. Continue?", "ID in use", MessageBoxButton.YesNo, MessageBoxImage.Question);
                         if (res != MessageBoxResult.Yes)
@@ -538,6 +538,9 @@ namespace GT_SpecDB_Editor
                 return;
 
             var colIndex = dg_Rows.Columns.IndexOf(cell.Column);
+            if (colIndex == 0 || colIndex == 1)
+                return;
+
             ColumnMetadata dataCol = CurrentTable.TableMetadata.Columns[colIndex - 2];
             if (dataCol is null)
                 return;

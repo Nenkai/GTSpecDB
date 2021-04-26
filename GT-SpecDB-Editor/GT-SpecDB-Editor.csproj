@@ -190,6 +190,7 @@
       <DependentUpon>SpecDBKindSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="SQLiteExporter.cs" />
+    <Compile Include="Utils\AlphanumericComparer.cs" />
     <Compile Include="Utils\OptimizedStringTable.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
     <Page Include="ProgressWindow.xaml">
