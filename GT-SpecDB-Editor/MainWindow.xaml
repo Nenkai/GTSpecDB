@@ -27,6 +27,12 @@
             <ToolBarTray DockPanel.Dock="Top" IsLocked="True">
                 <ToolBar Loaded="ToolBar_Loaded">
                     <Label Content="Loaded Tables" FontWeight="DemiBold" VerticalContentAlignment="Bottom" Width="154" Margin="0,0,0,0"/>
+                    <Button Name="btn_Save" IsEnabled="False" Click="btn_Save_Click" ToolTip="Save">
+                        <Image Source="Resources/appbar.save.png" Width="24" Height="24" IsEnabled="False"/>
+                    </Button>
+                    <Button Name="btn_SaveAs" IsEnabled="False" Click="btn_SaveAs_Click"  ToolTip="Save As">
+                        <Image Source="Resources/appbar.save.png" Width="24" Height="24"/>
+                    </Button>
                     <Separator/>
                     <Button Name="btn_AddRow" IsEnabled="False" Click="btn_AddRow_Click" ToolTip="Add Row">
                         <Image Source="Resources/appbar.list.add.below.png" Width="24" Height="24"/>
@@ -51,6 +57,8 @@
                     <ItemsPanelTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="180"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -60,15 +68,19 @@
                         </Grid>
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
-                <StatusBarItem>
-                    <TextBlock Name="progressName" Text="Ready"/>
+                <StatusBarItem Grid.Column="0">
+                    <TextBlock Name="tb_CurrentId"/>
                 </StatusBarItem>
                 <Separator Grid.Column="1"/>
                 <StatusBarItem Grid.Column="2">
-                    <TextBlock Name="statusName"/>
+                    <TextBlock Name="tb_CurrentLabel"/>
                 </StatusBarItem>
                 <Separator Grid.Column="3"/>
                 <StatusBarItem Grid.Column="4">
+                    <TextBlock Name="statusName"/>
+                </StatusBarItem>
+                <Separator Grid.Column="5"/>
+                <StatusBarItem Grid.Column="6">
                     <ProgressBar Name="progressBar" Height="20" Width="110"/>
                 </StatusBarItem>
             </StatusBar>
@@ -83,12 +95,18 @@
                 </ListBox>
                 <DataGrid Name="dg_Rows" AutoGenerateColumns="False" DockPanel.Dock="Right" VirtualizingPanel.IsVirtualizingWhenGrouping="True" 
                           CanUserAddRows="False" CanUserResizeRows="False" SelectionMode="Single" CellEditEnding="dg_Rows_CellEditEnding" MouseDoubleClick="dg_Rows_MouseDoubleClick"
-                          PreviewKeyDown="dg_Rows_PreviewKeyDown">
+                          PreviewKeyDown="dg_Rows_PreviewKeyDown" ContextMenuOpening="dg_Rows_ContextMenuOpening" SelectionChanged="dg_Rows_SelectionChanged">
                     <DataGrid.Resources>
                         <Style TargetType="{x:Type DataGridCell}">
                             <EventSetter Event="MouseDoubleClick" Handler="dg_Rows_MouseDoubleClick"/>
                         </Style>
                     </DataGrid.Resources>
+
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Name="dg_ContextMenu">
+                            <MenuItem Name="dg_cm_CopyCell" Header="Copy Cell" Click="dg_cm_CopyCell_Click"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
                 </DataGrid>
             </DockPanel>
         </DockPanel>

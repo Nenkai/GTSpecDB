@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows;
 using Microsoft.Win32;
+using System.IO;
 
 using System.Data.SQLite;
 
@@ -19,7 +20,9 @@ namespace GT_SpecDB_Editor
     {
         public SpecDB Database { get; set; }
         public string DBName { get; set; }
-        private IProgress<(int, string)> _progress; 
+        private IProgress<(int, string)> _progress;
+
+        private HashSet<SpecDBTable> _errornousTables = new HashSet<SpecDBTable>();
 
         public SQLiteExporter(SpecDB db, string dbName, IProgress<(int, string)> progress)
         {
@@ -38,7 +41,7 @@ namespace GT_SpecDB_Editor
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save to SQLite Info: {ex.Message}", "Failed to save parts info", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not save to SQLite Info: {ex.Message}", "Failed to export", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             window.Close();
@@ -47,13 +50,40 @@ namespace GT_SpecDB_Editor
 
         public void ExportToSQLite(string outputFile)
         {
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+
+            _progress.Report((0, "Loading SpecDB Tables..."));
+
+            foreach (var table in Database.Tables.Values)
+            {
+                try
+                {
+                    _progress.Report((0, $"Loading Table - {table.TableName}"));
+                    if (!table.IsLoaded)
+                        table.LoadAllRows(Database);
+                }
+                catch (Exception e)
+                {
+                    _errornousTables.Add(table);
+                }
+            }
+
+            if (_errornousTables.Count > 0)
+            {
+                string tables = string.Join("\n", _errornousTables.Select(t => $"- {t.TableName}"));
+                if (MessageBox.Show($"The following tables can not be loaded/unmapped:\n{tables}\n\n Continue?", $"Unmapped tables",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+                    return;
+            }
+
             SQLiteConnection.CreateFile(outputFile);
 
             using (var m_dbConnection = new SQLiteConnection($"Data Source={outputFile};Version=3;"))
             {
                 m_dbConnection.Open();
 
-                _progress.Report((0, "Creating Tables.."));
+                _progress.Report((0, "Creating Tables in SQLite.."));
                 CreateTables(m_dbConnection);
 
                 _progress.Report((0, "Creating Table Info.."));
@@ -70,8 +100,8 @@ namespace GT_SpecDB_Editor
         {
             foreach (var table in Database.Tables.Values)
             {
-                if (!table.IsLoaded)
-                    table.LoadAllRows(Database);
+                if (_errornousTables.Contains(table))
+                    continue;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"CREATE TABLE {table.TableName} (RowId int, Label varchar(64), ");
@@ -110,8 +140,8 @@ namespace GT_SpecDB_Editor
         {
             foreach (var table in Database.Tables.Values)
             {
-                if (!table.IsLoaded)
-                    table.LoadAllRows(Database);
+                if (_errornousTables.Contains(table))
+                    continue;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"CREATE TABLE {table.TableName}_typeinfo (");
@@ -150,8 +180,8 @@ namespace GT_SpecDB_Editor
         {
             foreach (var table in Database.Tables.Values)
             {
-                if (!table.IsLoaded)
-                    table.LoadAllRows(Database);
+                if (_errornousTables.Contains(table))
+                    continue;
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append($"INSERT INTO {table.TableName}_typeinfo (");
@@ -198,8 +228,8 @@ namespace GT_SpecDB_Editor
             for (int i1 = 0; i1 < list.Count; i1++)
             {
                 SpecDBTable table = list[i1];
-                if (!table.IsLoaded)
-                    table.LoadAllRows(Database);
+                if (_errornousTables.Contains(table))
+                    continue;
 
                 _progress.Report((i1, $"Inserting Rows in {table.TableName}."));
 

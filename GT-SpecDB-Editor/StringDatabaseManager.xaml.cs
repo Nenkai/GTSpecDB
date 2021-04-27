@@ -25,11 +25,15 @@ namespace GT_SpecDB_Editor
         public bool HasSelected { get; set; }
         public (int index, string selectedString) SelectedString { get; set; }
 
-        public StringDatabaseManager(StringDatabase strDb)
+        private bool _editing = false;
+        private int _baseIndex = -1;
+
+        public StringDatabaseManager(StringDatabase strDb, int currentIndex)
         {
             InitializeComponent();
             Database = strDb;
             lb_StringList.DataContext = strDb;
+            _baseIndex = currentIndex;
         }
 
         private bool StringFilter(object item)
@@ -61,16 +65,6 @@ namespace GT_SpecDB_Editor
         private void tb_FilterString_TextChanged(object sender, TextChangedEventArgs e)
         {
             CollectionViewSource.GetDefaultView(lb_StringList.ItemsSource).Refresh();
-        }
-
-        private void tb_EditString_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (lb_StringList.SelectedIndex == -1)
-                return;
-
-            var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
-            Database.Strings[selectedIndex] = tb_EditString.Text;
-            lb_StringList.SelectedIndex = selectedIndex;
         }
 
         private void lb_StringList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -107,14 +101,17 @@ namespace GT_SpecDB_Editor
 
         private void lb_StringList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            tb_EditString.IsEnabled = lb_StringList.SelectedIndex != -1;
-            if (lb_StringList.SelectedIndex != -1)
-            {
-                var selectedString = (string)lb_StringList.SelectedItem;
-                tb_EditString.Text = selectedString;
-            }
-            tb_EditString.IsEnabled = lb_StringList.SelectedIndex != -1;
             btn_DeleteString.IsEnabled = lb_StringList.SelectedIndex != -1;
+            btn_SetString.IsEnabled = lb_StringList.SelectedIndex != -1;
+            tb_StringEdit.IsEnabled = lb_StringList.SelectedIndex != -1;
+
+            if (lb_StringList.SelectedIndex != -1) 
+            {
+                var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
+                var selectedString = Database.Strings[selectedIndex];
+                tb_StringEdit.Text = selectedString;
+            }
+            
         }
 
         private void btn_DeleteString_Click(object sender, RoutedEventArgs e)
@@ -130,6 +127,38 @@ namespace GT_SpecDB_Editor
             {
                 Database.Strings.Remove(selectedString);
             }
+        }
+
+        private void btn_CopyCurrent_Click(object sender, RoutedEventArgs e)
+        {
+            string str = string.Empty;
+            if (_baseIndex != -1)
+                str = Database.Strings[_baseIndex];
+            Clipboard.SetText(str);
+        }
+
+        private void btn_SetString_Click(object sender, RoutedEventArgs e)
+        {
+            if (lb_StringList.SelectedIndex == -1 || _editing)
+                return;
+
+            if (!CheckString(tb_StringEdit.Text))
+                return;
+
+            var selectedIndex = Database.Strings.IndexOf((string)lb_StringList.SelectedItem);
+            Database.Strings[selectedIndex] = tb_StringEdit.Text;
+        }
+
+        private bool CheckString(string str)
+        {
+            if (Database.Strings.Contains(str))
+            {
+                MessageBox.Show("This string already exists in the string database. If you wish to select it search and select it.", "String already exists",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
         }
     }
 }

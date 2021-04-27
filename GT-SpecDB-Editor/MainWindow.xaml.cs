@@ -35,6 +35,8 @@ namespace GT_SpecDB_Editor
 
         public SpecDB CurrentDatabase { get; set; }
         public SpecDBTable CurrentTable { get; set; }
+        public string SpecDBDirectory { get; set; }
+
         private string _filterString;
         public string FilterString
         {
@@ -105,6 +107,7 @@ namespace GT_SpecDB_Editor
                     }
 
                     CurrentDatabase = SpecDB.LoadFromSpecDBFolder(files[0], specType.Value, false);
+                    SpecDBDirectory = files[0];
                 }
             }
             catch (Exception ex)
@@ -133,6 +136,7 @@ namespace GT_SpecDB_Editor
             Close();
         }
 
+        #region Top Menu
         private void OpenSpecDB_MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new CommonOpenFileDialog("Open SpecDB");
@@ -155,6 +159,7 @@ namespace GT_SpecDB_Editor
                     }
 
                     CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, specType.Value, false);
+                    SpecDBDirectory = dlg.FileName;
                 }
                 catch (Exception ex)
                 {
@@ -197,6 +202,8 @@ namespace GT_SpecDB_Editor
                 var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, true, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
+
+                statusName.Text = $"PartsInfo.tbi/tbd saved to {dlg.FileName}.";
             }
         }
 
@@ -231,6 +238,8 @@ namespace GT_SpecDB_Editor
                 var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, false, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
+
+                statusName.Text = $"Car parts saved to {dlg.FileName}.";
             }
         }
 
@@ -242,7 +251,10 @@ namespace GT_SpecDB_Editor
             dlg.IsFolderPicker = true;
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
                 CurrentTable.SaveTable(CurrentDatabase, dlg.FileName);
+                statusName.Text = $"Table saved to {dlg.FileName}.";
+            }
         }
 
         private void ExportCurrentTable_Click(object sender, RoutedEventArgs e)
@@ -289,62 +301,12 @@ namespace GT_SpecDB_Editor
                 var task = exporter.ExportToSQLiteAsync(progressWindow, ((ShellFile)dlg.FileAsShellObject).Path);
                 progressWindow.ShowDialog();
                 if (await task)
-                    progressName.Text = "Successfully exported to SQLite!";
+                    statusName.Text = "Successfully exported to SQLite!";
             }
         }
+        #endregion
 
-        private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
-        {
-            if (lb_Tables.SelectedIndex == -1)
-                return;
-
-            // Ensure to cancel the edit to properly allow filtering reset
-            dg_Rows.CancelEdit();
-            dg_Rows.CancelEdit();
-
-            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
-
-            if (!table.IsLoaded)
-            {
-                progressName.Text = $"Loading {table.TableName}..";
-                progressBar.IsEnabled = true;
-                progressBar.IsIndeterminate = true;
-                try
-                {
-                    var loadTask = Task.Run(() => table.LoadAllRows(CurrentDatabase));
-                    await loadTask;
-
-                    if (!table.IsTableProperlyMapped)
-                        MessageBox.Show($"This table is not entirely mapped - display errors & missing data may be present.", "Table not mapped correctly", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Could not load table: {ex.Message}", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    SetNoProgress();
-                    return;
-                }
-            }
-
-            CurrentTable = table;
-
-            for (int i = cb_FilterColumnType.Items.Count - 1; i >= 2; i--)
-                cb_FilterColumnType.Items.RemoveAt(i);
-
-            PopulateTableColumns();
-            SetNoProgress();
-
-            dg_Rows.ItemsSource = CurrentTable.Rows;
-            SetupFilters();
-            cb_FilterColumnType.SelectedIndex = 1;
-            mi_SaveTable.IsEnabled = true;
-            mi_ExportTable.IsEnabled = true;
-            mi_ExportTableCSV.IsEnabled = true;
-            
-            ToggleToolbarControls(true);
-            
-            statusName.Text = $"Loaded '{table.TableName}' with {CurrentTable.Rows.Count} rows.";
-        }
-
+        #region Toolbar
         private void btn_AddRow_Click(object sender, RoutedEventArgs e)
         {
             var newRow = new SpecDBRowData();
@@ -383,6 +345,90 @@ namespace GT_SpecDB_Editor
             dg_Rows.ScrollIntoView(newRow);
         }
 
+        private void btn_DeleteRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (dg_Rows.SelectedIndex == -1)
+                return;
+
+            CurrentTable.Rows.Remove(CurrentTable.Rows[dg_Rows.SelectedIndex]);
+            CurrentTable.LastID = CurrentTable.Rows.Max(row => row.ID);
+
+            statusName.Text = "Row deleted.";
+        }
+
+        private void btn_CopyRow_Click(object sender, RoutedEventArgs e)
+        {
+            if (dg_Rows.SelectedIndex == -1)
+                return;
+
+            var selectedRow = CurrentTable.Rows[dg_Rows.SelectedIndex];
+
+            var newRow = new SpecDBRowData();
+            newRow.ID = ++CurrentTable.LastID;
+            newRow.Label = $"{selectedRow.Label}_copy";
+            CurrentTable.Rows.Add(newRow);
+
+            for (int i = 0; i < CurrentTable.TableMetadata.Columns.Count; i++)
+            {
+                ColumnMetadata colMeta = CurrentTable.TableMetadata.Columns[i];
+                switch (colMeta.ColumnType)
+                {
+                    case DBColumnType.Bool:
+                        newRow.ColumnData.Add(new DBBool(((DBBool)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Byte:
+                        newRow.ColumnData.Add(new DBByte(((DBByte)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.SByte:
+                        newRow.ColumnData.Add(new DBSByte(((DBSByte)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Short:
+                        newRow.ColumnData.Add(new DBShort(((DBShort)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.UShort:
+                        newRow.ColumnData.Add(new DBUShort(((DBUShort)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Int:
+                        newRow.ColumnData.Add(new DBInt(((DBInt)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.UInt:
+                        newRow.ColumnData.Add(new DBUInt(((DBUInt)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Float:
+                        newRow.ColumnData.Add(new DBFloat(((DBFloat)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Long:
+                        newRow.ColumnData.Add(new DBLong(((DBLong)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.String:
+                        var str = new DBString(((DBString)selectedRow.ColumnData[i]).StringIndex, colMeta.StringFileName);
+                        str.Value = CurrentDatabase.StringDatabases[colMeta.StringFileName].Strings[str.StringIndex];
+                        newRow.ColumnData.Add(str);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            dg_Rows.ScrollIntoView(newRow);
+        }
+
+        private void btn_Save_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Path.Combine(CurrentTable.TableName);
+            CurrentTable.SaveTable(CurrentDatabase, SpecDBDirectory);
+            statusName.Text = $"Table saved to {SpecDBDirectory}.";
+        }
+
+        private void btn_SaveAs_Click(object sender, RoutedEventArgs e)
+        {
+            SaveCurrentTable_Click(sender, e);
+        }
+
+        private void tb_ColumnFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (tb_ColumnFilter.Text != null && (tb_ColumnFilter.Text.Length > 3 || tb_ColumnFilter.Text.Length == 0))
+            {
+                // Apparently only twice works, so lol
+                dg_Rows.CancelEdit();
+                dg_Rows.CancelEdit();
+                FilterString = tb_ColumnFilter.Text;
+            }
+        }
+        #endregion
+
+        #region Datagrid Events
         private void dg_Rows_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (!(e.EditingElement is TextBox tb))
@@ -547,101 +593,23 @@ namespace GT_SpecDB_Editor
 
             if (dataCol.ColumnType == DBColumnType.String)
             {
-                var strWindow = new StringDatabaseManager(CurrentDatabase.StringDatabases[dataCol.StringFileName]);
+                var strDb = CurrentDatabase.StringDatabases[dataCol.StringFileName];
+
+                // Find column index to apply our row data to
+                var row = cell.DataContext as SpecDBRowData;
+                int columnIndex = CurrentTable.TableMetadata.Columns.IndexOf(dataCol);
+
+                var str = row.ColumnData[columnIndex] as DBString;
+                int index = strDb.Strings.IndexOf(str.Value);
+
+                var strWindow = new StringDatabaseManager(strDb, index);
                 strWindow.ShowDialog();
                 if (strWindow.HasSelected)
                 {
-                    // Find column index to apply our row data to
-                    var row = cell.DataContext as SpecDBRowData;
-                    int columnIndex = CurrentTable.TableMetadata.Columns.IndexOf(dataCol);
-
                     // Apply string change
-                    var str = row.ColumnData[columnIndex] as DBString;
                     str.StringIndex = strWindow.SelectedString.index;
                     str.Value = strWindow.SelectedString.selectedString;
                 }
-            }
-        }
-
-        private void btn_DeleteRow_Click(object sender, RoutedEventArgs e)
-        {
-            if (dg_Rows.SelectedIndex == -1)
-                return;
-
-            CurrentTable.Rows.Remove(CurrentTable.Rows[dg_Rows.SelectedIndex]);
-            CurrentTable.LastID = CurrentTable.Rows.Max(row => row.ID);
-        }
-
-        private void btn_CopyRow_Click(object sender, RoutedEventArgs e)
-        {
-            if (dg_Rows.SelectedIndex == -1)
-                return;
-
-            var selectedRow = CurrentTable.Rows[dg_Rows.SelectedIndex];
-
-            var newRow = new SpecDBRowData();
-            newRow.ID = ++CurrentTable.LastID;
-            newRow.Label = $"{selectedRow.Label}_copy";
-            CurrentTable.Rows.Add(newRow);
-
-            for (int i = 0; i < CurrentTable.TableMetadata.Columns.Count; i++)
-            {
-                ColumnMetadata colMeta = CurrentTable.TableMetadata.Columns[i];
-                switch (colMeta.ColumnType)
-                {
-                    case DBColumnType.Bool:
-                        newRow.ColumnData.Add(new DBBool(((DBBool)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.Byte:
-                        newRow.ColumnData.Add(new DBByte(((DBByte)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.SByte:
-                        newRow.ColumnData.Add(new DBSByte(((DBSByte)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.Short:
-                        newRow.ColumnData.Add(new DBShort(((DBShort)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.UShort:
-                        newRow.ColumnData.Add(new DBUShort(((DBUShort)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.Int:
-                        newRow.ColumnData.Add(new DBInt(((DBInt)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.UInt:
-                        newRow.ColumnData.Add(new DBUInt(((DBUInt)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.Float:
-                        newRow.ColumnData.Add(new DBFloat(((DBFloat)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.Long:
-                        newRow.ColumnData.Add(new DBLong(((DBLong)selectedRow.ColumnData[i]).Value)); break;
-                    case DBColumnType.String:
-                        var str = new DBString(((DBString)selectedRow.ColumnData[i]).StringIndex, colMeta.StringFileName);
-                        str.Value = CurrentDatabase.StringDatabases[colMeta.StringFileName].Strings[str.StringIndex];
-                        newRow.ColumnData.Add(str); 
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            dg_Rows.ScrollIntoView(newRow);
-        }
-
-        private void cm_DumpTable_Click(object sender, RoutedEventArgs e)
-        {
-            if (lb_Tables.SelectedIndex == -1)
-                return;
-
-            var dlg = new SaveFileDialog();
-            if (dlg.ShowDialog() == true)
-            {
-                var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
-                int rows = table.DumpTable(dlg.FileName);
-                MessageBox.Show($"Dumped table with {rows} rows at {dlg.FileName}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        private void tb_ColumnFilter_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (tb_ColumnFilter.Text != null && (tb_ColumnFilter.Text.Length > 3 || tb_ColumnFilter.Text.Length == 0))
-            {
-                // Apparently only twice works, so lol
-                dg_Rows.CancelEdit();
-                dg_Rows.CancelEdit();
-                FilterString = tb_ColumnFilter.Text;
             }
         }
 
@@ -651,7 +619,7 @@ namespace GT_SpecDB_Editor
             {
                 string clipText = Clipboard.GetText();
                 string[] textSpl = clipText.Split('\t');
-                if (textSpl.Length != 2 + CurrentTable.TableMetadata.Columns.Count)
+                if (textSpl.Length > 2 + CurrentTable.TableMetadata.Columns.Count)
                 {
                     e.Handled = true;
                     return;
@@ -746,6 +714,135 @@ namespace GT_SpecDB_Editor
 
         }
 
+        private void dg_Rows_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            dg_cm_CopyCell.IsEnabled = lb_Tables.SelectedIndex != -1 && dg_Rows.SelectedIndex != -1;
+        }
+
+        private void dg_Rows_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!dg_Rows.CurrentCell.IsValid)
+                return;
+
+            var row = dg_Rows.CurrentCell.Item as SpecDBRowData;
+
+            tb_CurrentId.Text = row.ID.ToString();
+            tb_CurrentLabel.Text = row.Label;
+        }
+
+        private void dg_cm_CopyCell_Click(object sender, RoutedEventArgs e)
+        {
+            if (!dg_Rows.CurrentCell.IsValid)
+                return;
+
+            var colIndex = dg_Rows.Columns.IndexOf(dg_Rows.CurrentCell.Column);
+            var row = dg_Rows.CurrentCell.Item as SpecDBRowData;
+
+            string output;
+            if (colIndex == 0)
+                output = row.ID.ToString();
+            else if (colIndex == 1)
+                output = row.Label;
+            else
+            {
+                var columnData = row.ColumnData[colIndex - 2];
+                if (columnData is DBString strData)
+                    output = CurrentDatabase.StringDatabases[strData.FileName].Strings[strData.StringIndex];
+                else
+                    output = row.ColumnData[colIndex].ToString();
+
+                if (string.IsNullOrEmpty(output))
+                    output = "";
+                Clipboard.SetText(output);
+            }
+
+            if (string.IsNullOrEmpty(output))
+                output = "";
+            Clipboard.SetText(output);
+
+            statusName.Text = $"Copied cell '{output}'";
+        }
+        #endregion
+
+        #region Table Listing
+        private async void lb_Tables_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            if (lb_Tables.SelectedIndex == -1)
+                return;
+
+            // Ensure to cancel the edit to properly allow filtering reset
+            dg_Rows.CancelEdit();
+            dg_Rows.CancelEdit();
+
+            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+
+            if (!table.IsLoaded)
+            {
+                statusName.Text = $"Loading {table.TableName}..";
+                progressBar.IsEnabled = true;
+                progressBar.IsIndeterminate = true;
+                try
+                {
+                    var loadTask = Task.Run(() => table.LoadAllRows(CurrentDatabase));
+                    await loadTask;
+
+                    if (!table.IsTableProperlyMapped)
+                        MessageBox.Show($"This table is not entirely mapped - display errors & missing data may be present.", "Table not mapped correctly", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not load table: {ex.Message}", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    SetNoProgress();
+                    return;
+                }
+            }
+
+            CurrentTable = table;
+
+            for (int i = cb_FilterColumnType.Items.Count - 1; i >= 2; i--)
+                cb_FilterColumnType.Items.RemoveAt(i);
+
+            PopulateTableColumns();
+            SetNoProgress();
+
+            dg_Rows.ItemsSource = CurrentTable.Rows;
+            SetupFilters();
+
+            cb_FilterColumnType.SelectedIndex = 1;
+            mi_SaveTable.IsEnabled = true;
+            mi_ExportTable.IsEnabled = true;
+            mi_ExportTableCSV.IsEnabled = true;
+
+            ToggleToolbarControls(true);
+
+            statusName.Text = $"Loaded '{table.TableName}' with {CurrentTable.Rows.Count} rows.";
+        }
+
+        private void cm_DumpTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (lb_Tables.SelectedIndex == -1)
+                return;
+
+            var dlg = new SaveFileDialog();
+            if (dlg.ShowDialog() == true)
+            {
+                var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+                int rows = table.DumpTable(dlg.FileName);
+                MessageBox.Show($"Dumped table with {rows} rows at {dlg.FileName}.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void lb_Tables_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (lb_Tables.SelectedIndex == -1)
+                return;
+
+            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
+            cm_TableIndex.Header = $"Table Index: {table.IDI.TableIndex}";
+        }
+        #endregion
+
+        #region Non-Events
         public void SetupFilters()
         {
             foreach (var col in CurrentTable.TableMetadata.Columns)
@@ -834,7 +931,7 @@ namespace GT_SpecDB_Editor
 
         private void SetNoProgress()
         {
-            progressName.Text = "Ready";
+            statusName.Text = "Ready";
             progressBar.IsEnabled = false;
             progressBar.IsIndeterminate = false;
         }
@@ -846,6 +943,9 @@ namespace GT_SpecDB_Editor
             btn_DeleteRow.IsEnabled = enabled;
             btn_CopyRow.IsEnabled = enabled;
             tb_ColumnFilter.IsEnabled = enabled;
+
+            btn_SaveAs.IsEnabled = enabled;
+            btn_Save.IsEnabled = enabled;
         }
 
         private void ProcessNewlyLoadedSpecDB()
@@ -854,8 +954,10 @@ namespace GT_SpecDB_Editor
             dg_Rows.ItemsSource = null;
             tb_ColumnFilter.Text = "";
             FilterString = "";
+
             mi_SavePartsInfo.IsEnabled = CurrentDatabase.SpecDBFolderType >= SpecDBFolder.GT5_JP3009;
             mi_SaveCarsParts.IsEnabled = CurrentDatabase.SpecDBFolderType <= SpecDBFolder.GT5_TRIAL_JP2704;
+
             mi_ExportTableSQLite.IsEnabled = true;
             lb_Tables.Items.Clear();
 
@@ -863,15 +965,11 @@ namespace GT_SpecDB_Editor
                 lb_Tables.Items.Add($"{table.Key}");
 
             this.Title = $"{WindowTitle} - {CurrentDatabase.SpecDBFolderType} [{CurrentDatabase.SpecDBFolderType.Humanize()}]";
-        }
 
-        private void lb_Tables_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            if (lb_Tables.SelectedIndex == -1)
-                return;
-
-            var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
-            cm_TableIndex.Header = $"Table Index: {table.IDI.TableIndex}";
+            ToggleToolbarControls(false);
         }
+        #endregion
+
+
     }
 }

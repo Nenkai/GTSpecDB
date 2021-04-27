@@ -641,6 +641,7 @@ namespace GT_SpecDB_Editor.Core
                     savedStringDatabases.Add(meta.StringFileName);
                 }
             }
+
         }
 
         private void SaveIDTable(string outputPath)

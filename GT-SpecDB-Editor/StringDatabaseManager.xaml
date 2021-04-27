@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT_SpecDB_Editor"
         mc:Ignorable="d"
-        Title="String Database Selector" Height="400.206" Width="725" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+        Title="String Database Selector" Height="400.206" Width="764" ResizeMode="NoResize" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
     <Grid>
 
         <TextBox Height="20" Margin="337,0,94,10" Name="tb_NewString" VerticalAlignment="Bottom"/>
@@ -15,12 +15,15 @@
         <ListBox Name="lb_StringList" Margin="337,35,10,35" ItemsSource="{Binding Strings}" MouseDoubleClick="lb_StringList_MouseDoubleClick" SelectionChanged="lb_StringList_SelectionChanged" />
 
         <Label Content="Filter by String.." Margin="10,29,613,0" Height="26" VerticalAlignment="Top"/>
-        <TextBox Height="20" Margin="111,35,387,0" Name="tb_FilterString" VerticalAlignment="Top" TextChanged="tb_FilterString_TextChanged"/>
-        <Button Name="btn_SelectEmptyString" Content="Select Empty/Blank String" Margin="10,0,387,10" Height="46" VerticalAlignment="Bottom" Click="btn_SelectEmptyString_Click"/>
+        <TextBox Height="20" Margin="111,35,426,0" Name="tb_FilterString" VerticalAlignment="Top" TextChanged="tb_FilterString_TextChanged"/>
+        
+        <Button Name="btn_CopyCurrent" Content="Copy Current" Margin="10,0,426,61" Height="46" VerticalAlignment="Bottom" Click="btn_CopyCurrent_Click"/>
+        <Button Name="btn_SelectEmptyString" Content="Select Empty/Blank String" Margin="10,0,426,10" Height="46" VerticalAlignment="Bottom" Click="btn_SelectEmptyString_Click"/>
 
-        <Label Content="Edit String" IsEnabled="False" Margin="10,62,613,0" Height="26" VerticalAlignment="Top"/>
-        <TextBox Height="20" Margin="111,66,387,0" IsEnabled="False" Name="tb_EditString" VerticalAlignment="Top" TextChanged="tb_EditString_TextChanged"/>
+        <Label Content="Edit String" Margin="10,62,613,0" Height="26" VerticalAlignment="Top"/>
+        <TextBox Name="tb_StringEdit" Height="20" Margin="84,68,475,0" IsEnabled="False" VerticalAlignment="Top" />
 
-        <Button Name="btn_DeleteString" IsEnabled="False" Content="Delete String (use with caution!)" Margin="111,96,387,0" Height="26" VerticalAlignment="Top" Click="btn_DeleteString_Click"/>
+        <Button Name="btn_DeleteString" IsEnabled="False" Content="Delete String (use with caution!)" Margin="111,96,426,0" Height="26" VerticalAlignment="Top" Click="btn_DeleteString_Click"/>
+        <Button Name="btn_SetString" Content="Set" HorizontalAlignment="Left" Margin="288,68,0,0" VerticalAlignment="Top" Width="44" Click="btn_SetString_Click"/>
     </Grid>
 </Window>

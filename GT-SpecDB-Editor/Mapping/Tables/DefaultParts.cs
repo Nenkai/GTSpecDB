@@ -95,7 +95,7 @@ namespace GT_SpecDB_Editor.Mapping.Tables
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("Freedom", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
-                    Columns.Add(new ColumnMetadata("LWeight Window", DBColumnType.Int));
+                    Columns.Add(new ColumnMetadata("LWeightWindow", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("Bonnet", DBColumnType.Int));
                     Columns.Add(new ColumnMetadata("ID", DBColumnType.Int));
