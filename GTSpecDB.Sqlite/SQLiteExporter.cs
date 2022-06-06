@@ -12,6 +12,7 @@ using System.Data.SQLite;
 
 using GTSpecDB.Mapping;
 using GTSpecDB.Mapping.Types;
+using GTSpecDB.Core.Formats;
 
 namespace GTSpecDB.Core
 {
@@ -72,6 +73,8 @@ namespace GTSpecDB.Core
                 InsertTableInfo(m_dbConnection);
 
                 InsertTableRows(m_dbConnection);
+
+                InsertRaceSpec(m_dbConnection);
 
                 InsertDatabaseInfo(m_dbConnection);
             }
@@ -314,6 +317,41 @@ namespace GTSpecDB.Core
             command.ExecuteNonQuery();
         }
 
+        private void InsertRaceSpec(SQLiteConnection conn)
+        {
+            SQLiteCommand command = new SQLiteCommand($"CREATE TABLE RaceSpec (RaceId int, RaceLabel TEXT, EnemyCarId int, Variation int)", conn);
+            command.ExecuteNonQuery();
+
+            command = new SQLiteCommand($"SELECT * FROM RACE", conn);
+            var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                int rowId = reader.GetInt32(0);
+                string label = reader.GetString(1);
+
+                int tableId = Database.Tables["RACE"].TableID;
+
+                long specFile = ((long)tableId << 32) | (long)rowId;
+                string path = Path.Combine(Database.FolderName, "RACES", specFile.ToString("X16"));
+
+                if (File.Exists(path))
+                {
+                    var file = File.ReadAllBytes(path);
+                    RaceSpec raceSpec = new RaceSpec(file);
+                    
+                    for (var i = 0; i < raceSpec.EntryCount; i++)
+                    {
+                        command = new SQLiteCommand($"INSERT INTO RaceSpec (RaceId, RaceLabel, EnemyCarId, Variation) VALUES (@RaceId, @RaceLabel, @EnemyCarId, @Variation)", conn);
+                        command.Parameters.AddWithValue("@RaceId", rowId);
+                        command.Parameters.AddWithValue("@RaceLabel", label);
+                        command.Parameters.AddWithValue("@EnemyCarId", raceSpec.GetCarIdByIndex(i));
+                        command.Parameters.AddWithValue("@Variation", raceSpec.GetCarColorByIndex(i));
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
         public static string TranslateSpecDBTypeToSQLite(ColumnMetadata column)
         {
             switch (column.ColumnType)

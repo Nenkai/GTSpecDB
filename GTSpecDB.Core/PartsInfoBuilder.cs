@@ -141,7 +141,7 @@ namespace GTSpecDB.Core
                     if (fieldsWritten > 0)
                     {
                         // We are done writing the fields (if any), write the TBI metadata now
-                        tbiWriter.Position = TBI.HeaderSize + (totalEntriesWriten * 0x10);
+                        tbiWriter.Position = TBI_PartsInfo.HeaderSize + (totalEntriesWriten * 0x10);
                         tbiWriter.WriteInt32(car.ID);
                         tbiWriter.WriteInt32(fieldCountOffset); // Data Start
                         tbiWriter.WriteInt32((int)tbdWriter.Position - fieldCountOffset); // Data Length

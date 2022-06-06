@@ -9,14 +9,14 @@ namespace GTSpecDB.Core.Formats
     /// <summary>
     /// Database Table.
     /// </summary>
-    public class DBT
+    public class DBT_DatabaseTable
     {
         public const int HeaderSize = 0x10;
 
         public Endian Endian { get; }
         public byte[] Buffer { get; }
 
-        public DBT(byte[] buffer, Endian endian)
+        public DBT_DatabaseTable(byte[] buffer, Endian endian)
         {
             Buffer = buffer;
             Endian = endian;

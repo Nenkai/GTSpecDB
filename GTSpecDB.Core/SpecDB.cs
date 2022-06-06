@@ -41,8 +41,8 @@ namespace GTSpecDB.Core
         /// All tables that should be loaded as per original implementation.
         /// </summary>
         public SpecDBTable[] Fixed_Tables { get; }
-        public SDB UniversalStringDatabase { get; set; }
-        public SDB LocaleStringDatabase { get; set; }
+        public SDB_StringDatabase UniversalStringDatabase { get; set; }
+        public SDB_StringDatabase LocaleStringDatabase { get; set; }
         public string LocaleName { get; set; } = "british"; // Change this accordingly.
         public Dictionary<string, StringDatabase> StringDatabases = new Dictionary<string, StringDatabase>();
 
@@ -119,13 +119,13 @@ namespace GTSpecDB.Core
             LocaleStringDatabase = ReadStringDatabase($"{LocaleName}_StrDB.sdb");
         }
 
-        private SDB ReadStringDatabase(string name)
+        private SDB_StringDatabase ReadStringDatabase(string name)
         {
             byte[] sdbFile = File.ReadAllBytes(Path.Combine(FolderName, name));
             SpanReader sr = new SpanReader(sdbFile);
             sr.Position = 0x08;
             Endian endian = sr.ReadInt16() == 1 ? Endian.Little : Endian.Big;
-            SDB sdb = new SDB(sdbFile, endian);
+            SDB_StringDatabase sdb = new SDB_StringDatabase(sdbFile, endian);
             
             return sdb;
         }
@@ -230,13 +230,13 @@ namespace GTSpecDB.Core
 
         public int GetCarLabelCount()
         {
-            IDI idTable = Fixed_Tables[(int)SpecDBTables.GENERIC_CAR].IDI;
+            IDI_LabelInformation idTable = Fixed_Tables[(int)SpecDBTables.GENERIC_CAR].IDI;
             return idTable.KeyCount;
         }
 
         public int GetLabelCountForTable(SpecDBTables table)
         {
-            IDI idTable = Fixed_Tables[(int)table].IDI;
+            IDI_LabelInformation idTable = Fixed_Tables[(int)table].IDI;
             return idTable.KeyCount;
         }
 
@@ -251,17 +251,17 @@ namespace GTSpecDB.Core
             if (carLabelCount > -1 && index < carLabelCount)
             {
                 //idi = MSpecDB::GetIDITableByIndex(pMVar2, 0);
-                IDI idTable = Fixed_Tables[(int)SpecDBTables.GENERIC_CAR].IDI;
+                IDI_LabelInformation idTable = Fixed_Tables[(int)SpecDBTables.GENERIC_CAR].IDI;
                 SpanReader sr = new SpanReader(idTable.Buffer);
 
                 // buf = buf + *(int*)(buf + param_1 * 8 + 0x10) + *(int*)(buf + 4) * 8 + 0x12;
-                sr.Position = IDI.HeaderSize + (index * 8);
+                sr.Position = IDI_LabelInformation.HeaderSize + (index * 8);
                 int strOffset = sr.ReadInt32();
 
                 sr.Position = 4;
                 int entryCount = sr.ReadInt32();
 
-                sr.Position = IDI.HeaderSize + (entryCount * 8) + strOffset; // str map offset + strOffset
+                sr.Position = IDI_LabelInformation.HeaderSize + (entryCount * 8) + strOffset; // str map offset + strOffset
                 sr.Position += 2; // Ignore string size as per original implementation
 
                 /* Original Returns the length of the string (pointer) and the buffer
@@ -285,7 +285,7 @@ namespace GTSpecDB.Core
         public int GetLabelOffsetByIDFromTable(SpecDBTables table, int code)
         {
             SpecDBTable sTable = Fixed_Tables[(int)table];
-            IDI idi = sTable.IDI;
+            IDI_LabelInformation idi = sTable.IDI;
 
             SpanReader sr = new SpanReader(idi.Buffer);
             sr.Position = 4;
@@ -294,19 +294,19 @@ namespace GTSpecDB.Core
             // "original" implementation had one while and one do loop, probably decompiler that just failed
             for (int i = 0; i < entryCount; i++)
             {
-                sr.Position = IDI.HeaderSize + (i * 8) + 4;
+                sr.Position = IDI_LabelInformation.HeaderSize + (i * 8) + 4;
                 int entryCode = sr.ReadInt32();
                 if (entryCode == code)
                 {
                     // Original: return (char*)(idiFile + index * 8 + *(int*)(iVar3 * 8 + idiFile + 0x10) + 0x12);
 
                     // *(int*)(iVar3 * 8 + idiFile + 0x10)
-                    int entryPos = IDI.HeaderSize + (i * 8);
+                    int entryPos = IDI_LabelInformation.HeaderSize + (i * 8);
                     sr.Position = entryPos;
                     int stringOffset = sr.ReadInt32();
 
                     // idiFile + index * 8 (go to the beginning of the second table)
-                    sr.Position = IDI.HeaderSize + entryCount * 8; // Header is added due to below
+                    sr.Position = IDI_LabelInformation.HeaderSize + entryCount * 8; // Header is added due to below
 
                     // Add the two
                     sr.Position += stringOffset;

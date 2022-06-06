@@ -14,7 +14,7 @@ namespace GTSpecDB.Core.Formats
     /// <summary>
     /// Label/ID Information.
     /// </summary>
-    public class IDI
+    public class IDI_LabelInformation
     {
         public Endian Endian { get; }
         public byte[] Buffer { get; }
@@ -43,7 +43,7 @@ namespace GTSpecDB.Core.Formats
             }
         }
 
-        public IDI(byte[] buffer, Endian endian)
+        public IDI_LabelInformation(byte[] buffer, Endian endian)
         { 
             Buffer = buffer;
             Endian = endian;

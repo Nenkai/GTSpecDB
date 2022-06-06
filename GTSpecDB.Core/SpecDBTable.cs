@@ -21,8 +21,8 @@ namespace GTSpecDB.Core
 {
     public class SpecDBTable
     {
-        public DBT DBT { get; set; }
-        public IDI IDI { get; set; }
+        public DBT_DatabaseTable DBT { get; set; }
+        public IDI_LabelInformation IDI { get; set; }
 
         public string TableName { get; set; }
 
@@ -65,7 +65,7 @@ namespace GTSpecDB.Core
                 SpanReader sr = new SpanReader(DBT.Buffer, BigEndian ? Endian.Big : Endian.Little);
 
                 // Short version
-                sr.Position = DBT.HeaderSize + (8 * entryIndex) + 4;
+                sr.Position = DBT_DatabaseTable.HeaderSize + (8 * entryIndex) + 4;
                 int entryOffset = sr.ReadInt32();
                 sr.Position = DBT.ShortTableOffset + entryOffset;
 
@@ -99,7 +99,7 @@ namespace GTSpecDB.Core
                 SpanReader sr = new SpanReader(DBT.Buffer, BigEndian ? Endian.Big : Endian.Little);
 
                 // Short version
-                sr.Position = DBT.HeaderSize + (8 * entryIndex) + 4;
+                sr.Position = DBT_DatabaseTable.HeaderSize + (8 * entryIndex) + 4;
                 int entryOffset = sr.ReadInt32();
                 sr.Position = DBT.ShortTableOffset + entryOffset;
 
@@ -127,13 +127,13 @@ namespace GTSpecDB.Core
                 SpanReader sr = new SpanReader(IDI.Buffer, BigEndian ? Endian.Big : Endian.Little);
 
                 // buf = buf + *(int*)(buf + param_1 * 8 + 0x10) + *(int*)(buf + 4) * 8 + 0x12;
-                sr.Position = IDI.HeaderSize + (index * 8);
+                sr.Position = IDI_LabelInformation.HeaderSize + (index * 8);
                 int strOffset = sr.ReadInt32();
 
                 sr.Position = 4;
                 int entryCount = sr.ReadInt32();
 
-                sr.Position = IDI.HeaderSize + (entryCount * 8) + strOffset; // str map offset + strOffset
+                sr.Position = IDI_LabelInformation.HeaderSize + (entryCount * 8) + strOffset; // str map offset + strOffset
                 sr.Position += 2; // Ignore string size as per original implementation
 
                 /* Original Returns the length of the string (pointer) and the buffer
@@ -185,7 +185,7 @@ namespace GTSpecDB.Core
                 case 0x0801:
                     BigEndian = true; break;
             }
-            DBT = new DBT(buffer, BigEndian ? Endian.Big : Endian.Little);
+            DBT = new DBT_DatabaseTable(buffer, BigEndian ? Endian.Big : Endian.Little);
 
             sr.Position = 4;
             versionHigh = sr.ReadUInt16();
@@ -195,7 +195,7 @@ namespace GTSpecDB.Core
             if (sr.Length <= 32)
                 return;
 
-            sr.Position = (int)(DBT.HeaderSize + (entryCount * 8));
+            sr.Position = (int)(DBT_DatabaseTable.HeaderSize + (entryCount * 8));
             DBT.HuffmanTableHeaderOffset = sr.Position;
             if ((versionHigh & 1) != 0)
             {
@@ -226,7 +226,7 @@ namespace GTSpecDB.Core
 
             Endian endian = sr.ReadByte() != 0 ? Endian.Little : Endian.Big;
 
-            IDI = new IDI(buffer, endian);
+            IDI = new IDI_LabelInformation(buffer, endian);
             sr.Endian = endian;
             sr.Position = 0x0C;
             TableID = sr.ReadInt32();
@@ -255,11 +255,11 @@ namespace GTSpecDB.Core
             int idiKeyCount = IDI.KeyCount;
             for (int i = 0; i < idiKeyCount; i++)
             {
-                idiReader.Position = IDI.HeaderSize + (i * 0x08);
+                idiReader.Position = IDI_LabelInformation.HeaderSize + (i * 0x08);
                 int labelOffset = idiReader.ReadInt32();
                 int id = idiReader.ReadInt32();
 
-                idiReader.Position = IDI.HeaderSize + (idiKeyCount * 0x08) + labelOffset;
+                idiReader.Position = IDI_LabelInformation.HeaderSize + (idiKeyCount * 0x08) + labelOffset;
                 idiReader.Position += 2; // Ignore string length
                 string label = idiReader.ReadString0();
                 idsToLabels.Add(id, label);
@@ -273,7 +273,7 @@ namespace GTSpecDB.Core
             int keyCount = DBT.EntryCount;
             for (int i = 0; i < keyCount; i++)
             {
-                dbtReader.Position = DBT.HeaderSize + (i * 0x08);
+                dbtReader.Position = DBT_DatabaseTable.HeaderSize + (i * 0x08);
                 int id = dbtReader.ReadInt32();
                 Keys.Add(new RowData() { Id = id, Label = idsToLabels[id] });
             }
@@ -289,11 +289,11 @@ namespace GTSpecDB.Core
             int idiKeyCount = IDI.KeyCount;
             for (int i = 0; i < idiKeyCount; i++)
             {
-                idiReader.Position = IDI.HeaderSize + (i * 0x08);
+                idiReader.Position = IDI_LabelInformation.HeaderSize + (i * 0x08);
                 int labelOffset = idiReader.ReadInt32();
                 int id = idiReader.ReadInt32();
 
-                idiReader.Position = IDI.HeaderSize + (idiKeyCount * 0x08) + labelOffset;
+                idiReader.Position = IDI_LabelInformation.HeaderSize + (idiKeyCount * 0x08) + labelOffset;
                 idiReader.Position += 2; // Ignore string length
                 string label = idiReader.ReadString0();
                 idsToLabels.Add(id, label);
@@ -307,7 +307,7 @@ namespace GTSpecDB.Core
             int keyCount = DBT.EntryCount;
             for (int i = 0; i < keyCount; i++)
             {
-                dbtReader.Position = DBT.HeaderSize + (i * 0x08);
+                dbtReader.Position = DBT_DatabaseTable.HeaderSize + (i * 0x08);
                 int id = dbtReader.ReadInt32();
                 keys.Add(new RowData() { Id = id, Label = idsToLabels[id] });
             }
@@ -671,9 +671,9 @@ namespace GTSpecDB.Core
                 var strTable = GetLabelTable(orderedRows);
 
                 // Write strings
-                bs.Position = IDI.HeaderSize + (orderedRows.Count * IDI.EntrySize);
+                bs.Position = IDI_LabelInformation.HeaderSize + (orderedRows.Count * IDI_LabelInformation.EntrySize);
                 strTable.SaveStream(bs);
-                bs.Position = IDI.HeaderSize;
+                bs.Position = IDI_LabelInformation.HeaderSize;
 
                 foreach (var row in orderedRows)
                 {
@@ -696,10 +696,10 @@ namespace GTSpecDB.Core
                 int columnSize = TableMetadata.GetColumnSize();
                 bs.WriteInt32(columnSize);
 
-                int rowDataOffset = DBT.HeaderSize + (Rows.Count * 8);
+                int rowDataOffset = DBT_DatabaseTable.HeaderSize + (Rows.Count * 8);
                 for (int i = 0; i < Rows.Count; i++)
                 {
-                    bs.Position = DBT.HeaderSize + (i * 8);
+                    bs.Position = DBT_DatabaseTable.HeaderSize + (i * 8);
                     SpecDBRowData row = Rows[i];
                     bs.WriteInt32(row.ID);
 
@@ -721,14 +721,14 @@ namespace GTSpecDB.Core
                 bs.WriteInt32(strDb.Strings.Count);
                 bs.WriteInt32(BigEndian ? 0 : 1);
 
-                long lastDataPos = SDB.HeaderSize + (strDb.Strings.Count * sizeof(uint));
+                long lastDataPos = SDB_StringDatabase.HeaderSize + (strDb.Strings.Count * sizeof(uint));
                 var strTable = GetStringDbTable(strDb.Strings);
-                bs.Position = SDB.HeaderSize + (strDb.Strings.Count * sizeof(uint));
+                bs.Position = SDB_StringDatabase.HeaderSize + (strDb.Strings.Count * sizeof(uint));
                 strTable.SaveStream(bs);
 
                 for (int i = 0; i < strDb.Strings.Count; i++)
                 {
-                    bs.Position = SDB.HeaderSize + (i * sizeof(uint));
+                    bs.Position = SDB_StringDatabase.HeaderSize + (i * sizeof(uint));
                     bs.WriteInt32(strTable.GetStringOffset(strDb.Strings[i]));
                 }
             }

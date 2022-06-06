@@ -16,7 +16,7 @@ namespace GTSpecDB.Sqlite
 
         static async Task Main(string[] args)
         {
-            Console.WriteLine($"-- GTSpecDBSqlite - (c) Nenkai#9075, ported from flatz's gttool --");
+            Console.WriteLine($"-- GTSpecDB.Sqlite - (c) Nenkai#9075");
             Console.WriteLine();
 
             

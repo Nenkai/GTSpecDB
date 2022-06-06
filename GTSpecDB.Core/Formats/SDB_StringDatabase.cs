@@ -12,13 +12,13 @@ namespace GTSpecDB.Core.Formats
     /// <summary>
     /// String Database.
     /// </summary>
-    public class SDB
+    public class SDB_StringDatabase
     {
         private Endian _endian;
         public byte[] FileBuffer { get; set; }
         public const int HeaderSize = 0x10;
 
-        public SDB(byte[] buffer, Endian endian)
+        public SDB_StringDatabase(byte[] buffer, Endian endian)
         {
             FileBuffer = buffer;
             _endian = endian;

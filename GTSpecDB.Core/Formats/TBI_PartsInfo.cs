@@ -14,7 +14,7 @@ namespace GTSpecDB.Core.Formats
     /// <summary>
     /// Parts/Table Information.
     /// </summary>
-    public class TBI
+    public class TBI_PartsInfo
     {
         public Endian Endian { get; }
         public byte[] Buffer { get; set; }
@@ -48,7 +48,7 @@ namespace GTSpecDB.Core.Formats
             }
         }
 
-        public TBI(byte[] buffer, Endian endian)
+        public TBI_PartsInfo(byte[] buffer, Endian endian)
         {
             Buffer = buffer;
             Endian = endian;

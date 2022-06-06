@@ -15,6 +15,7 @@ namespace GTSpecDB.Sqlite
     public class SQLiteImporter
     {
         private SpecDB _db;
+        public bool ImportRaces { get; set; }
 
         public SQLiteImporter()
         {
