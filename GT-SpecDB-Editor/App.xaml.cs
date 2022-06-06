@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using System.Windows.Threading;
-namespace GT_SpecDB_Editor
+namespace GTSpecDB
 {
     /// <summary>
     /// Interaction logic for App.xaml

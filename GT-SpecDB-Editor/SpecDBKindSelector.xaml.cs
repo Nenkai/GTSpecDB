@@ -14,8 +14,8 @@ using System.Windows.Shapes;
 
 using Humanizer;
 
-using GT_SpecDB_Editor.Core;
-namespace GT_SpecDB_Editor
+using GTSpecDB.Core;
+namespace GTSpecDB.Editor
 {
     /// <summary>
     /// Interaction logic for SpecDBKindSelector.xaml

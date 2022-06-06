@@ -19,12 +19,13 @@ using Microsoft.Win32;
 
 using Humanizer;
 
-using GT_SpecDB_Editor.Core;
-using GT_SpecDB_Editor.Utils;
-using GT_SpecDB_Editor.Mapping;
-using GT_SpecDB_Editor.Mapping.Types;
+using GTSpecDB.Core;
 
-namespace GT_SpecDB_Editor
+using GTSpecDB.Utils;
+using GTSpecDB.Mapping;
+using GTSpecDB.Mapping.Types;
+
+namespace GTSpecDB.Editor
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -199,7 +200,7 @@ namespace GT_SpecDB_Editor
                     progressWindow.progressBar.Value = prog.Index;
                 });
 
-                var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, true, dlg.FileName);
+                var task = CurrentDatabase.SavePartsInfoFile(progress, true, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
 
@@ -207,6 +208,11 @@ namespace GT_SpecDB_Editor
             }
         }
 
+        /// <summary>
+        /// Parts Table saving
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void SaveCarsParts_Click(object sender, RoutedEventArgs e)
         {
             CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select folder to save the CARS folder");
@@ -235,7 +241,7 @@ namespace GT_SpecDB_Editor
                     progressWindow.progressBar.Value = prog.Index;
                 });
 
-                var task = CurrentDatabase.SavePartsInfoFile(progressWindow, progress, false, dlg.FileName);
+                var task = CurrentDatabase.SavePartsInfoFile(progress, false, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
 
@@ -280,29 +286,7 @@ namespace GT_SpecDB_Editor
 
         private async void ExportCurrentTableSQLite_Click(object sender, RoutedEventArgs e)
         {
-            CommonSaveFileDialog dlg = new CommonSaveFileDialog("File to export the table as SQLite");
-            dlg.EnsurePathExists = true;
-            dlg.EnsureFileExists = true;
-            dlg.DefaultFileName = $"{CurrentDatabase.SpecDBName}.sqlite";
-            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
-            {
-                var progressWindow = new ProgressWindow();
-                progressWindow.Title = "Exporting SpecDB to SQLite";
-                progressWindow.progressBar.Maximum = CurrentDatabase.Tables.Count;
-
-                var progress = new Progress<(int Index, string progressName)>(prog =>
-                {
-                    progressWindow.lbl_progress.Content = $"{prog.Index} of {CurrentDatabase.Tables.Count} tables";
-                    progressWindow.currentElement.Content = prog.progressName;
-                    progressWindow.progressBar.Value = (double)prog.Index;
-                });
-
-                var exporter = new SQLiteExporter(CurrentDatabase, CurrentDatabase.SpecDBName, progress);
-                var task = exporter.ExportToSQLiteAsync(progressWindow, ((ShellFile)dlg.FileAsShellObject).Path);
-                progressWindow.ShowDialog();
-                if (await task)
-                    statusName.Text = "Successfully exported to SQLite!";
-            }
+            
         }
         #endregion
 
@@ -347,10 +331,10 @@ namespace GT_SpecDB_Editor
 
         private void btn_DeleteRow_Click(object sender, RoutedEventArgs e)
         {
-            if (dg_Rows.SelectedIndex == -1)
+            if (dg_Rows.SelectedIndex == -1 || !dg_Rows.CurrentCell.IsValid)
                 return;
 
-            CurrentTable.Rows.Remove(CurrentTable.Rows[dg_Rows.SelectedIndex]);
+            CurrentTable.Rows.Remove(dg_Rows.CurrentCell.Item as SpecDBRowData);
             CurrentTable.LastID = CurrentTable.Rows.Max(row => row.ID);
 
             statusName.Text = "Row deleted.";
@@ -358,10 +342,10 @@ namespace GT_SpecDB_Editor
 
         private void btn_CopyRow_Click(object sender, RoutedEventArgs e)
         {
-            if (dg_Rows.SelectedIndex == -1)
+            if (dg_Rows.SelectedIndex == -1 || !dg_Rows.CurrentCell.IsValid)
                 return;
 
-            var selectedRow = CurrentTable.Rows[dg_Rows.SelectedIndex];
+            var selectedRow = dg_Rows.CurrentCell.Item as SpecDBRowData;
 
             var newRow = new SpecDBRowData();
             newRow.ID = ++CurrentTable.LastID;
@@ -455,7 +439,7 @@ namespace GT_SpecDB_Editor
                     currentRow.ID = newValue;
 
                     // Put it to the last of said id if it conflicts
-                    if (nextRow.ID == newValue)
+                    if (nextRow != null && nextRow.ID == newValue)
                         nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID > newValue);
 
                     if (nextRow is null) // End of list?
@@ -663,12 +647,13 @@ namespace GT_SpecDB_Editor
                     CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), nextRowIndex);
                 }
 
-                dbRow.Label = textSpl[1];
+                dbRow.Label = textSpl[1].TrimEnd();
 
                 textSpl[textSpl.Length - 1].TrimEnd();
                 for (int i = 2; i < textSpl.Length; i++)
                 {
                     IDBType colData = dbRow.ColumnData[i - 2];
+                    textSpl[i] = textSpl[i].TrimEnd();
                     switch (colData)
                     {
                         case DBByte @byte:
@@ -717,6 +702,7 @@ namespace GT_SpecDB_Editor
         private void dg_Rows_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             dg_cm_CopyCell.IsEnabled = lb_Tables.SelectedIndex != -1 && dg_Rows.SelectedIndex != -1;
+            dg_cm_ViewRaceEntries.IsEnabled = lb_Tables.SelectedIndex != -1 && dg_Rows.SelectedIndex != -1 && CurrentTable.TableName == "RACE";
         }
 
         private void dg_Rows_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -761,6 +747,13 @@ namespace GT_SpecDB_Editor
             Clipboard.SetText(output);
 
             statusName.Text = $"Copied cell '{output}'";
+        }
+
+        private void dg_cm_ViewRaceEntries_Click(object sender, RoutedEventArgs e)
+        {
+            int tableId = CurrentTable.TableID;
+
+            ;
         }
         #endregion
 

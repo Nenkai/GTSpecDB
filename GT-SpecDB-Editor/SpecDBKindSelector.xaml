@@ -1,9 +1,9 @@
-﻿<Window x:Class="GT_SpecDB_Editor.SpecDBKindSelector"
+﻿<Window x:Class="GTSpecDB.Editor.SpecDBKindSelector"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GT_SpecDB_Editor"
+        xmlns:local="clr-namespace:GTSpecDB"
         mc:Ignorable="d"
         Title="Select SpecDB Kind" Height="449.065" Width="585.759" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>

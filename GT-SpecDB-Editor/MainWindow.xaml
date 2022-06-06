@@ -1,9 +1,9 @@
-﻿<Window x:Class="GT_SpecDB_Editor.MainWindow"
+﻿<Window x:Class="GTSpecDB.Editor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GT_SpecDB_Editor"
+        xmlns:local="clr-namespace:GTSpecDB"
         mc:Ignorable="d"
         Title="Gran Turismo Spec Database Editor" Height="640" Width="960" AllowDrop="True" Drop="Window_Drop" WindowStartupLocation="CenterScreen">
     <Grid>
@@ -105,6 +105,7 @@
                     <DataGrid.ContextMenu>
                         <ContextMenu Name="dg_ContextMenu">
                             <MenuItem Name="dg_cm_CopyCell" Header="Copy Cell" Click="dg_cm_CopyCell_Click"/>
+                            <MenuItem Name="dg_cm_ViewRaceEntries" Header="View RACE Entries (GT4)" Click="dg_cm_ViewRaceEntries_Click"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                 </DataGrid>

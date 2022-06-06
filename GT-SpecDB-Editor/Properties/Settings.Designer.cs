@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GT_SpecDB_Editor.Properties
+namespace GTSpecDB.Properties
 {
 
 
