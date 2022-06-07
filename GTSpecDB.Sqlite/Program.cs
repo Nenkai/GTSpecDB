@@ -31,11 +31,24 @@ namespace GTSpecDB.Sqlite
 
         public static void Export(ExportVerbs exportVerbs)
         {
-            SpecDBFolder? type = SpecDB.DetectSpecDBType(Path.GetDirectoryName(exportVerbs.InputPath));
+            if (string.IsNullOrEmpty(exportVerbs.InputPath) || !Directory.Exists(exportVerbs.InputPath))
+            {
+                Console.WriteLine("Provided input directory does not exist.");
+                return;
+            }
+
+            string specdbDirName = Path.GetFileNameWithoutExtension(exportVerbs.InputPath);
+            SpecDBFolder? type = SpecDB.DetectSpecDBType(specdbDirName);
             if (type is null)
             {
                 Console.WriteLine("Unsupported SpecDB Type. Make sure the SpecDB folder has a proper name, example: 'GT4_PREMIUM_US2560'.");
                 return;
+            }
+
+            if (string.IsNullOrEmpty(exportVerbs.OutputPath))
+            {
+                string path = Path.GetDirectoryName(exportVerbs.InputPath);
+                exportVerbs.OutputPath = Path.Combine(path, specdbDirName) + ".sqlite";
             }
 
             var db = SpecDB.LoadFromSpecDBFolder(exportVerbs.InputPath, type.Value, false);
@@ -45,6 +58,12 @@ namespace GTSpecDB.Sqlite
 
         public static void Import(ImportVerbs importVerbs)
         {
+            if (!File.Exists(importVerbs.InputPath))
+            {
+                Console.WriteLine("Provided input file does not exist.");
+                return;
+            }
+
             SQLiteImporter importer = new SQLiteImporter();
             importer.Import(importVerbs.InputPath, importVerbs.OutputPath);
         }
