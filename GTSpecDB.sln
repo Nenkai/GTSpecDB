@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTSpecDB.Editor", "GT-SpecDB-Editor\GTSpecDB.Editor.csproj", "{13BE163E-69F7-4395-ADFA-8BEA6ABF81F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTSpecDB.Editor", "GTSpecDB.Editor\GTSpecDB.Editor.csproj", "{13BE163E-69F7-4395-ADFA-8BEA6ABF81F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTSpecDB.Sqlite", "GTSpecDB.Sqlite\GTSpecDB.Sqlite.csproj", "{F41FD881-14C9-43CC-8943-6014EBFD10D9}"
 EndProject

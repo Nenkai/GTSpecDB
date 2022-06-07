@@ -107,7 +107,7 @@ namespace GTSpecDB.Sqlite
                 {
                     if (!Enum.TryParse(colTypes[i], out DBColumnType colType))
                     {
-
+                        throw new InvalidDataException($"Incorrect column type '{colTypes[i]}' in tableinfo {table.Key}.");
                     }
 
                     var colMeta = new ColumnMetadata(colNames[i], colType);

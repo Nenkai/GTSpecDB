@@ -13,8 +13,9 @@ using System.Data.SQLite;
 using GTSpecDB.Mapping;
 using GTSpecDB.Mapping.Types;
 using GTSpecDB.Core.Formats;
+using GTSpecDB.Core;
 
-namespace GTSpecDB.Core
+namespace GTSpecDB.Sqlite
 {
     public class SQLiteExporter
     {
