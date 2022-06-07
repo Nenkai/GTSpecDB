@@ -1,0 +1,10 @@
+﻿<Application x:Class="GTSpecDB.Editor.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GTSpecDB.Editor"
+             StartupUri="MainWindow.xaml"
+             DispatcherUnhandledException="AppDispatcherUnhandledException">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>

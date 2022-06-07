@@ -1,0 +1,18 @@
+﻿<Window x:Class="GTSpecDB.Editor.SpecDBKindSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GTSpecDB.Editor"
+        mc:Ignorable="d"
+        Title="Select SpecDB Kind" Height="449.065" Width="585.759" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="319*"/>
+            <ColumnDefinition Width="93*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Margin="10,10,8,0" FontSize="14" TextWrapping="Wrap" TextAlignment="Center" Height="39" VerticalAlignment="Top" Grid.ColumnSpan="2">Auto-detection of the SpecDB failed, choose the most relevant from the list below</TextBlock>
+        <ListBox Name="lb_Types" Margin="10,54,10,0" Height="324" VerticalAlignment="Top" SelectionChanged="lb_Types_SelectionChanged" Grid.ColumnSpan="2"/>
+        <Button Name="btn_PickSpecDBType" Content="Select SpecDB Type" IsEnabled="False" Margin="10,0,10,10" Height="25" VerticalAlignment="Bottom" Click="btn_PickSpecDBType_Click" Grid.ColumnSpan="2"/>
+    </Grid>
+</Window>
