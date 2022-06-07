@@ -66,18 +66,24 @@ namespace GTSpecDB.Core
                 Console.WriteLine("Creating Tables in SQLite..");
                 CreateTables(m_dbConnection);
 
-                Console.WriteLine("Creating Table Info..");
+                Console.WriteLine("Creating Table Info (Column Layouts)..");
                 CreateTableInfo(m_dbConnection);
 
                 Console.WriteLine("Filling Table Info..");
                 InsertTableInfo(m_dbConnection);
 
+                Console.WriteLine("Inserting Rows.");
                 InsertTableRows(m_dbConnection);
 
+                Console.WriteLine("Converting RACES folder to RaceEntries table...");
                 InsertRaceSpec(m_dbConnection);
 
+                Console.WriteLine("Inserting Database Info..");
                 InsertDatabaseInfo(m_dbConnection);
             }
+
+            Console.WriteLine("Export to SQLite Completed.");
+
         }
 
         private void CreateTables(SQLiteConnection conn)
@@ -319,7 +325,7 @@ namespace GTSpecDB.Core
 
         private void InsertRaceSpec(SQLiteConnection conn)
         {
-            SQLiteCommand command = new SQLiteCommand($"CREATE TABLE RaceSpec (RaceId int, RaceLabel TEXT, EnemyCarId int, Variation int)", conn);
+            SQLiteCommand command = new SQLiteCommand($"CREATE TABLE RaceEntries (RaceId int, RaceLabel TEXT, EnemyCarId int, Variation int)", conn);
             command.ExecuteNonQuery();
 
             command = new SQLiteCommand($"SELECT * FROM RACE", conn);
@@ -327,31 +333,41 @@ namespace GTSpecDB.Core
 
             while (reader.Read())
             {
-                int rowId = reader.GetInt32(0);
-                string label = reader.GetString(1);
+                int rowId = (int)reader["RowId"];
+                string label = (string)reader["Label"];
 
                 int tableId = Database.Tables["RACE"].TableID;
 
-                long specFile = ((long)tableId << 32) | (long)rowId;
-                string path = Path.Combine(Database.FolderName, "RACES", specFile.ToString("X16"));
+                long specFileId = ((long)tableId << 32) | (long)rowId;
+                string specFileName = specFileId.ToString("X16");
+                string specFilePath = Path.Combine(Database.FolderName, "RACES", specFileName);
 
-                if (File.Exists(path))
+                if (File.Exists(specFilePath))
                 {
-                    var file = File.ReadAllBytes(path);
-                    RaceSpec raceSpec = new RaceSpec(file);
-                    
-                    for (var i = 0; i < raceSpec.EntryCount; i++)
+                    Console.WriteLine($"Importing RACES/{specFileName} (TableID: {tableId}, RowId: {rowId})");
+                    var specFileBuffer = File.ReadAllBytes(specFilePath);
+                    RaceSpec raceSpec = new RaceSpec(specFileBuffer);
+
+                    if (raceSpec.EntryCount > 0)
                     {
-                        command = new SQLiteCommand($"INSERT INTO RaceSpec (RaceId, RaceLabel, EnemyCarId, Variation) VALUES (@RaceId, @RaceLabel, @EnemyCarId, @Variation)", conn);
-                        command.Parameters.AddWithValue("@RaceId", rowId);
-                        command.Parameters.AddWithValue("@RaceLabel", label);
-                        command.Parameters.AddWithValue("@EnemyCarId", raceSpec.GetCarIdByIndex(i));
-                        command.Parameters.AddWithValue("@Variation", raceSpec.GetCarColorByIndex(i));
-                        command.ExecuteNonQuery();
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append("INSERT INTO RaceEntries (RaceId, RaceLabel, EnemyCarId, Variation) VALUES ");
+
+                        for (var i = 0; i < raceSpec.EntryCount; i++)
+                        {
+                            sb.Append($"({rowId}, '{label}', {raceSpec.GetCarIdByIndex(i)}, {raceSpec.GetCarColorByIndex(i)})");
+
+                            if (i < raceSpec.EntryCount - 1)
+                                sb.Append(", ");
+                        }
+
+                        SQLiteCommand fileCommand = new SQLiteCommand(sb.ToString(), conn);
+                        fileCommand.ExecuteNonQuery();
                     }
                 }
             }
         }
+
         public static string TranslateSpecDBTypeToSQLite(ColumnMetadata column)
         {
             switch (column.ColumnType)

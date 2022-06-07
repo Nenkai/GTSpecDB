@@ -20,49 +20,49 @@ namespace GTSpecDB.Mapping.Tables
                 Columns.Add(new ColumnMetadata("Crs_Tbl_Index", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("AllowEntry", DBColumnType.Int));
                 Columns.Add(new ColumnMetadata("AlEnt_Tbl_Index", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Int));
-                Columns.Add(new ColumnMetadata("Minutes", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Gold_MS", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Silv_MS", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("Bron_MS", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("RaceMode", DBColumnType.String, "UnistrDB.sdb"));
+                Columns.Add(new ColumnMetadata("StartV", DBColumnType.Int));
+                Columns.Add(new ColumnMetadata("RaceMinutes", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("goldfrac", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("silverfrac", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("bronzefrac", DBColumnType.Short));
 
                 // 20 to 2a shorts -> prize
-                Columns.Add(new ColumnMetadata("Prize1st", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("P2nd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("P3rd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("P4th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("P5th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("P6th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize1", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize2", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize3", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize4", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize5", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("Prize6", DBColumnType.Short));
 
                 Columns.Add(new ColumnMetadata("ChampPrize", DBColumnType.Short));
 
                 // 2e to 36 shorts -> launch pos
-                Columns.Add(new ColumnMetadata("StartPos1st", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("S2nd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("S3rd", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("S4th", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("S5th", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("LaunchPosition1", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("LaunchPosition2", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("LaunchPosition3", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("LaunchPosition4", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("LaunchPosition5", DBColumnType.Short));
 
                 Columns.Add(new ColumnMetadata("YearMin", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("YearMax", DBColumnType.Short));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Short));
+                Columns.Add(new ColumnMetadata("UnkFlag", DBColumnType.Short));
                 Columns.Add(new ColumnMetadata("MaxEntries", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("StartType", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("unkdrag", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("PlBoost", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Laps", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NumberOfLaps", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("FailCond", DBColumnType.Byte));
 
-                Columns.Add(new ColumnMetadata("License", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Drivetrain", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedLicense", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedDrivetrain", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Aspiration", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedAspiration", DBColumnType.Byte));
 
-                Columns.Add(new ColumnMetadata("CarType", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Tyres", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedCarType", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedTyres", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
 
@@ -92,61 +92,61 @@ namespace GTSpecDB.Mapping.Tables
                 Columns.Add(new ColumnMetadata("Sk12", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("Sk13", DBColumnType.Byte));
 
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostUnk", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostUnk", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostUnk", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("BoostUnk", DBColumnType.Byte));
+
+                Columns.Add(new ColumnMetadata("TireWear1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear7", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear8", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("TireWear9", DBColumnType.Byte));
+
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+
+                Columns.Add(new ColumnMetadata("goldmin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("goldsec", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("silvermin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("silversec", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("bronzemin", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("bronzesec", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-
-                Columns.Add(new ColumnMetadata("GoldMin", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("GoldSec", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("SilvMin", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("SilvSec", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("BronMin", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("BronSec", DBColumnType.Byte));
-
+                Columns.Add(new ColumnMetadata("LaunchSpeed1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LaunchSpeed2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LaunchSpeed3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LaunchSpeed4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LaunchSpeed5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LaunchSpeed6", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Delay1st", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("D2nd", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("D3rd", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("D4th", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("D5th", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("D6th", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("PowerMax", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("WeightMax", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("LengthMax", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("CountryReq", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart5", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("DelayStart6", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LimitPower", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedPower", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LimitWeight", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("LimitLength", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("NeedCountry", DBColumnType.Byte));
             }
             else
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Data.SQLite;
+using Syroot.BinaryData;
 
 using GTSpecDB.Core;
 using GTSpecDB.Mapping;
@@ -35,6 +36,9 @@ namespace GTSpecDB.Sqlite
                 SetupColumnTypes(m_dbConnection);
 
                 PopulateTableRows(m_dbConnection);
+
+                if (_db.SpecDBFolderType <= SpecDBFolder.GT5_TRIAL2007_2730)
+                    CreateRacesEntries(m_dbConnection, outputDirectory);
             }
 
             Console.WriteLine("Database imported. Exporting to SpecDB format..");
@@ -127,8 +131,8 @@ namespace GTSpecDB.Sqlite
                 while (reader.Read())
                 {
                     var row = new SpecDBRowData();
-                    row.ID = reader.GetInt32(0);
-                    row.Label = reader.GetString(1);
+                    row.ID = (int)reader["RowId"];
+                    row.Label = (string)reader["Label"];
 
                     int colNum = table.Value.TableMetadata.Columns.Count;
                     row.ColumnData = new List<IDBType>(colNum);
@@ -180,6 +184,53 @@ namespace GTSpecDB.Sqlite
                     }
 
                     table.Value.Rows.Add(row);
+                }
+            }
+        }
+
+        private void CreateRacesEntries(SQLiteConnection conn, string outputDirectory)
+        {
+            var command = new SQLiteCommand($"SELECT * FROM RACE", conn);
+            var reader = command.ExecuteReader();
+
+            int raceTableId = _db.Tables["RACE"].TableID;
+            int enemyCarsTableId = _db.Tables["ENEMY_CARS"].TableID;
+
+            string racesFolder = Path.Combine(outputDirectory, _db.SpecDBFolderType.ToString(), "RACES");
+            Directory.CreateDirectory(racesFolder);
+
+            while (reader.Read())
+            {
+                int raceId = (int)reader["RowId"];
+                long fileId = (long)raceTableId << 32 | (long)raceId;
+
+                string raceEntryPath = Path.Combine(racesFolder, fileId.ToString("X16"));
+                using (var raceSpecWriter = new BinaryStream(new FileStream(raceEntryPath, FileMode.Create)))
+                {
+                    raceSpecWriter.SetLength(8); // Ensure the header is written
+                    raceSpecWriter.Position = 0x08; // Seek to entry data
+
+                    var entryCommand = new SQLiteCommand("SELECT * FROM RaceEntries WHERE RaceId = @id", conn);
+                    entryCommand.Parameters.AddWithValue("@id", raceId);
+                    var entryReader = entryCommand.ExecuteReader();
+
+                    int entryCount = 0;
+
+                    while (entryReader.Read())
+                    {
+                        int enemyCarId = (int)entryReader["EnemyCarId"];
+                        int variation = (int)entryReader["Variation"];
+
+                        raceSpecWriter.WriteInt32(enemyCarId);
+                        raceSpecWriter.WriteInt32(enemyCarsTableId);
+                        raceSpecWriter.WriteInt32(variation);
+                        raceSpecWriter.WriteInt32(variation != -1 ? 0 : -1);
+
+                        entryCount++;
+                    }
+
+                    raceSpecWriter.Position = 0;
+                    raceSpecWriter.WriteInt32(entryCount);
                 }
             }
         }

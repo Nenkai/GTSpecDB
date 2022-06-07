@@ -200,11 +200,23 @@ namespace GTSpecDB.Editor
                     progressWindow.progressBar.Value = prog.Index;
                 });
 
-                var task = CurrentDatabase.SavePartsInfoFile(progress, true, dlg.FileName);
+                var task = SavePartsInfoFileAsync(progressWindow, progress, true, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
 
                 statusName.Text = $"PartsInfo.tbi/tbd saved to {dlg.FileName}.";
+            }
+        }
+
+        async Task SavePartsInfoFileAsync(ProgressWindow progressWindow, Progress<(int, string)> progress, bool tbdFile, string fileName)
+        {
+            try
+            {
+                await Task.Run(() => CurrentDatabase.SavePartsInfoFile(progress, tbdFile, fileName));
+            }
+            finally
+            {
+                progressWindow.Close();
             }
         }
 
@@ -241,7 +253,7 @@ namespace GTSpecDB.Editor
                     progressWindow.progressBar.Value = prog.Index;
                 });
 
-                var task = CurrentDatabase.SavePartsInfoFile(progress, false, dlg.FileName);
+                var task = SavePartsInfoFileAsync(progressWindow, progress, false, dlg.FileName);
                 progressWindow.ShowDialog();
                 await task;
 

@@ -376,12 +376,12 @@ namespace GTSpecDB.Core
             }
         }
 
-        public async Task SavePartsInfoFile(IProgress<(int, string)> progress, bool tbdFile, string folder)
+        public void SavePartsInfoFile(IProgress<(int, string)> progress, bool tbdFile, string folder)
         {
             if (tbdFile)
-                 await Task.Run(() => PartsInfoBuilder.WritePartsInformationNew(this, progress, folder));
+                 PartsInfoBuilder.WritePartsInformationNew(this, progress, folder);
              else
-                 await Task.Run(() => PartsInfoBuilder.WritePartsInformationOld(this, progress, folder));
+                PartsInfoBuilder.WritePartsInformationOld(this, progress, folder);
         }
 
 
@@ -496,6 +496,9 @@ namespace GTSpecDB.Core
 
         [Description("Gran Turismo HD Concept (JP)")]
         GT5_TRIAL_JP2704,
+
+        [Description("Gran Turismo 5 Prologue Demo (JP)")]
+        GT5_TRIAL2007_2730,
 
         [Description("Gran Turismo 5 Prologue")]
         GT5_PROLOGUE2813,

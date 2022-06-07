@@ -584,6 +584,9 @@ namespace GTSpecDB.Core
             }
         }
 
+        /// <summary>
+        /// Loads all the rows from the table.
+        /// </summary>
         private void LoadAllRowData()
         {
             Rows = new ObservableCollection<SpecDBRowData>();
@@ -609,7 +612,7 @@ namespace GTSpecDB.Core
                     if (dataType is DBString str)
                     {
                         // Lazy load
-                     if (!db.StringDatabases.TryGetValue(str.FileName, out StringDatabase strDb))
+                        if (!db.StringDatabases.TryGetValue(str.FileName, out StringDatabase strDb))
                         {
                             var newStrDb = StringDatabase.LoadFromFile(Path.Combine(db.FolderName, str.FileName));
                             db.StringDatabases.Add(str.FileName, newStrDb);

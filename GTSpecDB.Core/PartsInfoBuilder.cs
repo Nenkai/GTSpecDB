@@ -214,6 +214,7 @@ namespace GTSpecDB.Core
                     int lastTableID = 0;
                     for (int j = 0; j < df.ColumnData.Count + 1; j += 2)
                     {
+                        // Skip Rear Tire to NOS
                         int tableID = j / 2 == 26 ? 27 : (df.ColumnData[j + 1] as DBInt).Value;
                         int partRowID = j / 2 == 26 ? -1 : (df.ColumnData[j] as DBInt).Value;
 
@@ -270,6 +271,33 @@ namespace GTSpecDB.Core
                                 WriteCarInfoPart(partInfoWriter, partRow, tableID, cat);
                                 fieldsWriten++;
                             }
+                        }
+
+                    }
+
+                    // Do SUPERCHARGER which is NOT in DEFAULT_PARTS in GT4
+                    var sc = db.Tables["SUPERCHARGER"];
+                    if (!sc.IsLoaded)
+                        sc.LoadAllRows(db);
+
+                    string scLabel = $"sc_{car.Label}_b";
+                    int id = sc.GetIDOfLabel(scLabel);
+                    if (id == -1)
+                    {
+                        scLabel = $"sc{car.Label}_b"; // Try this against mistakes like 'sc_350z_gt4_05_b' with one underscore instead of two
+                        id = sc.GetIDOfLabel(scLabel); 
+                    }
+
+                    if (id != -1)
+                    {
+                        var scRow = sc.Rows.FirstOrDefault(e => e.Label == scLabel);
+                        if (scRow != null)
+                        {
+                            var colMeta = sc.TableMetadata.GetCategoryColumn();
+                            int cat = (scRow.ColumnData[colMeta.ColumnIndex] as DBByte).Value;
+
+                            WriteCarInfoPart(partInfoWriter, scRow, sc.TableID, cat);
+                            fieldsWriten++;
                         }
                     }
 
