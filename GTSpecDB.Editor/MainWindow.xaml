@@ -89,6 +89,7 @@
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Name="cm_DumpTable" Header="Dump Table Data" Click="cm_DumpTable_Click"/>
+                            <MenuItem Name="cm_DumpDebugTable" Header="Dump Table Information (Debug)" Click="cm_DumpDebugTable_Click"/>
                             <MenuItem Name="cm_TableIndex" Header="N/A" IsEnabled="false"/>
                         </ContextMenu>
                     </ListBox.ContextMenu>

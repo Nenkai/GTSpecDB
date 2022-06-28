@@ -18,7 +18,7 @@ namespace GTSpecDB.Mapping.Tables
             {
                 Columns.Add(new ColumnMetadata("ModelCode", DBColumnType.String, locale));
                 Columns.Add(new ColumnMetadata("VarOrder", DBColumnType.UInt));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.String, locale));
+                Columns.Add(new ColumnMetadata("ColorPatchFileName", DBColumnType.String, locale));
                 Columns.Add(new ColumnMetadata("Name", DBColumnType.String, locale));
 
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Float));

@@ -86,11 +86,11 @@ namespace GTSpecDB.Mapping.Tables
                 Columns.Add(new ColumnMetadata("Sk6", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("Sk7", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("Sk8", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Sk9", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Sk10", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Sk11", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Sk12", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("Sk13", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Boost1", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Boost2", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Boost3", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Boost4", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("Boost5", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("BoostUnk", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("BoostMaybe", DBColumnType.Byte));
@@ -111,7 +111,7 @@ namespace GTSpecDB.Mapping.Tables
                 Columns.Add(new ColumnMetadata("TireWear9", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("PylonNum", DBColumnType.Byte));
 
                 Columns.Add(new ColumnMetadata("goldmin", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("goldsec", DBColumnType.Byte));
@@ -132,10 +132,10 @@ namespace GTSpecDB.Mapping.Tables
                 Columns.Add(new ColumnMetadata("LaunchSpeed6", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("PenaltySec", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
-                Columns.Add(new ColumnMetadata("?", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("PenaltyFlags", DBColumnType.Byte));
+                Columns.Add(new ColumnMetadata("PenaltyFlags2", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("DelayStart1", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("DelayStart2", DBColumnType.Byte));
                 Columns.Add(new ColumnMetadata("DelayStart3", DBColumnType.Byte));

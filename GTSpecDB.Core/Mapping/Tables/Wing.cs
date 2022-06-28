@@ -16,7 +16,7 @@ namespace GTSpecDB.Mapping.Tables
         {
             Columns.Add(new ColumnMetadata("Unk", DBColumnType.Short));
             Columns.Add(new ColumnMetadata("Unk2", DBColumnType.Short));
-            Columns.Add(new ColumnMetadata("Unk3", DBColumnType.Short));
+            Columns.Add(new ColumnMetadata("DownforceOffset", DBColumnType.Short));
         }
     }
 }

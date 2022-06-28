@@ -837,6 +837,16 @@ namespace GTSpecDB.Editor
             }
         }
 
+        private void cm_DumpDebugTable_Click(object sender, RoutedEventArgs e)
+        {
+            if (lb_Tables.SelectedIndex == -1)
+                return;
+
+            var debug = new SpecDBDebugPrinter();
+            debug.Load(Path.Combine(CurrentDatabase.FolderName, CurrentTable.TableName) + ".dbt");
+            debug.Print();
+        }
+
         private void lb_Tables_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (lb_Tables.SelectedIndex == -1)

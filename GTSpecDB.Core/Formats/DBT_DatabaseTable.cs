@@ -65,7 +65,7 @@ namespace GTSpecDB.Core.Formats
             }
         }
 
-        public int GetIndexOfID(int id)
+        public int GetIndexOfID(int targetRowId)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
             int entryCount = EntryCount;
@@ -79,12 +79,12 @@ namespace GTSpecDB.Core.Formats
                     int mid = max / 2;
 
                     sr.Position = HeaderSize + (mid * 8);
-                    int entryId = sr.ReadInt32();
+                    int currentRowId = sr.ReadInt32();
 
-                    if (entryId == id)
+                    if (currentRowId == targetRowId)
                         return mid;
 
-                    if (id <= entryId)
+                    if (targetRowId <= currentRowId)
                     {
                         entryCount = mid;
                         mid = min;
@@ -113,22 +113,20 @@ namespace GTSpecDB.Core.Formats
             Span<byte> rawEntryData = entryData.Slice(1);
             byte type = (byte)(entryData[0] >> 6);
             int rowLength = RowDataLength;
-            int dataIndex = entryData[0] & 0x3f;
+            int dataIndex = entryData[0] & 0b11_1111;
 
-            if (type == 0)
+            if (type == 0) // Copy row from shared full row data
             {
                 var sr = new SpanReader(Buffer, Endian);
                 sr.Position = DataMapOffset + (dataIndex * rowLength);
                 return sr.ReadBytes(rowLength);
             }
-            else if (type == 1)
+            else if (type == 1) // Row from raw entry data
             {
-                // memcpy(rowData, offs, dataLength);
                 return rawEntryData.Slice(0, rowLength);
             }
-            else if (type == 2)
+            else if (type == 2) // Differences
             {
-                // memcpy(rowData, (int*)((int)param_1->RawDataMapOffset + dataIndex * dataLength), dataLength);
                 var sr = new SpanReader(Buffer, Endian);
                 sr.Position = DataMapOffset + (dataIndex * rowLength);
                 Span<byte> rowData = sr.ReadBytes(rowLength);
@@ -137,17 +135,11 @@ namespace GTSpecDB.Core.Formats
                 if ((rowLength % 8) != 0)
                     entryDataOffset++;
 
-                for (var i = 0; i < rowLength + 1; i++)
+                for (var i = 0; i < rowLength; i++)
                 {
-                    var val = entryData[1 + (i / 8)];
-                    val >>= i - ((i >> 3) << 3);
-
-                    if ((val & 0x01) == 0) continue;
-                    if (entryDataOffset >= entryData.Length) continue;
-
-                    rowData[i] = entryData[(int)entryDataOffset];
-
-                    entryDataOffset++;
+                    var val = rawEntryData.Slice(i / 8)[0] >> (i % 8);
+                    if ((val & 0x01) != 0 && entryDataOffset < entryData.Length)
+                        rowData[i] = entryData[entryDataOffset++];
                 }
 
 
@@ -158,53 +150,50 @@ namespace GTSpecDB.Core.Formats
         }
 
 
-        public int ExtractHuffmanPart(ref SpanReader sr, out Span<byte> outEntryData)
+        public int ExtractHuffmanPart(ref SpanReader sr, out Span<byte> huffmanDict)
         {
-            byte entryDataLength = sr.Span[sr.Position];
-            outEntryData = new byte[entryDataLength];
+            byte huffmanPartCount = sr.Span[sr.Position];
+            huffmanDict = new byte[huffmanPartCount];
             int basePos = sr.Position;
-            if (entryDataLength != 0)
+            
+            int bitOffset = 0;
+            for (int i = 0; i < huffmanPartCount; i++)
             {
-                int totalCount = 0;
-                for (int i = 0; i < entryDataLength; i++)
-                {
-                    int current = totalCount / 8; // >> 3
-                    if (totalCount < 0 && (totalCount & 7) != 0)
-                        current++;
 
-                    sr.Position = basePos + current + 1;
+                int currentByte = bitOffset / 8;
+                sr.Position = basePos + currentByte + 1;
 
-                    // Bury this and never look at it. Mystic PD shit.
-                    uint val = 0;
-                    val += !sr.IsEndOfSpan ? sr.ReadByte()              : 0u;
-                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x100u     : 0u;
-                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x10000u   : 0u;
-                    val += !sr.IsEndOfSpan ? sr.ReadByte() * 0x1000000u : 0u;
-                    val >>= totalCount - (current * 8);
+                // Bury this and never look at it. Mystic PD shit.
+                uint val = 0;
+                val += !sr.IsEndOfSpan ? sr.ReadByte() : 0u;
+                val += !sr.IsEndOfSpan ? ((uint)sr.ReadByte() << 8) : 0u;
+                val += !sr.IsEndOfSpan ? ((uint)sr.ReadByte() << 16) : 0u;
+                val += !sr.IsEndOfSpan ? ((uint)sr.ReadByte() << 24) : 0u;
+                val >>= bitOffset - (currentByte * 8);
 
-                    Span<byte> b = outEntryData.Slice(i);
-                    totalCount += (int)ProcessHuffmanCode(val, ref b);
-                }
+                Span<byte> b = huffmanDict.Slice(i);
+                bitOffset += (int)ProcessHuffmanCode(val, ref b);
             }
+            
             sr.Position = basePos;
-            return entryDataLength;
+            return huffmanPartCount;
         }
 
-        public uint ProcessHuffmanCode(uint val, ref Span<byte> outEntryData)
+        public uint ProcessHuffmanCode(uint val, ref Span<byte> huffmanPart)
         {
             SpanReader sr = new SpanReader(Buffer, Endian);
             sr.Position = (int)(HuffmanTableEntryOffset + (byte)val * 2);
 
             // Read the byte after the current pos
-            uint next = sr.Span[sr.Position + 1]; // _local_v0_24 = (uint)local_v1_20[1];
+            uint next = sr.Span[sr.Position + 1];
             if (next == 0)
             {
                 // Found it?
-                next = SearchHuffmanCode(val, ref outEntryData);
+                next = SearchHuffmanCode(val, ref huffmanPart);
             }
             else
                 // Not yet
-                outEntryData[0] = sr.Span[sr.Position]; // *param_3 = *local_v1_20;
+                huffmanPart[0] = sr.Span[sr.Position];
 
             return next;
         }
@@ -213,7 +202,7 @@ namespace GTSpecDB.Core.Formats
         {
             for (uint bitIndex = 9; bitIndex < 32; bitIndex++) 
             {
-                uint targetIndex = (uint)((1 << ((int)bitIndex & 0x1f)) - 1 & key);
+                uint targetIndex = (uint)(key & (1 << (int)bitIndex) - 1);
                 int entryCount = ReadInt32(Buffer.AsSpan(HuffmanTableHeaderOffset + 4), Endian);
 
                 int max = entryCount;

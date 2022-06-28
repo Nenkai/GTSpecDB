@@ -48,15 +48,15 @@ namespace GTSpecDB.Core
         /// <summary>
         /// Gets the data for a row ID.
         /// </summary>
-        /// <param name="keyCode"></param>
+        /// <param name="rowId"></param>
         /// <param name="rowData"></param>
         /// <returns></returns>
-        public int GetRowN(int keyCode, out Span<byte> rowData)
+        public int GetRowN(int rowId, out Span<byte> rowData)
         {
             rowData = default;
 
             int dataLength = DBT.RowDataLength;
-            int entryIndex = DBT.GetIndexOfID(keyCode);
+            int entryIndex = DBT.GetIndexOfID(rowId);
 
             //if (uVar1 < *(uint *)(file + 8)) {
             if (entryIndex < DBT.EntryCount)
