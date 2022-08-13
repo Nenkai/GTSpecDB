@@ -74,7 +74,7 @@ namespace GTSpecDB.Sqlite
         }
     }
 
-    [Verb("export", HelpText = "Unpacks a volume file.")]
+    [Verb("export", HelpText = "Export SpecDB to a SQLite file.")]
     public class ExportVerbs
     {
         [Option('i', "input", Required = true, HelpText = "Input SpecDB Folder. Example: 'GT4_PREMIUM_US2560'")]
@@ -84,7 +84,7 @@ namespace GTSpecDB.Sqlite
         public string OutputPath { get; set; }
     }
 
-    [Verb("import", HelpText = "Unpacks a GT7 volume file.")]
+    [Verb("import", HelpText = "Imports SQLite to a SpecDB files.")]
     public class ImportVerbs
     {
         [Option('i', "input", Required = true, HelpText = "Input SQLite file. Example: 'GT4_PREMIUM_US2560.sqlite'")]
