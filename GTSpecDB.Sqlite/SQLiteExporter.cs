@@ -9,7 +9,7 @@ using Microsoft.Win32;
 using System.IO;
 
 using System.Data.SQLite;
-
+using System.Globalization;
 using GTSpecDB.Mapping;
 using GTSpecDB.Mapping.Types;
 using GTSpecDB.Core.Formats;
@@ -222,6 +222,11 @@ namespace GTSpecDB.Sqlite
 
         private void InsertTableRows(SQLiteConnection conn)
         {
+            var nfi = new NumberFormatInfo
+            {
+                NumberDecimalSeparator = "."
+            };
+
             List<SpecDBTable> list = Database.Tables.Values.ToList();
             for (int i1 = 0; i1 < list.Count; i1++)
             {
@@ -280,7 +285,7 @@ namespace GTSpecDB.Sqlite
                                 case DBColumnType.String:
                                     sb.Append($"'{(row.ColumnData[j] as DBString).Value.Replace("'", "''")}'"); break;
                                 case DBColumnType.Float:
-                                    sb.Append((row.ColumnData[j] as DBFloat).Value); break;
+                                    sb.Append((row.ColumnData[j] as DBFloat).Value.ToString(nfi)); break;
                             }
                             
                             if (j < row.ColumnData.Count - 1)
