@@ -187,6 +187,7 @@ namespace GTSpecDB.Core
             }
             DBT = new DBT_DatabaseTable(buffer, BigEndian ? Endian.Big : Endian.Little);
 
+            sr = new SpanReader(buffer, BigEndian ? Endian.Big : Endian.Little);
             sr.Position = 4;
             versionHigh = sr.ReadUInt16();
             sr.Position += 2;
