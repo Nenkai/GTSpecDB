@@ -473,6 +473,9 @@ namespace GTSpecDB.Core
         [Description("Gran Turismo 4 (China)")]
         GT4_CN2560,
 
+        [Description("Gran Turismo 4 (Korean)")]
+        GT4_KR2560,
+
         [Description("Gran Turismo 4 (US)")]
         GT4_US2560,
 
