@@ -95,7 +95,11 @@ namespace GTSpecDB.Sqlite
                     continue;
 
                 StringBuilder sb = new StringBuilder();
-                sb.Append($"CREATE TABLE {table.TableName} (RowId int, Label Text, ");
+
+                if (!table.TableName.StartsWith("VARIATION", StringComparison.Ordinal))
+                    sb.Append($"CREATE TABLE {table.TableName} (RowId int PRIMARY KEY, Label Text, ");
+                else
+                    sb.Append($"CREATE TABLE {table.TableName} (RowId int, Label Text, ");
 
                 for (int colIndex = 0; colIndex < table.TableMetadata.Columns.Count; colIndex++)
                 {
