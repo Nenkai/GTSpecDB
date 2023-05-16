@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTSpecDB.Editor", "GTSpecDB.Editor\GTSpecDB.Editor.csproj", "{13BE163E-69F7-4395-ADFA-8BEA6ABF81F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTSpecDB.Editor", "GTSpecDB.Editor\GTSpecDB.Editor.csproj", "{13BE163E-69F7-4395-ADFA-8BEA6ABF81F6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTSpecDB.Sqlite", "GTSpecDB.Sqlite\GTSpecDB.Sqlite.csproj", "{F41FD881-14C9-43CC-8943-6014EBFD10D9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GTSpecDB.Core", "GTSpecDB.Core\GTSpecDB.Core.csproj", "{4482F622-35F0-45BA-ADF3-41A796004892}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.Utils", "PDTools\PDTools.Utils\PDTools.Utils.csproj", "{2266E248-AD6E-4414-891F-3A2AD855E779}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.Crypto", "PDTools\PDTools.Crypto\PDTools.Crypto.csproj", "{2E8A9F43-56FD-4BBC-AE01-4605EB25E081}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.Compression", "PDTools\PDTools.Compression\PDTools.Compression.csproj", "{AB09E282-3B55-40E6-A40D-1747099E0C03}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.SpecDB", "PDTools\PDTools.SpecDB\PDTools.SpecDB.csproj", "{EA2AE6DF-41ED-426A-929F-84FC82CF6516}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +29,22 @@ Global
 		{F41FD881-14C9-43CC-8943-6014EBFD10D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F41FD881-14C9-43CC-8943-6014EBFD10D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F41FD881-14C9-43CC-8943-6014EBFD10D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4482F622-35F0-45BA-ADF3-41A796004892}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4482F622-35F0-45BA-ADF3-41A796004892}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4482F622-35F0-45BA-ADF3-41A796004892}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4482F622-35F0-45BA-ADF3-41A796004892}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2266E248-AD6E-4414-891F-3A2AD855E779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2266E248-AD6E-4414-891F-3A2AD855E779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2266E248-AD6E-4414-891F-3A2AD855E779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2266E248-AD6E-4414-891F-3A2AD855E779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E8A9F43-56FD-4BBC-AE01-4605EB25E081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E8A9F43-56FD-4BBC-AE01-4605EB25E081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E8A9F43-56FD-4BBC-AE01-4605EB25E081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E8A9F43-56FD-4BBC-AE01-4605EB25E081}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB09E282-3B55-40E6-A40D-1747099E0C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB09E282-3B55-40E6-A40D-1747099E0C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB09E282-3B55-40E6-A40D-1747099E0C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB09E282-3B55-40E6-A40D-1747099E0C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

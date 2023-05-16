@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using Syroot.BinaryData;
 
-using GTSpecDB.Core;
-using GTSpecDB.Mapping;
-using GTSpecDB.Mapping.Types;
+using PDTools.SpecDB.Core;
+using PDTools.SpecDB.Core.Formats;
+using PDTools.SpecDB.Core.Mapping;
+using PDTools.SpecDB.Core.Mapping.Types;
 
 namespace GTSpecDB.Sqlite
 {
@@ -75,7 +76,7 @@ namespace GTSpecDB.Sqlite
                 int tableID = reader.GetInt32(1);
                 bool bigEndian = reader.GetInt32(2) == 1;
 
-                SpecDBTable table = new SpecDBTable(tableName);
+                Table table = new Table(tableName);
                 table.TableID = tableID;
                 table.BigEndian = bigEndian;
 
@@ -125,12 +126,12 @@ namespace GTSpecDB.Sqlite
         {
             foreach (var table in _db.Tables)
             {
-                var command = new SQLiteCommand($"SELECT * FROM {table.Key}", conn);
+                var command = new SQLiteCommand($"SELECT * FROM {table.Key} ORDER BY RowId", conn);
                 var reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    var row = new SpecDBRowData();
+                    var row = new RowData();
                     row.ID = (int)reader["RowId"];
                     row.Label = (string)reader["Label"];
 
@@ -190,7 +191,7 @@ namespace GTSpecDB.Sqlite
 
         private void CreateRacesEntries(SQLiteConnection conn, string outputDirectory)
         {
-            var command = new SQLiteCommand($"SELECT * FROM RACE", conn);
+            var command = new SQLiteCommand($"SELECT * FROM RACE ORDER BY RowId", conn);
             var reader = command.ExecuteReader();
 
             int raceTableId = _db.Tables["RACE"].TableID;
@@ -235,13 +236,13 @@ namespace GTSpecDB.Sqlite
             }
         }
 
-        private DBString AddNewString(SpecDBTable table, string str)
+        private DBString AddNewString(Table table, string str)
         {
             string sdbName = GetSDBNameFromTableName(table);
 
             if (!_db.StringDatabases.TryGetValue(sdbName, out StringDatabase strDb))
             {
-                strDb = new StringDatabase();
+                strDb = new StringDatabase(table.BigEndian ? Syroot.BinaryData.Core.Endian.Big : Syroot.BinaryData.Core.Endian.Little);
                 _db.StringDatabases.TryAdd(sdbName, strDb);
             }
 
@@ -252,7 +253,7 @@ namespace GTSpecDB.Sqlite
             return new DBString(idx, sdbName);
         }
 
-        private string GetSDBNameFromTableName(SpecDBTable table)
+        private string GetSDBNameFromTableName(Table table)
         {
             if (table.TableName.Contains("CAR_NAME") ||
                 table.TableName.Contains("CAR_VARIATION") ||

@@ -12,7 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-using GTSpecDB.Core;
+using PDTools.SpecDB.Core;
+using PDTools.SpecDB.Core.Formats;
 
 namespace GTSpecDB.Editor
 {

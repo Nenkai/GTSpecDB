@@ -19,11 +19,10 @@ using Microsoft.Win32;
 
 using Humanizer;
 
-using GTSpecDB.Core;
-
-using GTSpecDB.Utils;
-using GTSpecDB.Mapping;
-using GTSpecDB.Mapping.Types;
+using PDTools.SpecDB.Core;
+using PDTools.SpecDB.Core.Mapping;
+using PDTools.SpecDB.Core.Mapping.Types;
+using PDTools.Utils;
 
 namespace GTSpecDB.Editor
 {
@@ -35,7 +34,7 @@ namespace GTSpecDB.Editor
         public const string WindowTitle = "Gran Turismo Spec Database Editor";
 
         public SpecDB CurrentDatabase { get; set; }
-        public SpecDBTable CurrentTable { get; set; }
+        public PDTools.SpecDB.Core.Table CurrentTable { get; set; }
         public string SpecDBDirectory { get; set; }
 
         private string _filterString;
@@ -181,7 +180,7 @@ namespace GTSpecDB.Editor
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out SpecDBTable genericCar))
+                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out PDTools.SpecDB.Core.Table genericCar))
                 {
                     MessageBox.Show($"Can not save PartsInfo as GENERIC_CAR is missing.", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -234,7 +233,7 @@ namespace GTSpecDB.Editor
 
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out SpecDBTable genericCar))
+                if (!CurrentDatabase.Tables.TryGetValue("GENERIC_CAR", out PDTools.SpecDB.Core.Table genericCar))
                 {
                     MessageBox.Show($"Can not save the CARS folder as GENERIC_CAR is missing.", "Table not loaded", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -305,7 +304,7 @@ namespace GTSpecDB.Editor
         #region Toolbar
         private void btn_AddRow_Click(object sender, RoutedEventArgs e)
         {
-            var newRow = new SpecDBRowData();
+            var newRow = new RowData();
             newRow.ID = ++CurrentTable.LastID;
             CurrentTable.Rows.Add(newRow);
 
@@ -346,7 +345,7 @@ namespace GTSpecDB.Editor
             if (dg_Rows.SelectedIndex == -1 || !dg_Rows.CurrentCell.IsValid)
                 return;
 
-            CurrentTable.Rows.Remove(dg_Rows.CurrentCell.Item as SpecDBRowData);
+            CurrentTable.Rows.Remove(dg_Rows.CurrentCell.Item as RowData);
             CurrentTable.LastID = CurrentTable.Rows.Max(row => row.ID);
 
             statusName.Text = "Row deleted.";
@@ -357,9 +356,9 @@ namespace GTSpecDB.Editor
             if (dg_Rows.SelectedIndex == -1 || !dg_Rows.CurrentCell.IsValid)
                 return;
 
-            var selectedRow = dg_Rows.CurrentCell.Item as SpecDBRowData;
+            var selectedRow = dg_Rows.CurrentCell.Item as RowData;
 
-            var newRow = new SpecDBRowData();
+            var newRow = new RowData();
             newRow.ID = ++CurrentTable.LastID;
             newRow.Label = $"{selectedRow.Label}_copy";
             CurrentTable.Rows.Add(newRow);
@@ -430,7 +429,7 @@ namespace GTSpecDB.Editor
             if (!(e.EditingElement is TextBox tb))
                 return;
 
-            var currentRow = e.Row.Item as SpecDBRowData;
+            var currentRow = e.Row.Item as RowData;
             string newInput = tb.Text;
             if (dg_Rows.Columns[0] == e.Column) // Editing ID column
             {
@@ -592,7 +591,7 @@ namespace GTSpecDB.Editor
                 var strDb = CurrentDatabase.StringDatabases[dataCol.StringFileName];
 
                 // Find column index to apply our row data to
-                var row = cell.DataContext as SpecDBRowData;
+                var row = cell.DataContext as RowData;
                 int columnIndex = CurrentTable.TableMetadata.Columns.IndexOf(dataCol);
 
                 var str = row.ColumnData[columnIndex] as DBString;
@@ -638,7 +637,7 @@ namespace GTSpecDB.Editor
                     }
                 }
 
-                var dbRow = dg_Rows.SelectedItem as SpecDBRowData;
+                var dbRow = dg_Rows.SelectedItem as RowData;
                 dbRow.ID = id;
 
                 // Reorder
@@ -722,7 +721,7 @@ namespace GTSpecDB.Editor
             if (!dg_Rows.CurrentCell.IsValid)
                 return;
 
-            var row = dg_Rows.CurrentCell.Item as SpecDBRowData;
+            var row = dg_Rows.CurrentCell.Item as RowData;
 
             tb_CurrentId.Text = row.ID.ToString();
             tb_CurrentLabel.Text = row.Label;
@@ -734,7 +733,7 @@ namespace GTSpecDB.Editor
                 return;
 
             var colIndex = dg_Rows.Columns.IndexOf(dg_Rows.CurrentCell.Column);
-            var row = dg_Rows.CurrentCell.Item as SpecDBRowData;
+            var row = dg_Rows.CurrentCell.Item as RowData;
 
             string output;
             if (colIndex == 0)
@@ -874,7 +873,7 @@ namespace GTSpecDB.Editor
             if (string.IsNullOrEmpty(FilterString) || FilterString.Length < 3)
                 return true;
 
-            if (value is SpecDBRowData row && row.ColumnData.Count != 0)
+            if (value is RowData row && row.ColumnData.Count != 0)
             {
 
                 if (cb_FilterColumnType.SelectedIndex == 0)

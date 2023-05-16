@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using CommandLine;
 using CommandLine.Text;
 
-using GTSpecDB.Core;
+using PDTools.SpecDB.Core;
 
 namespace GTSpecDB.Sqlite
 {

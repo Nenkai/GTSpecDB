@@ -10,10 +10,10 @@ using System.IO;
 
 using System.Data.SQLite;
 using System.Globalization;
-using GTSpecDB.Mapping;
-using GTSpecDB.Mapping.Types;
-using GTSpecDB.Core.Formats;
-using GTSpecDB.Core;
+using PDTools.SpecDB.Core.Mapping;
+using PDTools.SpecDB.Core.Mapping.Types;
+using PDTools.SpecDB.Core.Formats;
+using PDTools.SpecDB.Core;
 
 namespace GTSpecDB.Sqlite
 {
@@ -21,7 +21,7 @@ namespace GTSpecDB.Sqlite
     {
         public SpecDB Database { get; set; }
 
-        private HashSet<SpecDBTable> _errornousTables = new HashSet<SpecDBTable>();
+        private HashSet<Table> _errornousTables = new HashSet<Table>();
 
         public SQLiteExporter(SpecDB db)
         {
@@ -206,7 +206,7 @@ namespace GTSpecDB.Sqlite
             }
         }
 
-        private static string GetValidColumnName(SpecDBTable table, int colIndex, ColumnMetadata col)
+        private static string GetValidColumnName(Table table, int colIndex, ColumnMetadata col)
         {
             int sameNameCount = 0;
             string columnName = col.ColumnName;
@@ -231,10 +231,10 @@ namespace GTSpecDB.Sqlite
                 NumberDecimalSeparator = "."
             };
 
-            List<SpecDBTable> list = Database.Tables.Values.ToList();
+            List<Table> list = Database.Tables.Values.ToList();
             for (int i1 = 0; i1 < list.Count; i1++)
             {
-                SpecDBTable table = list[i1];
+                Table table = list[i1];
                 if (_errornousTables.Contains(table))
                     continue;
 

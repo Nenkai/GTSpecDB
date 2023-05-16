@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 
 using Humanizer;
 
-using GTSpecDB.Core;
+using PDTools.SpecDB.Core;
 namespace GTSpecDB.Editor
 {
     /// <summary>

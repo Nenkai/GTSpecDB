@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GTSpecDB.Core\GTSpecDB.Core.csproj" />
+    <ProjectReference Include="..\PDTools\PDTools.SpecDB\PDTools.SpecDB.csproj" />
   </ItemGroup>
 
 </Project>
