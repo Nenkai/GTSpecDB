@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "GTSpecDB.Editor": {
-      "commandName": "Project",
-      "commandLineArgs": "export -i \"D:\\Modding_Research\\Gran_Turismo\\Gran_Turismo_4_Online_Public_Beta_US\\VOL_extract\\specdb\\GT4_PREMIUM_US2560\" -o export"
-    }
-  }
-}
