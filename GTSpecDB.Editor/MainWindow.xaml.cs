@@ -810,9 +810,9 @@ namespace GTSpecDB.Editor
             SetNoProgress();
 
             dg_Rows.ItemsSource = CurrentTable.Rows;
+
             SetupFilters();
 
-            cb_FilterColumnType.SelectedIndex = 1;
             mi_SaveTable.IsEnabled = true;
             mi_ExportTable.IsEnabled = true;
             mi_ExportTableCSV.IsEnabled = true;
@@ -861,6 +861,12 @@ namespace GTSpecDB.Editor
         {
             foreach (var col in CurrentTable.TableMetadata.Columns)
                 cb_FilterColumnType.Items.Add(col.ColumnName);
+
+            if (cb_FilterColumnType.SelectedIndex == -1)
+            {
+                tb_ColumnFilter.Text = _filterString = string.Empty;
+                cb_FilterColumnType.SelectedIndex = 1; // Reset to label
+            }
 
             _dataGridCollection = CollectionViewSource.GetDefaultView(dg_Rows.ItemsSource);
             if (_dataGridCollection != null)
