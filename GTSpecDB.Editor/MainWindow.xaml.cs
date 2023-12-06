@@ -106,6 +106,8 @@ namespace GTSpecDB.Editor
                         specType = window.SelectedType;
                     }
 
+                    CurrentDatabase?.Dispose();
+
                     CurrentDatabase = SpecDB.LoadFromSpecDBFolder(files[0], specType.Value, false);
                     SpecDBDirectory = files[0];
                 }
@@ -157,6 +159,8 @@ namespace GTSpecDB.Editor
                             return;
                         specType = window.SelectedType;
                     }
+
+                    CurrentDatabase?.Dispose();
 
                     CurrentDatabase = SpecDB.LoadFromSpecDBFolder(dlg.FileName, specType.Value, false);
                     SpecDBDirectory = dlg.FileName;
