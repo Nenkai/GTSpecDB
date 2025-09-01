@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.Utils", "PDTools\PD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDTools.SpecDB", "PDTools\PDTools.SpecDB\PDTools.SpecDB.csproj", "{EA2AE6DF-41ED-426A-929F-84FC82CF6516}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDTools.Utils.Tests", "..\..\..\..\Safe\Develop\repos\GTAdhocToolchain\PDTools\PDTools.Utils.Tests\PDTools.Utils.Tests.csproj", "{F53E3487-6B3D-7AE5-9B2A-F59727B6ADB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA2AE6DF-41ED-426A-929F-84FC82CF6516}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F53E3487-6B3D-7AE5-9B2A-F59727B6ADB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F53E3487-6B3D-7AE5-9B2A-F59727B6ADB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F53E3487-6B3D-7AE5-9B2A-F59727B6ADB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F53E3487-6B3D-7AE5-9B2A-F59727B6ADB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -86,10 +86,25 @@ namespace GTSpecDB.Sqlite
 
         private void SetupColumnTypes(SQLiteConnection conn)
         {
-            foreach (var table in _db.Tables)
+            foreach (var table in _db.Tables.ToDictionary())
             {
-                var command = new SQLiteCommand($"SELECT * FROM {table.Key}_typeinfo", conn);
-                var reader = command.ExecuteReader();
+                SQLiteDataReader reader;
+                try
+                {
+                    var command = new SQLiteCommand($"SELECT * FROM {table.Key}_typeinfo", conn);
+                    reader = command.ExecuteReader();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("no such table"))
+                    {
+                        Console.WriteLine($"Skipping table {table.Key}, not in database");
+                        _db.Tables.Remove(table.Key);
+                        continue;
+                    }
+
+                    throw;
+                }
 
                 table.Value.TableMetadata = new SQLiteTableMetadata();
 
@@ -126,8 +141,21 @@ namespace GTSpecDB.Sqlite
         {
             foreach (var table in _db.Tables)
             {
-                var command = new SQLiteCommand($"SELECT * FROM {table.Key} ORDER BY RowId", conn);
-                var reader = command.ExecuteReader();
+                SQLiteDataReader reader;
+                try
+                {
+                    var command = new SQLiteCommand($"SELECT * FROM {table.Key} ORDER BY RowId", conn);
+                    reader = command.ExecuteReader();
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("no such table"))
+                    {
+                        continue;
+                    }
+
+                    throw;
+                }
 
                 while (reader.Read())
                 {
@@ -176,6 +204,9 @@ namespace GTSpecDB.Sqlite
                             case DBColumnType.Float:
                                 type = new DBFloat(reader.GetFloat(2 + colIndex));
                                 break;
+                            case DBColumnType.Key:
+                                type = new DBKey(reader.GetString(2 + colIndex));
+                                break;
                             default:
                                 throw new Exception("Unexpected type");
                                 break;
@@ -191,8 +222,22 @@ namespace GTSpecDB.Sqlite
 
         private void CreateRacesEntries(SQLiteConnection conn, string outputDirectory)
         {
-            var command = new SQLiteCommand($"SELECT * FROM RACE ORDER BY RowId", conn);
-            var reader = command.ExecuteReader();
+            SQLiteDataReader reader;
+            try
+            {
+                var command = new SQLiteCommand($"SELECT * FROM RACE ORDER BY RowId", conn);
+                reader = command.ExecuteReader();
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("no such table"))
+                {
+                    Console.WriteLine("Skipping RACE, doesn't exist");
+                    return;
+                }
+
+                throw;
+            }
 
             int raceTableId = _db.Tables["RACE"].TableID;
             int enemyCarsTableId = _db.Tables["ENEMY_CARS"].TableID;

@@ -64,6 +64,11 @@ namespace GTSpecDB.Sqlite
             {
                 m_dbConnection.Open();
 
+                // That'll improve performance by not creating the journal file everytime
+                var com = m_dbConnection.CreateCommand();
+                com.CommandText = "PRAGMA journal_mode = MEMORY;";
+                com.ExecuteNonQuery();
+
                 Console.WriteLine("Creating Tables in SQLite..");
                 CreateTables(m_dbConnection);
 
@@ -232,6 +237,9 @@ namespace GTSpecDB.Sqlite
             };
 
             List<Table> list = Database.Tables.Values.ToList();
+            string insertIntoStr = "";
+            StringBuilder sb = new StringBuilder();
+
             for (int i1 = 0; i1 < list.Count; i1++)
             {
                 Table table = list[i1];
@@ -240,9 +248,7 @@ namespace GTSpecDB.Sqlite
 
                 Console.WriteLine($"Inserting Rows in {table.TableName}.");
 
-                StringBuilder sb = new StringBuilder();
                 sb.Append($"INSERT INTO {table.TableName} (RowId, Label, ");
-
                 for (int colIndex = 0; colIndex < table.TableMetadata.Columns.Count; colIndex++)
                 {
                     ColumnMetadata col = table.TableMetadata.Columns[colIndex];
@@ -252,17 +258,20 @@ namespace GTSpecDB.Sqlite
                         sb.Append(", ");
                 }
 
-                sb.Append(") values (");
+                sb.Append(") values");
+                if (string.IsNullOrEmpty(insertIntoStr))
+                    insertIntoStr = sb.ToString();
 
                 string preInsertQuery = sb.ToString();
+                sb.Clear();
 
                 using (var transac = conn.BeginTransaction())
                 {
+                    int count = 0;
                     for (int i = 0; i < table.Rows.Count; i++)
                     {
-                        sb.Clear();
                         var row = table.Rows[i];
-                        sb.Append($"{row.ID}, '{row.Label}', ");
+                        sb.Append($" ({row.ID}, '{row.Label}', ");
 
                         for (int j = 0; j < row.ColumnData.Count; j++)
                         {
@@ -271,34 +280,46 @@ namespace GTSpecDB.Sqlite
                             switch (col.ColumnType)
                             {
                                 case DBColumnType.Bool:
-                                    sb.Append((row.ColumnData[j] as DBBool).Value ? 1 : 0); break;
+                                    sb.Append(((DBBool)row.ColumnData[j]).Value ? 1 : 0); break;
                                 case DBColumnType.Byte:
-                                    sb.Append((row.ColumnData[j] as DBByte).Value); break;
+                                    sb.Append(((DBByte)row.ColumnData[j]).Value); break;
                                 case DBColumnType.Long:
-                                    sb.Append((row.ColumnData[j] as DBLong).Value); break;
+                                    sb.Append(((DBLong)row.ColumnData[j]).Value); break;
                                 case DBColumnType.Short:
-                                    sb.Append((row.ColumnData[j] as DBShort).Value); break;
+                                    sb.Append(((DBShort)row.ColumnData[j]).Value); break;
                                 case DBColumnType.SByte:
-                                    sb.Append((row.ColumnData[j] as DBSByte).Value); break;
+                                    sb.Append(((DBSByte)row.ColumnData[j]).Value); break;
                                 case DBColumnType.UInt:
-                                    sb.Append((row.ColumnData[j] as DBUInt).Value); break;
+                                    sb.Append(((DBUInt)row.ColumnData[j]).Value); break;
                                 case DBColumnType.UShort:
-                                    sb.Append((row.ColumnData[j] as DBUShort).Value); break;
+                                    sb.Append(((DBUShort)row.ColumnData[j]).Value); break;
                                 case DBColumnType.Int:
-                                    sb.Append((row.ColumnData[j] as DBInt).Value); break;
-                                case DBColumnType.String:
-                                    sb.Append($"'{(row.ColumnData[j] as DBString).Value.Replace("'", "''")}'"); break;
+                                    sb.Append(((DBInt)row.ColumnData[j]).Value); break;
                                 case DBColumnType.Float:
-                                    sb.Append((row.ColumnData[j] as DBFloat).Value.ToString(nfi)); break;
+                                    sb.Append(((DBFloat)(row.ColumnData[j])).Value.ToString(nfi)); break;
+                                case DBColumnType.String:
+                                    sb.Append($"'{((DBString)row.ColumnData[j]).Value.Replace("'", "''")}'"); break;
+                                case DBColumnType.Key:
+                                    sb.Append($"'{((DBKey)row.ColumnData[j]).Value.Replace("'", "''")}'"); break;
                             }
                             
                             if (j < row.ColumnData.Count - 1)
                                 sb.Append(", ");
                         }
 
+                        count++;
                         sb.Append(')');
-                        SQLiteCommand command = new SQLiteCommand(preInsertQuery + sb.ToString(), conn);
-                        command.ExecuteNonQuery();
+
+                        if (count >= 100 || i == table.Rows.Count - 1)
+                        {
+                            SQLiteCommand command = new SQLiteCommand(preInsertQuery + sb.ToString(), conn);
+                            command.ExecuteNonQuery();
+
+                            sb.Clear();
+                            count = 0;
+                        }
+                        else
+                            sb.Append(", ");
                     }
 
                     transac.Commit();
@@ -321,7 +342,7 @@ namespace GTSpecDB.Sqlite
                 command = new SQLiteCommand("INSERT INTO _DatabaseTableInfo (TableName, TableId, BigEndian) VALUES (@name, @id, @bigendian)", conn);
                 command.Parameters.AddWithValue("@name", table.TableName);
                 command.Parameters.AddWithValue("@id", table.TableID);
-                command.Parameters.AddWithValue("@bigendian", table.DBT.Endian == Syroot.BinaryData.Core.Endian.Big ? 1 : 0);
+                command.Parameters.AddWithValue("@bigendian", table.DatabaseTable.Endian == Syroot.BinaryData.Core.Endian.Big ? 1 : 0);
                 command.ExecuteNonQuery();
             }
 
@@ -341,6 +362,9 @@ namespace GTSpecDB.Sqlite
             command = new SQLiteCommand($"SELECT * FROM RACE", conn);
             var reader = command.ExecuteReader();
 
+            StringBuilder sb = new StringBuilder();
+            int count = 0;
+            int numBeforeExecute = 100;
             while (reader.Read())
             {
                 int rowId = (int)reader["RowId"];
@@ -360,8 +384,10 @@ namespace GTSpecDB.Sqlite
 
                     if (raceSpec.EntryCount > 0)
                     {
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append("INSERT INTO RaceEntries (RaceId, RaceLabel, EnemyCarId, Variation) VALUES ");
+                        if (count == 0)
+                            sb.Append("INSERT INTO RaceEntries (RaceId, RaceLabel, EnemyCarId, Variation) VALUES ");
+                        else
+                            sb.Append(", ");
 
                         for (var i = 0; i < raceSpec.EntryCount; i++)
                         {
@@ -369,12 +395,27 @@ namespace GTSpecDB.Sqlite
 
                             if (i < raceSpec.EntryCount - 1)
                                 sb.Append(", ");
+                            count++;
                         }
-
-                        SQLiteCommand fileCommand = new SQLiteCommand(sb.ToString(), conn);
-                        fileCommand.ExecuteNonQuery();
                     }
                 }
+
+                if (count > numBeforeExecute)
+                {
+                    SQLiteCommand fileCommand = new SQLiteCommand(sb.ToString(), conn);
+                    fileCommand.ExecuteNonQuery();
+
+                    sb.Clear();
+                    count = 0;
+                }
+            }
+
+            if (count > 0)
+            {
+                SQLiteCommand fileCommand = new SQLiteCommand(sb.ToString(), conn);
+                fileCommand.ExecuteNonQuery();
+
+                sb.Clear();
             }
         }
 
@@ -392,6 +433,7 @@ namespace GTSpecDB.Sqlite
                 case DBColumnType.Int:
                     return "int";
                 case DBColumnType.String:
+                case DBColumnType.Key:
                     return "TEXT";
                 case DBColumnType.Float:
                     return "real";

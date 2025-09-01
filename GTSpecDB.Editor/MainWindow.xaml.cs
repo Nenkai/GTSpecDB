@@ -95,7 +95,8 @@ namespace GTSpecDB.Editor
                     if (!Directory.Exists(files[0]))
                         return;
 
-                    var specType = SpecDB.DetectSpecDBType(Path.GetFileName(files[0]));
+                    string fileName = Path.GetFileName(files[0]);
+                    var specType = SpecDB.DetectSpecDBType(fileName);
                     if (specType is null)
                     {
                         var window = new SpecDBKindSelector();
@@ -150,7 +151,8 @@ namespace GTSpecDB.Editor
             {
                 try
                 {
-                    var specType = SpecDB.DetectSpecDBType(Path.GetFileName(dlg.FileName));
+                    string fileName = Path.GetFileName(dlg.FileName);
+                    var specType = SpecDB.DetectSpecDBType(fileName);
                     if (specType is null)
                     {
                         var window = new SpecDBKindSelector();
@@ -334,6 +336,8 @@ namespace GTSpecDB.Editor
                         newRow.ColumnData.Add(new DBLong(0)); break;
                     case DBColumnType.Float:
                         newRow.ColumnData.Add(new DBFloat(0)); break;
+                    case DBColumnType.Key:
+                        newRow.ColumnData.Add(new DBKey(0, 0)); break;
                     case DBColumnType.String:
                         newRow.ColumnData.Add(new DBString(0, colMeta.StringFileName)); break;
                     default:
@@ -390,6 +394,8 @@ namespace GTSpecDB.Editor
                         newRow.ColumnData.Add(new DBFloat(((DBFloat)selectedRow.ColumnData[i]).Value)); break;
                     case DBColumnType.Long:
                         newRow.ColumnData.Add(new DBLong(((DBLong)selectedRow.ColumnData[i]).Value)); break;
+                    case DBColumnType.Key:
+                        newRow.ColumnData.Add(new DBKey((DBKey)selectedRow.ColumnData[i])); break;
                     case DBColumnType.String:
                         var str = new DBString(((DBString)selectedRow.ColumnData[i]).StringIndex, colMeta.StringFileName);
                         str.Value = CurrentDatabase.StringDatabases[colMeta.StringFileName].Strings[str.StringIndex];
@@ -618,19 +624,41 @@ namespace GTSpecDB.Editor
             {
                 string clipText = Clipboard.GetText();
                 string[] textSpl = clipText.Split('\t');
-                if (textSpl.Length > 2 + CurrentTable.TableMetadata.Columns.Count)
-                {
-                    e.Handled = true;
-                    return;
-                }
 
-                // Verify ID and Label first
-                if (!int.TryParse(textSpl[0], out int id))
+                if (textSpl.Length == 1)
                 {
-                    e.Handled = true;
-                    return;
-                }
 
+                }
+                else if (textSpl.Length == 2 + CurrentTable.TableMetadata.Columns.Count)
+                {
+                    HandlePasteRow(e, textSpl);
+                }
+            }
+            else if (e.Key == Key.Delete)
+            {
+
+            }
+
+        }
+
+        private void HandlePasteRow(KeyEventArgs e, string[] textSpl)
+        {
+            if (textSpl.Length > 2 + CurrentTable.TableMetadata.Columns.Count)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            // Verify ID and Label first
+            if (!int.TryParse(textSpl[0], out int id))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            var dbRow = dg_Rows.SelectedItem as RowData;
+            if (dbRow.ID != id)
+            {
                 if (CurrentTable.Rows.FirstOrDefault(row => row.ID == id || (row.Label != null && row.Label.Equals(textSpl[1]))) != null)
                 {
                     var res = MessageBox.Show("The pasted row has an ID or Label that is already being used by another row. Make sure you know what you are doing. Continue?", "ID/Label in use", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -640,78 +668,75 @@ namespace GTSpecDB.Editor
                         return;
                     }
                 }
-
-                var dbRow = dg_Rows.SelectedItem as RowData;
-                dbRow.ID = id;
-
-                // Reorder
-                var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= id);
-
-                // Put it to the last of said id if it conflicts
-                if (nextRow.ID == id)
-                    nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID > id);
-
-                if (nextRow is null) // End of list?
-                    CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), CurrentTable.Rows.Count - 1);
-                else
-                {
-                    var nextRowIndex = CurrentTable.Rows.IndexOf(nextRow);
-                    if (nextRowIndex > CurrentTable.Rows.IndexOf(dbRow)) // If the row is being moved backwards
-                        nextRowIndex--;
-
-                    CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), nextRowIndex);
-                }
-
-                dbRow.Label = textSpl[1].TrimEnd();
-
-                textSpl[textSpl.Length - 1].TrimEnd();
-                for (int i = 2; i < textSpl.Length; i++)
-                {
-                    IDBType colData = dbRow.ColumnData[i - 2];
-                    textSpl[i] = textSpl[i].TrimEnd();
-                    switch (colData)
-                    {
-                        case DBByte @byte:
-                            if (byte.TryParse(textSpl[i], out byte vByte)) @byte.Value = vByte;
-                            break;
-                        case DBSByte @sbyte:
-                            if (sbyte.TryParse(textSpl[i], out sbyte vSbyte)) @sbyte.Value = vSbyte;
-                            break;
-                        case DBFloat @float:
-                            if (float.TryParse(textSpl[i], out float vFloat)) @float.Value = vFloat;
-                            break;
-                        case DBInt @int:
-                            if (int.TryParse(textSpl[i], out int vInt)) @int.Value = vInt;
-                            break;
-                        case DBUInt @uint:
-                            if (uint.TryParse(textSpl[i], out uint vUInt)) @uint.Value = vUInt;
-                            break;
-                        case DBLong @long:
-                            if (long.TryParse(textSpl[i], out long vLong)) @long.Value = vLong;
-                            break;
-                        case DBShort @short:
-                            if (short.TryParse(textSpl[i], out short vShort)) @short.Value = vShort;
-                            break;
-                        case DBUShort @ushort:
-                            if (ushort.TryParse(textSpl[i], out ushort vUShort)) @ushort.Value = vUShort;
-                            break;
-                        case DBBool @bool:
-                            if (bool.TryParse(textSpl[i], out bool vBool)) @bool.Value = vBool;
-                            break;
-                        case DBString @str:
-                            var strDb = CurrentDatabase.StringDatabases[@str.FileName];
-                            @str.StringIndex = strDb.GetOrCreate(textSpl[i]);
-                            @str.Value = textSpl[i];
-                            break;
-
-                    }
-                }
             }
-            else if (e.Key == Key.Delete)
+
+            dbRow.ID = id;
+
+            // Reorder
+            var nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID >= id);
+
+            // Put it to the last of said id if it conflicts
+            if (nextRow.ID == id)
+                nextRow = CurrentTable.Rows.FirstOrDefault(r => r.ID > id);
+
+            if (nextRow is null) // End of list?
+                CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), CurrentTable.Rows.Count - 1);
+            else
             {
+                var nextRowIndex = CurrentTable.Rows.IndexOf(nextRow);
+                if (nextRowIndex > CurrentTable.Rows.IndexOf(dbRow)) // If the row is being moved backwards
+                    nextRowIndex--;
 
+                CurrentTable.Rows.Move(CurrentTable.Rows.IndexOf(dbRow), nextRowIndex);
             }
 
+            dbRow.Label = textSpl[1].TrimEnd();
+
+            textSpl[textSpl.Length - 1].TrimEnd();
+            for (int i = 2; i < textSpl.Length; i++)
+            {
+                IDBType colData = dbRow.ColumnData[i - 2];
+                textSpl[i] = textSpl[i].TrimEnd();
+                switch (colData)
+                {
+                    case DBByte @byte:
+                        if (byte.TryParse(textSpl[i], out byte vByte)) @byte.Value = vByte;
+                        break;
+                    case DBSByte @sbyte:
+                        if (sbyte.TryParse(textSpl[i], out sbyte vSbyte)) @sbyte.Value = vSbyte;
+                        break;
+                    case DBFloat @float:
+                        if (float.TryParse(textSpl[i], out float vFloat)) @float.Value = vFloat;
+                        break;
+                    case DBInt @int:
+                        if (int.TryParse(textSpl[i], out int vInt)) @int.Value = vInt;
+                        break;
+                    case DBUInt @uint:
+                        if (uint.TryParse(textSpl[i], out uint vUInt)) @uint.Value = vUInt;
+                        break;
+                    case DBLong @long:
+                        if (long.TryParse(textSpl[i], out long vLong)) @long.Value = vLong;
+                        break;
+                    case DBShort @short:
+                        if (short.TryParse(textSpl[i], out short vShort)) @short.Value = vShort;
+                        break;
+                    case DBUShort @ushort:
+                        if (ushort.TryParse(textSpl[i], out ushort vUShort)) @ushort.Value = vUShort;
+                        break;
+                    case DBBool @bool:
+                        if (bool.TryParse(textSpl[i], out bool vBool)) @bool.Value = vBool;
+                        break;
+                    case DBString @str:
+                        var strDb = CurrentDatabase.StringDatabases[@str.FileName];
+                        @str.StringIndex = strDb.GetOrCreate(textSpl[i]);
+                        @str.Value = textSpl[i];
+                        break;
+                    case DBKey @key:
+                        @key.Value = textSpl[i];
+                        break;
+
+                }
+            }
         }
 
         private void dg_Rows_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -767,8 +792,6 @@ namespace GTSpecDB.Editor
         private void dg_cm_ViewRaceEntries_Click(object sender, RoutedEventArgs e)
         {
             int tableId = CurrentTable.TableID;
-
-            ;
         }
         #endregion
 
@@ -856,7 +879,7 @@ namespace GTSpecDB.Editor
                 return;
 
             var table = CurrentDatabase.Tables[(string)lb_Tables.SelectedItem];
-            cm_TableIndex.Header = $"Table Index: {table.IDI.TableIndex}";
+            cm_TableIndex.Header = $"Table Index: {table.LabelInformation.TableID}";
         }
         #endregion
 
@@ -913,6 +936,8 @@ namespace GTSpecDB.Editor
                             return @ushort.Value.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
                         case DBString @str:
                             return @str.Value.Contains(FilterString, StringComparison.OrdinalIgnoreCase);
+                        case DBKey @key:
+                            return @key._id.ToString().Contains(FilterString, StringComparison.OrdinalIgnoreCase);
                     }
                 }
             }
@@ -982,7 +1007,6 @@ namespace GTSpecDB.Editor
             mi_SavePartsInfo.IsEnabled = CurrentDatabase.SpecDBFolderType >= SpecDBFolder.GT5_JP3009;
             mi_SaveCarsParts.IsEnabled = CurrentDatabase.SpecDBFolderType <= SpecDBFolder.GT5_TRIAL_JP2704;
 
-            mi_ExportTableSQLite.IsEnabled = true;
             lb_Tables.Items.Clear();
 
             foreach (var table in CurrentDatabase.Tables)

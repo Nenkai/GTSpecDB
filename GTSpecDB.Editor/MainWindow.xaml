@@ -18,7 +18,7 @@
                     <Separator/>
                     <MenuItem Name="mi_ExportTable" IsEnabled="False" Header="Export Current Table (.txt)" Click="ExportCurrentTable_Click"/>
                     <MenuItem Name="mi_ExportTableCSV" IsEnabled="False" Header="Export Current Table (.csv)" Click="ExportCurrentTableCSV_Click"/>
-                    <MenuItem Name="mi_ExportTableSQLite" IsEnabled="False" Header="Export SpecDB as SQLite" Click="ExportCurrentTableSQLite_Click"/>
+                    <!--<MenuItem Name="mi_ExportTableSQLite" IsEnabled="False" Header="Export SpecDB as SQLite" Click="ExportCurrentTableSQLite_Click"/>-->
                     <Separator/>
                     <MenuItem Name="mi_Exit" Header="Exit" Click="mi_Exit_Click"/>
                 </MenuItem>
