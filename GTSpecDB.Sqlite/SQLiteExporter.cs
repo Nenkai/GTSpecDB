@@ -14,6 +14,7 @@ using PDTools.SpecDB.Core.Mapping;
 using PDTools.SpecDB.Core.Mapping.Types;
 using PDTools.SpecDB.Core.Formats;
 using PDTools.SpecDB.Core;
+using Microsoft.Data.Sqlite;
 
 namespace GTSpecDB.Sqlite
 {
@@ -101,7 +102,7 @@ namespace GTSpecDB.Sqlite
 
                 StringBuilder sb = new StringBuilder();
 
-                if (!table.TableName.StartsWith("VARIATION", StringComparison.Ordinal))
+                if (!table.TableName.StartsWith("VARIATION", StringComparison.Ordinal) && !table.TableName.StartsWith("CAR_VARIATION", StringComparison.Ordinal))
                     sb.Append($"CREATE TABLE {table.TableName} (RowId int PRIMARY KEY, Label Text, ");
                 else
                     sb.Append($"CREATE TABLE {table.TableName} (RowId int, Label Text, ");
@@ -356,11 +357,26 @@ namespace GTSpecDB.Sqlite
 
         private void InsertRaceSpec(SQLiteConnection conn)
         {
-            SQLiteCommand command = new SQLiteCommand($"CREATE TABLE RaceEntries (RaceId int, RaceLabel TEXT, EnemyCarId int, Variation int)", conn);
+            SQLiteCommand command;
+            SQLiteDataReader reader;
+            try
+            {
+                command = new SQLiteCommand($"SELECT * FROM RACE", conn);
+                reader = command.ExecuteReader();
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("no such table"))
+                {
+                    Console.WriteLine("No race table.");
+                    return;
+                }
+
+                throw;
+            }
+            command = new SQLiteCommand($"CREATE TABLE RaceEntries (RaceId int, RaceLabel TEXT, EnemyCarId int, Variation int)", conn);
             command.ExecuteNonQuery();
 
-            command = new SQLiteCommand($"SELECT * FROM RACE", conn);
-            var reader = command.ExecuteReader();
 
             StringBuilder sb = new StringBuilder();
             int count = 0;
